@@ -1,25 +1,56 @@
 package it.techies.pranayama.api.timing;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by jdtechies on 30/11/2015.
  */
-public class AasanTime
+public class AasanTime implements Parcelable
 {
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<AasanTime> CREATOR = new Parcelable.Creator<AasanTime>()
+    {
+        @Override
+        public AasanTime createFromParcel(Parcel in)
+        {
+            return new AasanTime(in);
+        }
+
+        @Override
+        public AasanTime[] newArray(int size)
+        {
+            return new AasanTime[size];
+        }
+    };
+
     @SerializedName("name")
     @Expose
     private String name;
+
     @SerializedName("time")
     @Expose
     private String time;
+
     @SerializedName("set")
     @Expose
     private Integer set;
+
     @SerializedName("break_time")
     @Expose
     private String breakTime;
+
+    protected AasanTime(Parcel in)
+    {
+        name = in.readString();
+        time = in.readString();
+        set = in.readByte() == 0x00 ? null : in.readInt();
+        breakTime = in.readString();
+    }
 
     public String getName()
     {
@@ -59,5 +90,28 @@ public class AasanTime
     public void setBreakTime(String breakTime)
     {
         this.breakTime = breakTime;
+    }
+
+    @Override
+    public int describeContents()
+    {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags)
+    {
+        dest.writeString(name);
+        dest.writeString(time);
+        if (set == null)
+        {
+            dest.writeByte((byte) (0x00));
+        }
+        else
+        {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(set);
+        }
+        dest.writeString(breakTime);
     }
 }

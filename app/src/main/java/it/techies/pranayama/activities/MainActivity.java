@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -20,6 +21,7 @@ import it.techies.pranayama.api.AasanNames;
 import it.techies.pranayama.api.ApiClient;
 import it.techies.pranayama.api.history.Aasan;
 import it.techies.pranayama.api.history.HistoryRequest;
+import it.techies.pranayama.api.timing.AasanInformation;
 import it.techies.pranayama.api.timing.AasanTime;
 import it.techies.pranayama.api.token.ResetTokenCallBack;
 import it.techies.pranayama.utils.SessionStorage;
@@ -64,12 +66,27 @@ public class MainActivity extends AppCompatActivity
 
     private ApiClient.ApiInterface apiClient;
 
-    private List<AasanTime> aasanTimes;
+    private ArrayList<AasanTime> aasanTimes;
+
+    public static final String AASAN_LIST_KEY = "aasan_list_key";
 
     @OnClick(R.id.start_button)
     public void start(View v)
     {
-        startActivity(new Intent(this, BreakActivity.class));
+        if(aasanTimes != null && aasanTimes.size() != 0)
+        {
+            Intent intent = new Intent(this, AasanActivity.class);
+
+            int currentAasanIndex = 0;
+            AasanInformation aasanInformation = new AasanInformation(currentAasanIndex, aasanTimes);
+            intent.putExtra(AASAN_LIST_KEY, aasanInformation);
+
+            startActivity(intent);
+        }
+        else
+        {
+            Timber.d("aasan times is zero or null");
+        }
     }
 
     @Override
@@ -186,15 +203,16 @@ public class MainActivity extends AppCompatActivity
 
     private void getAasanTiming()
     {
-        Call<List<AasanTime>> call = apiClient.getAasanTiming();
-        call.enqueue(new Callback<List<AasanTime>>()
+        Call<ArrayList<AasanTime>> call = apiClient.getAasanTiming();
+        call.enqueue(new Callback<ArrayList<AasanTime>>()
         {
             @Override
-            public void onResponse(Response<List<AasanTime>> response, Retrofit retrofit)
+            public void onResponse(Response<ArrayList<AasanTime>> response, Retrofit retrofit)
             {
                 if(response.isSuccess())
                 {
                     aasanTimes = response.body();
+                    Timber.d("aasan times size %d ", aasanTimes.size());
                 }
                 else
                 {

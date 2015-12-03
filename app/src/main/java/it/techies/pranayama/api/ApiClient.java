@@ -5,6 +5,7 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import it.techies.pranayama.api.history.Aasan;
@@ -89,6 +90,6 @@ public class ApiClient
         Call<List<Aasan>> getHistory(@Body HistoryRequest request);
 
         @GET("pranayama/get-pranayama-timings")
-        Call<List<AasanTime>> getAasanTiming();
+        Call<ArrayList<AasanTime>> getAasanTiming();
     }
 }

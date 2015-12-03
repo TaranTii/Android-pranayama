@@ -30,6 +30,7 @@
     <string name="aasan_udgeeth">Udgeeth</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_break">Break time</string>
+    <string name="title_activity_aasan">AasanActivity</string>
 
 
 </resources>

@@ -47,6 +47,11 @@
             android:label="@string/title_activity_break"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
+        <activity
+            android:name=".activities.AasanActivity"
+            android:label="@string/title_activity_aasan"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
     </application>
 
 </manifest>
