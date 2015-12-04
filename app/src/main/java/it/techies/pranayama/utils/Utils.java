@@ -104,10 +104,10 @@ public class Utils
     {
         if (progressDialog != null && !progressDialog.isShowing())
         {
-            progressDialog.show();
-            progressDialog.setMessage(message);
-            progressDialog.setCancelable(false);
             progressDialog.setCanceledOnTouchOutside(false);
+            progressDialog.setCancelable(false);
+            progressDialog.setMessage(message);
+            progressDialog.show();
         }
     }
 

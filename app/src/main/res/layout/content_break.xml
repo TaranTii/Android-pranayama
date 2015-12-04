@@ -25,6 +25,7 @@
     android:layout_height="wrap_content"
     android:text="Skip"
     android:id="@+id/skip_btn"
+    android:backgroundTint="@android:color/white"
     android:layout_below="@+id/timer_tv"
     android:layout_centerHorizontal="true"
     android:layout_marginTop="16dp"/>

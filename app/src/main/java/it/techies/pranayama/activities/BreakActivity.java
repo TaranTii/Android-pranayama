@@ -16,7 +16,7 @@ import it.techies.pranayama.api.timing.AasanInformation;
 import it.techies.pranayama.api.timing.AasanTime;
 import timber.log.Timber;
 
-public class BreakActivity extends AppCompatActivity
+public class BreakActivity extends BaseActivity
 {
 
     @Bind(R.id.timer_tv)
@@ -111,6 +111,13 @@ public class BreakActivity extends AppCompatActivity
         };
 
         mCountDownTimer.start();
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        mCountDownTimer.cancel();
     }
 
     private void startNextAasan()

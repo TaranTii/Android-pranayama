@@ -1,10 +1,9 @@
 package it.techies.pranayama.activities;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
@@ -19,7 +18,7 @@ import it.techies.pranayama.api.timing.AasanInformation;
 import it.techies.pranayama.api.timing.AasanTime;
 import timber.log.Timber;
 
-public class AasanActivity extends AppCompatActivity
+public class AasanActivity extends BaseActivity
 {
 
     @Bind(R.id.timer_tv)
@@ -38,13 +37,35 @@ public class AasanActivity extends AppCompatActivity
 
     private int minutes = 0;
 
-    // current aasan index
+    /**
+     * Index of the current Aasan in Aasan's list.
+     */
     private Integer currentAasanIndex;
 
-    // aasan information
+    /**
+     * Prayanama information.
+     */
     private AasanInformation aasanInformation;
 
+    /**
+     * CountDownTimer
+     */
     private CountDownTimer mCountDownTimer;
+
+    /**
+     * Current set counter.
+     */
+    private int currentSet = 1;
+
+    /**
+     * Total number of sets in current aasan.
+     */
+    private int totalSets;
+
+    /**
+     * Count down timer seconds
+     */
+    private long timerSeconds;
 
     @OnClick(R.id.stop_btn)
     public void stopButtonClick(View view)
@@ -85,10 +106,9 @@ public class AasanActivity extends AppCompatActivity
     @OnClick(R.id.toggleButton)
     public void toggleButtonClick(ToggleButton button)
     {
-        // TODO: 03/12/2015 handle toggle button action
         Timber.d("Toggle button is checked %b", button.isChecked());
 
-        if(button.isChecked())
+        if (button.isChecked())
         {
             // resume the timer
             mCountDownTimer.cancel();
@@ -109,26 +129,32 @@ public class AasanActivity extends AppCompatActivity
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        ActionBar ab = getSupportActionBar();
 
         Timber.tag(AasanActivity.class.getSimpleName());
 
+        // get aasan's information
         aasanInformation = getIntent().getParcelableExtra(MainActivity.AASAN_LIST_KEY);
 
         // get current aasan index
         currentAasanIndex = aasanInformation.getCurrentAasanIndex();
 
         // get current aasan information from aasan list
-        AasanTime aasanTime = aasanInformation.getAasanTimes().get(currentAasanIndex);
+        final AasanTime aasanTime = aasanInformation.getAasanTimes().get(currentAasanIndex);
 
-//        toolbar.setTitle(aasanTime.getName());
-        android.support.v7.app.ActionBar ab = getSupportActionBar();
+        // update the title bar with the name of current aasan
         ab.setTitle(aasanTime.getName());
 
-        // count down timer seconds
-        int timerSeconds = 0;
+        // read number of sets in pranayama
+        currentSet = 1;
 
-        // "00:00:30"
-        // parse the aasan time string
+        // total sets in current aasan
+        totalSets = aasanTime.getSet();
+
+        // update the current aasan and total aasan on screen
+        mSetTextView.setText(String.format("%d of %d", currentSet, totalSets));
+
+        // parse the aasan time string, i.e "00:00:30"
         String[] timeArray = aasanTime.getTime().split(":");
 
         // according to time format array length should be 3
@@ -136,12 +162,11 @@ public class AasanActivity extends AppCompatActivity
         {
             try
             {
-                int hours = Integer.valueOf(timeArray[0]);
-                int minutes = Integer.valueOf(timeArray[1]);
-                int seconds = Integer.valueOf(timeArray[2]);
+                long hours = Long.valueOf(timeArray[0]);
+                long minutes = Long.valueOf(timeArray[1]);
+                long seconds = Long.valueOf(timeArray[2]);
 
-                timerSeconds = hours * 3600 + minutes * 60 + seconds;
-                Timber.d("timer seconds %d", timerSeconds);
+                createTimer(hours * 3600 + minutes * 60 + seconds);
             }
             catch (NumberFormatException e)
             {
@@ -156,7 +181,11 @@ public class AasanActivity extends AppCompatActivity
             finish();
         }
 
-        mCountDownTimer = new CountDownTimer(timerSeconds * 1000, 1000)
+    }
+
+    private void startTimer()
+    {
+        mCountDownTimer = new CountDownTimer(timerSeconds * 1000 + 1000, 1000)
         {
             @Override
             public void onTick(long millisUntilFinished)
@@ -171,6 +200,8 @@ public class AasanActivity extends AppCompatActivity
                     seconds = 0;
                     minutes++;
                 }
+
+                timerSeconds = millisUntilFinished;
 
                 Timber.d("seconds Until Finished %d", millisUntilFinished / 1000);
 
@@ -199,15 +230,64 @@ public class AasanActivity extends AppCompatActivity
             public void onFinish()
             {
                 Timber.d("aasan timer finished...");
-                startBreak();
+
+                if (currentSet < totalSets)
+                {
+                    startNextSet();
+                }
+                else
+                {
+                    startBreak();
+                }
+
             }
         };
 
         // start the timer
         mCountDownTimer.start();
+    }
+
+    private void createTimer(long seconds)
+    {
+        timerSeconds = seconds;
+        startTimer();
+    }
+
+    private void pauseTimer()
+    {
 
     }
 
+    /**
+     * Start the next set of aasan.
+     */
+    private void startNextSet()
+    {
+        // set counter minutes and seconds to zero
+        seconds = 0;
+        minutes = 0;
+
+        // update current set
+        currentSet++;
+
+        // update the current set counter on screen
+        mSetTextView.setText(String.format("%d of %d", currentSet, totalSets));
+
+        // restart the counter
+        mCountDownTimer.cancel();
+        mCountDownTimer.start();
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        mCountDownTimer.cancel();
+    }
+
+    /**
+     * Start the break.
+     */
     private void startBreak()
     {
         // get current aasan index
@@ -227,14 +307,15 @@ public class AasanActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Show the final screen after completing the Prayanama.
+     */
     private void startFinalScreen()
     {
         // open the final screen
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, EndActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
-
-        Toast.makeText(this, "This was your final aasan", Toast.LENGTH_LONG).show();
     }
 
 }

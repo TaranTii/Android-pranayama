@@ -1,5 +1,6 @@
 package it.techies.pranayama.activities;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -32,7 +33,7 @@ import retrofit.Response;
 import retrofit.Retrofit;
 import timber.log.Timber;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends BaseActivity
 {
     @Bind(R.id.time_tv)
     TextView mTimeTextView;
@@ -69,6 +70,8 @@ public class MainActivity extends AppCompatActivity
     private ArrayList<AasanTime> aasanTimes;
 
     public static final String AASAN_LIST_KEY = "aasan_list_key";
+
+    private ProgressDialog mDialog;
 
     @OnClick(R.id.start_button)
     public void start(View v)
@@ -108,6 +111,8 @@ public class MainActivity extends AppCompatActivity
 
         apiClient = ApiClient.getApiClient(email, token);
 
+        mDialog = new ProgressDialog(this);
+        Utils.showLoadingDialog(mDialog, "Loading...");
         // read history
         getHistory();
     }
@@ -190,12 +195,17 @@ public class MainActivity extends AppCompatActivity
                             }
                         });
                     }
+                    else
+                    {
+                        Utils.hideLoadingDialog(mDialog);
+                    }
                 }
             }
 
             @Override
             public void onFailure(Throwable t)
             {
+                Utils.hideLoadingDialog(mDialog);
                 Timber.e(t, "getHistory");
             }
         });
@@ -211,6 +221,7 @@ public class MainActivity extends AppCompatActivity
             {
                 if(response.isSuccess())
                 {
+                    Utils.hideLoadingDialog(mDialog);
                     aasanTimes = response.body();
                     Timber.d("aasan times size %d ", aasanTimes.size());
                 }
@@ -238,12 +249,17 @@ public class MainActivity extends AppCompatActivity
                             }
                         });
                     }
+                    else
+                    {
+                        Utils.hideLoadingDialog(mDialog);
+                    }
                 }
             }
 
             @Override
             public void onFailure(Throwable t)
             {
+                Utils.hideLoadingDialog(mDialog);
                 Timber.e(t, "getAasanTiming");
             }
         });
