@@ -33,10 +33,6 @@ public class AasanActivity extends BaseActivity
     @Bind(R.id.benefits_tv)
     TextView mBenefitsTextView;
 
-    private int seconds = 0;
-
-    private int minutes = 0;
-
     /**
      * Index of the current Aasan in Aasan's list.
      */
@@ -66,6 +62,11 @@ public class AasanActivity extends BaseActivity
      * Count down timer seconds
      */
     private long timerSeconds;
+
+    /**
+     * Duration of a single set.
+     */
+    private long mSingleSetDuration;
 
     @OnClick(R.id.stop_btn)
     public void stopButtonClick(View view)
@@ -111,12 +112,12 @@ public class AasanActivity extends BaseActivity
         if (button.isChecked())
         {
             // resume the timer
-            mCountDownTimer.cancel();
+            resumeTimer();
         }
         else
         {
             // pause the timer
-            mCountDownTimer.start();
+            pauseTimer();
         }
     }
 
@@ -166,7 +167,8 @@ public class AasanActivity extends BaseActivity
                 long minutes = Long.valueOf(timeArray[1]);
                 long seconds = Long.valueOf(timeArray[2]);
 
-                createTimer(hours * 3600 + minutes * 60 + seconds);
+                mSingleSetDuration = (hours * 3600 + minutes * 60 + seconds) * 1000;
+                createTimer(mSingleSetDuration);
             }
             catch (NumberFormatException e)
             {
@@ -185,51 +187,31 @@ public class AasanActivity extends BaseActivity
 
     private void startTimer()
     {
-        mCountDownTimer = new CountDownTimer(timerSeconds * 1000 + 1000, 1000)
+        mTimerTextView.setText(String.format(
+                "%02d:%02d",
+                (timerSeconds / 60000) % 60,
+                (timerSeconds / (60 * 1000) % 60) )
+        );
+
+        mCountDownTimer = new CountDownTimer(timerSeconds, 1000)
         {
             @Override
             public void onTick(long millisUntilFinished)
             {
-                String mSeconds = "";
-                String mMinutes = "";
-
-                seconds++;
-
-                if (seconds > 59)
-                {
-                    seconds = 0;
-                    minutes++;
-                }
-
+                Timber.d("millisUntilFinished %02d", millisUntilFinished);
                 timerSeconds = millisUntilFinished;
 
-                Timber.d("seconds Until Finished %d", millisUntilFinished / 1000);
+                long seconds = millisUntilFinished / 1000 % 60;
+                long minutes = millisUntilFinished / (60 * 1000) % 60;
 
-                if (seconds < 10)
-                {
-                    mSeconds = "0" + seconds;
-                }
-                else
-                {
-                    mSeconds = String.valueOf(seconds);
-                }
-
-                if (minutes < 10)
-                {
-                    mMinutes = "0" + minutes;
-                }
-                else
-                {
-                    mMinutes = String.valueOf(minutes);
-                }
-
-                mTimerTextView.setText(String.format("%s:%s", mMinutes, mSeconds));
+                mTimerTextView.setText(String.format("%02d:%02d", minutes, seconds));
             }
 
             @Override
             public void onFinish()
             {
                 Timber.d("aasan timer finished...");
+                mTimerTextView.setText(String.format("%02d:%02d", 0, 0));
 
                 if (currentSet < totalSets)
                 {
@@ -253,9 +235,14 @@ public class AasanActivity extends BaseActivity
         startTimer();
     }
 
+    private void resumeTimer()
+    {
+        startTimer();
+    }
+
     private void pauseTimer()
     {
-
+        mCountDownTimer.cancel();
     }
 
     /**
@@ -263,10 +250,6 @@ public class AasanActivity extends BaseActivity
      */
     private void startNextSet()
     {
-        // set counter minutes and seconds to zero
-        seconds = 0;
-        minutes = 0;
-
         // update current set
         currentSet++;
 
@@ -274,6 +257,7 @@ public class AasanActivity extends BaseActivity
         mSetTextView.setText(String.format("%d of %d", currentSet, totalSets));
 
         // restart the counter
+        timerSeconds = mSingleSetDuration;
         mCountDownTimer.cancel();
         mCountDownTimer.start();
     }
@@ -294,16 +278,16 @@ public class AasanActivity extends BaseActivity
         currentAasanIndex = aasanInformation.getCurrentAasanIndex();
 
         // check if this aasan is the last one
-        if (currentAasanIndex < aasanInformation.getAasanTimes().size())
+        if (currentAasanIndex + 1 == aasanInformation.getAasanTimes().size())
+        {
+            startFinalScreen();
+        }
+        else
         {
             Intent intent = new Intent(this, BreakActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.putExtra(MainActivity.AASAN_LIST_KEY, aasanInformation);
             startActivity(intent);
-        }
-        else
-        {
-            startFinalScreen();
         }
     }
 

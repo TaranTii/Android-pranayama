@@ -10,12 +10,14 @@ import java.util.List;
 
 import it.techies.pranayama.api.history.Aasan;
 import it.techies.pranayama.api.history.HistoryRequest;
+import it.techies.pranayama.api.login.ChangePasswordRequest;
 import it.techies.pranayama.api.login.ForgotPasswordRequest;
 import it.techies.pranayama.api.login.LoginRequest;
 import it.techies.pranayama.api.login.LoginResponse;
 import it.techies.pranayama.api.timing.AasanTime;
 import it.techies.pranayama.api.token.ResetTokenRequest;
 import it.techies.pranayama.api.token.ResetTokenResponse;
+import it.techies.pranayama.api.user.UserProfile;
 import retrofit.Call;
 import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
@@ -23,6 +25,7 @@ import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.PUT;
+import retrofit.http.Path;
 import timber.log.Timber;
 
 /**
@@ -91,5 +94,16 @@ public class ApiClient
 
         @GET("pranayama/get-pranayama-timings")
         Call<ArrayList<AasanTime>> getAasanTiming();
+
+        @PUT("user/change-password/{userId}")
+        Call<SuccessResponse> changePassword(@Body ChangePasswordRequest request,
+                                             @Path("userId") int userId);
+
+        @GET("user/view/{userId}")
+        Call<UserProfile> getUserProfile(@Path("userId") int userId);
+
+        @PUT("user/update/{userId}")
+        Call<EmptyResponse> updateUserProfile(@Body UserProfile userProfile,
+                                            @Path("userId") int userId);
     }
 }

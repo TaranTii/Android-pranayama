@@ -3,8 +3,8 @@ package it.techies.pranayama.activities;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,6 +25,7 @@ import it.techies.pranayama.api.history.HistoryRequest;
 import it.techies.pranayama.api.timing.AasanInformation;
 import it.techies.pranayama.api.timing.AasanTime;
 import it.techies.pranayama.api.token.ResetTokenCallBack;
+import it.techies.pranayama.services.PrayanamaService;
 import it.techies.pranayama.utils.SessionStorage;
 import it.techies.pranayama.utils.Utils;
 import retrofit.Call;
@@ -99,6 +100,9 @@ public class MainActivity extends BaseActivity
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        Timber.tag(MainActivity.class.getSimpleName());
+        Timber.d("onCreate(Bundle savedInstanceState)");
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -111,10 +115,22 @@ public class MainActivity extends BaseActivity
 
         apiClient = ApiClient.getApiClient(email, token);
 
+        // start background music service
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
+        startService(new Intent(this, PrayanamaService.class));
+
         mDialog = new ProgressDialog(this);
         Utils.showLoadingDialog(mDialog, "Loading...");
         // read history
         getHistory();
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        Timber.d("onDestroy()");
+        // stopService(new Intent(this, PrayanamaService.class));
     }
 
     @Override
@@ -134,7 +150,7 @@ public class MainActivity extends BaseActivity
 
         if (id == R.id.action_settings)
         {
-            Timber.d("open settings...");
+            startActivity(new Intent(this, Settings.class));
             return true;
         }
 
@@ -205,8 +221,9 @@ public class MainActivity extends BaseActivity
             @Override
             public void onFailure(Throwable t)
             {
-                Utils.hideLoadingDialog(mDialog);
                 Timber.e(t, "getHistory");
+                Utils.hideLoadingDialog(mDialog);
+                Utils.handleRetrofitFailure(mContext, t);
             }
         });
     }
@@ -259,8 +276,9 @@ public class MainActivity extends BaseActivity
             @Override
             public void onFailure(Throwable t)
             {
-                Utils.hideLoadingDialog(mDialog);
                 Timber.e(t, "getAasanTiming");
+                Utils.hideLoadingDialog(mDialog);
+                Utils.handleRetrofitFailure(mContext, t);
             }
         });
     }

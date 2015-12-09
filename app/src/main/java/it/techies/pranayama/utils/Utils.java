@@ -15,6 +15,8 @@ import com.squareup.okhttp.ResponseBody;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.util.List;
 
 import it.techies.pranayama.activities.LoginActivity;
@@ -24,6 +26,7 @@ import it.techies.pranayama.api.errors.ErrorObject;
 import it.techies.pranayama.api.token.ResetTokenCallBack;
 import it.techies.pranayama.api.token.ResetTokenRequest;
 import it.techies.pranayama.api.token.ResetTokenResponse;
+import it.techies.pranayama.services.PrayanamaService;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
@@ -135,6 +138,7 @@ public class Utils
         Intent intent = new Intent(context, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(intent);
+        context.stopService(new Intent(context, PrayanamaService.class));
     }
 
     /**
@@ -163,8 +167,7 @@ public class Utils
                 else
                 {
                     Utils.logoutUser(context);
-                    Toast.makeText(context, "You're logged out because of security reasons.", Toast.LENGTH_LONG)
-                            .show();
+                    Utils.showToast(context, "You're logged out because of security reasons.");
                 }
             }
 
@@ -177,5 +180,46 @@ public class Utils
                         .show();
             }
         });
+    }
+
+    /**
+     * Displays a toast with given message.
+     *
+     * @param message Message to show in toast.
+     */
+    public static void showToast(Context context, String message)
+    {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Handle retrofit failure error.
+     *
+     * @param context Context
+     * @param t Exception to handle
+     */
+    public static void handleRetrofitFailure(Context context, Throwable t)
+    {
+        if (t == null)
+        {
+            Utils.showToast(context, "Unknown error");
+            return;
+        }
+
+        Timber.d(t.toString());
+
+        if (t instanceof SocketTimeoutException)
+        {
+            Utils.showToast(context, "Socket Timeout Exception");
+        }
+        else if (t instanceof UnknownHostException)
+        {
+            Utils.showToast(context, "Unknown Host Exception");
+        }
+        else
+        {
+            Utils.showToast(context, t.getMessage());
+            // Utils.showToast(context, "Please check your internet connection");
+        }
     }
 }

@@ -3,7 +3,6 @@ package it.techies.pranayama.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
@@ -21,10 +20,6 @@ public class BreakActivity extends BaseActivity
 
     @Bind(R.id.timer_tv)
     TextView mTimerTextView;
-
-    private int seconds = 0;
-
-    private int minutes = 0;
 
     // current aasan index
     private Integer currentAasanIndex;
@@ -63,49 +58,24 @@ public class BreakActivity extends BaseActivity
         // get current aasan information from aasan list
         AasanTime aasanTime = aasanInformation.getAasanTimes().get(currentAasanIndex);
 
+        mTimerTextView.setText(String.format("%02d:%02d", 10, 0));
         mCountDownTimer = new CountDownTimer(10 * 1000, 1000)
         {
             @Override
             public void onTick(long millisUntilFinished)
             {
-                String mSeconds = "";
-                String mMinutes = "";
+                Timber.d("millisUntilFinished %02d", millisUntilFinished);
+                long seconds = millisUntilFinished / 1000 % 60;
+                long minutes = millisUntilFinished / (60 * 1000) % 60;
 
-                seconds++;
-
-                if (seconds > 59)
-                {
-                    seconds = 0;
-                    minutes++;
-                }
-
-                Timber.d("seconds Until Finished %d", millisUntilFinished / 1000);
-
-                if (seconds < 10)
-                {
-                    mSeconds = "0" + seconds;
-                }
-                else
-                {
-                    mSeconds = String.valueOf(seconds);
-                }
-
-                if (minutes < 10)
-                {
-                    mMinutes = "0" + minutes;
-                }
-                else
-                {
-                    mMinutes = String.valueOf(minutes);
-                }
-
-                mTimerTextView.setText(String.format("%s:%s", mMinutes, mSeconds));
+                mTimerTextView.setText(String.format("%02d:%02d", minutes, seconds));
             }
 
             @Override
             public void onFinish()
             {
                 Timber.d("break timer finished...");
+                mTimerTextView.setText(String.format("%02d:%02d", 0, 0));
                 startNextAasan();
             }
         };
