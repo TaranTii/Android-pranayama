@@ -1,16 +1,13 @@
 package it.techies.pranayama.adapters;
 
 import android.app.Activity;
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.TextView;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import it.techies.pranayama.R;
 import it.techies.pranayama.api.timing.AasanTime;
@@ -18,16 +15,17 @@ import it.techies.pranayama.api.timing.AasanTime;
 /**
  * Created by jdtechies on 11/12/2015.
  */
-public class AasanListAdapter extends ArrayAdapter
+public class AasanListAdapter extends ArrayAdapter<AasanTime>
 {
     private Activity context;
 
-    private List<AasanTime> aasanTimeList;
+    private ArrayList<AasanTime> aasanTimeList;
 
-    public AasanListAdapter(Activity context, List<AasanTime> aasanTimeList)
+    public AasanListAdapter(Activity context, ArrayList<AasanTime> list)
     {
-        this.aasanTimeList = aasanTimeList;
+        super(context, R.layout.list_row_aasan_time, list);
         this.context = context;
+        this.aasanTimeList = list;
     }
 
     @Override
@@ -37,45 +35,43 @@ public class AasanListAdapter extends ArrayAdapter
     }
 
     @Override
-    public Object getItem(int position)
-    {
-        return aasanTimeList.get(position);
-    }
-
-    @Override
     public View getView(int position, View convertView, ViewGroup parent)
     {
-        View rowView = convertView;
+        // Check if an existing view is being reused, otherwise inflate the view
+        ViewHolder viewHolder; // view lookup cache stored in tag
 
-        // reuse views
-        if (rowView == null)
+        if (convertView == null)
         {
-            LayoutInflater inflater = context.getLayoutInflater();
-            rowView = inflater.inflate(R.layout.list_row_aasan_time, null);
+            viewHolder = new ViewHolder();
+            LayoutInflater inflater = LayoutInflater.from(getContext());
+            convertView = inflater.inflate(R.layout.list_row_aasan_time, parent, false);
 
-            // configure view holder
-            ViewHolder viewHolder = new ViewHolder();
-            viewHolder.sets = (TextView) rowView.findViewById(R.id.set_tv);
-            viewHolder.aasanName = (TextView) rowView.findViewById(R.id.aasan_name_tv);
-            viewHolder.aasanTime = (TextView) rowView.findViewById(R.id.time_tv);
-            rowView.setTag(viewHolder);
+            viewHolder.aasanName = (TextView) convertView.findViewById(R.id.aasan_name_tv);
+            viewHolder.aasanTime = (TextView) convertView.findViewById(R.id.time_tv);
+            viewHolder.sets = (TextView) convertView.findViewById(R.id.set_tv);
+
+            convertView.setTag(viewHolder);
+        }
+        else
+        {
+            viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        // fill data
-        ViewHolder holder = (ViewHolder) rowView.getTag();
         AasanTime aasanTime = aasanTimeList.get(position);
 
-        holder.aasanName.setText(aasanTime.getName());
-        holder.aasanName.setText(aasanTime.getTime());
-        holder.sets.setText(aasanTime.getSet());
+        viewHolder.aasanName.setText(aasanTime.getName());
+        viewHolder.aasanTime.setText(String.format("Time: %s", aasanTime.getTime()));
+        viewHolder.sets.setText(String.format("Sets: %d", aasanTime.getSet()));
 
-        return rowView;
+        return convertView;
     }
 
     static class ViewHolder
     {
         public TextView sets;
+
         public TextView aasanName;
+
         public TextView aasanTime;
     }
 }

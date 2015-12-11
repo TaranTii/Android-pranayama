@@ -115,4 +115,9 @@
         android:layout_alignStart="@+id/gridLayout"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"/>
+
+    <include layout="@layout/loading"/>
+
+    <include layout="@layout/reload"/>
+
 </RelativeLayout>
