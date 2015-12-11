@@ -2,8 +2,10 @@ package it.techies.pranayama.utils;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.support.v7.app.AlertDialog;
 import android.util.Base64;
 import android.widget.Toast;
 
@@ -221,5 +223,31 @@ public class Utils
             Utils.showToast(context, t.getMessage());
             // Utils.showToast(context, "Please check your internet connection");
         }
+    }
+
+    /**
+     * Show error dialog to User.
+     *
+     * @param message Message to display.
+     */
+    public static void showErrorDialog(Context context, String message)
+    {
+        // 1. Instantiate an AlertDialog.Builder with its constructor
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+        // 2. Chain together various setter methods to set the dialog characteristics
+        builder.setMessage(message).setTitle("Error");
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                dialog.dismiss();
+            }
+        });
+
+        // 3. Get the AlertDialog from create()
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

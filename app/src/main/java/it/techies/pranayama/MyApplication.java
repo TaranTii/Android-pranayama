@@ -2,6 +2,8 @@ package it.techies.pranayama;
 
 import android.app.Application;
 
+import com.facebook.FacebookSdk;
+
 import timber.log.Timber;
 
 /**
@@ -14,6 +16,9 @@ public class MyApplication extends Application
     public void onCreate()
     {
         super.onCreate();
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        // Initialize the SDK before executing any other operations,
+        // especially, if you're using Facebook UI elements.
 
         if (BuildConfig.DEBUG)
         {

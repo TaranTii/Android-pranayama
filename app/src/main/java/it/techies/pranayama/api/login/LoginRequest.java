@@ -22,6 +22,24 @@ public class LoginRequest
     @Expose
     String loginVia;
 
+    @SerializedName("fb_id")
+    @Expose
+    String facebookId;
+
+    public String getFacebookId()
+    {
+        return facebookId;
+    }
+
+    public void setFacebookId(String facebookId)
+    {
+        this.facebookId = facebookId;
+    }
+
+    public LoginRequest()
+    {
+    }
+
     public LoginRequest(String email, String password, String loginVia)
     {
         this.email = email;

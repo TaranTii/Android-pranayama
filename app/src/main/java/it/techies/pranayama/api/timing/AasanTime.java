@@ -44,6 +44,13 @@ public class AasanTime implements Parcelable
     @Expose
     private String breakTime;
 
+    public AasanTime(String name, String time, Integer set)
+    {
+        this.name = name;
+        this.time = time;
+        this.set = set;
+    }
+
     protected AasanTime(Parcel in)
     {
         name = in.readString();

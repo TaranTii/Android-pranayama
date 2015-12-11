@@ -105,5 +105,16 @@
     <string name="title_activity_profile">Profile</string>
     <string name="title_activity_change_password">Change password</string>
 
+    <string name="facebook_app_id">907528072657130</string>
+    <string name="error_account_does_not_exist">User account does not exist. Please sign up first.</string>
+    <string name="action_sign_up">Sign up</string>
+    <string name="action_sign_up_short">Sign up</string>
+    <string name="prompt_confirm_password">Confirm password</string>
+    <string name="title_activity_register">Sign up</string>
+    <string name="prompt_name">Name</string>
+    <string name="label_create_account">Create new account</string>
+    <string name="title_activity_history">History</string>
+    <string name="title_activity_setup">Schedule Setup</string>
+
 
 </resources>

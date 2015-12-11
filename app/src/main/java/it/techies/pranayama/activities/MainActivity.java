@@ -11,6 +11,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.facebook.appevents.AppEventsLogger;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -126,6 +128,22 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Logs 'install' and 'app activate' App Events.
+        AppEventsLogger.activateApp(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        // Logs 'app deactivate' App Event.
+        AppEventsLogger.deactivateApp(this);
+    }
+
+    @Override
     protected void onDestroy()
     {
         super.onDestroy();
@@ -150,7 +168,7 @@ public class MainActivity extends BaseActivity
 
         if (id == R.id.action_settings)
         {
-            startActivity(new Intent(this, Settings.class));
+            startActivity(new Intent(this, SettingsActivity.class));
             return true;
         }
 

@@ -20,10 +20,6 @@ public class UserProfile
     @Expose
     private String gender;
 
-    @SerializedName("email")
-    @Expose
-    private String email;
-
     @SerializedName("created_at")
     @Expose
     private Integer createdAt;
@@ -108,16 +104,6 @@ public class UserProfile
     public void setGender(String gender)
     {
         this.gender = gender;
-    }
-
-    public String getEmail()
-    {
-        return email;
-    }
-
-    public void setEmail(String email)
-    {
-        this.email = email;
     }
 
     public Integer getCreatedAt()

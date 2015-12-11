@@ -16,6 +16,7 @@ import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -90,12 +91,6 @@ public class ProfileActivity extends AppCompatActivity
     @Bind(R.id.user_profile_form)
     ScrollView mUserProfileForm;
 
-    @Bind(R.id.reload_btn)
-    Button mReloadButton;
-
-    @Bind(R.id.email_update_profile_button)
-    Button mUpdateProfileButton;
-
     ApiClient.ApiInterface apiClient;
 
     UserProfile userProfile;
@@ -129,9 +124,24 @@ public class ProfileActivity extends AppCompatActivity
 
             if (response.isSuccess())
             {
-                userProfile = response.body();
                 Timber.d("onResponse success");
+                userProfile = response.body();
 
+                if (userProfile.getImage() != null && !TextUtils.isEmpty(userProfile.getImage()))
+                {
+                    Glide.with(mContext)
+                            .load("http://pranayama.seobudd.com" + userProfile.getImage())
+                            .override(150, 150).into(mUserProfileImageView);
+                }
+
+                mFullNameView.setText(userProfile.getFullname());
+                mAddressView.setText(userProfile.getAddress1());
+                mCityView.setText(userProfile.getCity());
+                mStateView.setText(userProfile.getState());
+                mCountryView.setText(String.valueOf(userProfile.getCountryId()));
+                mDateOfBirthView.setText(userProfile.getDob());
+                mPhoneNumberView.setText(userProfile.getPhone());
+                mTimezoneView.setText(userProfile.getTimezone());
             }
             else
             {
@@ -187,7 +197,8 @@ public class ProfileActivity extends AppCompatActivity
 
             if (response.isSuccess())
             {
-                Toast.makeText(mContext, "Profile updated.", Toast.LENGTH_SHORT).show();
+                Utils.hideLoadingDialog(mDialog);
+                Utils.showToast(mContext, "Profile updated");
             }
             else
             {
@@ -216,6 +227,7 @@ public class ProfileActivity extends AppCompatActivity
                 }
                 else
                 {
+                    Utils.hideLoadingDialog(mDialog);
                     Timber.d("[Err] unable to update user profile, statusCode: %d", statusCode);
                 }
             }
@@ -233,7 +245,7 @@ public class ProfileActivity extends AppCompatActivity
                 if (t instanceof SocketTimeoutException || t instanceof UnknownHostException || t instanceof SocketException)
                 {
                     Timber.e("Timeout occurred");
-                    Toast.makeText(mContext, "Can't upload photo.\nCheck your network connection.", Toast.LENGTH_LONG)
+                    Toast.makeText(mContext, "Check your network connection.", Toast.LENGTH_LONG)
                             .show();
                 }
                 else if (t instanceof IOException)
@@ -266,9 +278,100 @@ public class ProfileActivity extends AppCompatActivity
     }
 
     @OnClick(R.id.email_update_profile_button)
-    public void update(Button v)
+    public void update(View v)
     {
-        // TODO: 09/12/2015 update profile
+        String fullName = mFullNameView.getText().toString();
+        String address = mAddressView.getText().toString();
+        String city = mCityView.getText().toString();
+        String state = mStateView.getText().toString();
+        String country = mCountryView.getText().toString();
+        String dob = mDateOfBirthView.getText().toString();
+        String phone = mPhoneNumberView.getText().toString();
+        String timezone = mTimezoneView.getText().toString();
+
+        View focusView = null;
+        boolean cancel = false;
+
+        if (TextUtils.isEmpty(timezone))
+        {
+            mTimezoneView.setError(getString(R.string.error_field_required));
+            focusView = mTimezoneView;
+            cancel = true;
+        }
+        else if (TextUtils.isEmpty(phone))
+        {
+            mPhoneNumberView.setError(getString(R.string.error_field_required));
+            focusView = mPhoneNumberView;
+            cancel = true;
+        }
+        else if (TextUtils.isEmpty(dob))
+        {
+            mDateOfBirthView.setError(getString(R.string.error_field_required));
+            focusView = mDateOfBirthView;
+            cancel = true;
+        }
+        else if (TextUtils.isEmpty(country))
+        {
+            mCountryView.setError(getString(R.string.error_field_required));
+            focusView = mCountryView;
+            cancel = true;
+        }
+        else if (TextUtils.isEmpty(state))
+        {
+            mStateView.setError(getString(R.string.error_field_required));
+            focusView = mStateView;
+            cancel = true;
+        }
+        else if (TextUtils.isEmpty(city))
+        {
+            mCityView.setError(getString(R.string.error_field_required));
+            focusView = mCityView;
+            cancel = true;
+        }
+        else if (TextUtils.isEmpty(address))
+        {
+            mAddressView.setError(getString(R.string.error_field_required));
+            focusView = mAddressView;
+            cancel = true;
+        }
+        else if (TextUtils.isEmpty(fullName))
+        {
+            mFullNameView.setError(getString(R.string.error_field_required));
+            focusView = mFullNameView;
+            cancel = true;
+        }
+
+        if(cancel)
+        {
+            focusView.requestFocus();
+        }
+        else
+        {
+            /*
+            * String fullName = mFullNameView.getText().toString();
+        String address = mAddressView.getText().toString();
+        String city = mCityView.getText().toString();
+        String state = mStateView.getText().toString();
+        String country = mCountryView.getText().toString();
+        String dob = mDateOfBirthView.getText().toString();
+        String phone = mPhoneNumberView.getText().toString();
+        String timezone = mTimezoneView.getText().toString();
+            * */
+
+            userProfile.setFullname(fullName);
+            userProfile.setAddress1(address);
+            userProfile.setCity(city);
+            userProfile.setState(state);
+            // TODO: 09/12/2015 country name to id
+            userProfile.setCountryId(91);
+            userProfile.setDob(dob);
+            userProfile.setPhone(phone);
+            userProfile.setTimezone(timezone);
+
+            Call<EmptyResponse> call = apiClient.updateUserProfile(userProfile, userId);
+            Utils.showLoadingDialog(mDialog, "Updating...");
+            call.enqueue(mEditProfileCallback);
+        }
     }
 
     @Override

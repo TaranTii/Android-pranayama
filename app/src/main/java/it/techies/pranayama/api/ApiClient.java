@@ -14,6 +14,7 @@ import it.techies.pranayama.api.login.ChangePasswordRequest;
 import it.techies.pranayama.api.login.ForgotPasswordRequest;
 import it.techies.pranayama.api.login.LoginRequest;
 import it.techies.pranayama.api.login.LoginResponse;
+import it.techies.pranayama.api.register.RegisterRequest;
 import it.techies.pranayama.api.timing.AasanTime;
 import it.techies.pranayama.api.token.ResetTokenRequest;
 import it.techies.pranayama.api.token.ResetTokenResponse;
@@ -95,6 +96,9 @@ public class ApiClient
         @GET("pranayama/get-pranayama-timings")
         Call<ArrayList<AasanTime>> getAasanTiming();
 
+        @POST("pranayama/set-pranayama-timings")
+        Call<EmptyResponse> setPranayamaTiming(@Body List<AasanTime> request);
+
         @PUT("user/change-password/{userId}")
         Call<SuccessResponse> changePassword(@Body ChangePasswordRequest request,
                                              @Path("userId") int userId);
@@ -105,5 +109,8 @@ public class ApiClient
         @PUT("user/update/{userId}")
         Call<EmptyResponse> updateUserProfile(@Body UserProfile userProfile,
                                             @Path("userId") int userId);
+
+        @POST("user/signup")
+        Call<EmptyResponse> signup(@Body RegisterRequest request);
     }
 }

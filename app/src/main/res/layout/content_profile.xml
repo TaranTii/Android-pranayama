@@ -62,7 +62,7 @@
                     android:id="@+id/date_of_birth"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Date of birth"
+                    android:hint="YYYY-MM-DD"
                     android:inputType="date"
                     android:maxLines="1"
                     android:singleLine="true"/>

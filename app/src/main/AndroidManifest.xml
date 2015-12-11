@@ -16,7 +16,15 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id"/>
 
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
         <activity
             android:name=".activities.StartActivity"
             android:theme="@android:style/Theme.NoDisplay">
@@ -26,18 +34,23 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activities.MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-
         <activity
             android:name=".activities.LoginActivity"
             android:label="@string/title_activity_login">
         </activity>
-
+        <activity
+            android:name=".activities.RegisterActivity"
+            android:label="@string/title_activity_register"
+            android:parentActivityName=".activities.LoginActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="it.techies.pranayama.activities.LoginActivity"/>
+        </activity>
         <activity
             android:name=".activities.ForgotPasswordActivity"
             android:label="@string/title_activity_forgot_password"
@@ -46,19 +59,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="it.techies.pranayama.activities.LoginActivity"/>
         </activity>
-
         <activity
             android:name=".activities.BreakActivity"
             android:label="@string/title_activity_break"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-
         <activity
             android:name=".activities.AasanActivity"
             android:label="@string/title_activity_aasan"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-
         <activity
             android:name=".activities.EndActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -71,7 +81,7 @@
         </service>
 
         <activity
-            android:name=".activities.Settings"
+            android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:parentActivityName=".activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -79,27 +89,41 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="it.techies.pranayama.activities.MainActivity"/>
         </activity>
-
         <activity
             android:name=".activities.ProfileActivity"
             android:label="@string/title_activity_profile"
-            android:parentActivityName=".activities.Settings"
+            android:parentActivityName=".activities.SettingsActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="it.techies.pranayama.activities.Settings"/>
+                android:value=".activities.SettingsActivity"/>
         </activity>
-
         <activity
             android:name=".activities.ChangePasswordActivity"
             android:label="@string/title_activity_change_password"
-            android:parentActivityName=".activities.Settings">
+            android:parentActivityName=".activities.SettingsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="it.techies.pranayama.activities.Settings"/>
+                android:value=".activities.SettingsActivity"/>
         </activity>
-
-
+        <activity
+            android:name=".activities.HistoryActivity"
+            android:label="@string/title_activity_history"
+            android:parentActivityName=".activities.SettingsActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="it.techies.pranayama.activities.SettingsActivity"/>
+        </activity>
+        <activity
+            android:name=".activities.SetupActivity"
+            android:label="@string/title_activity_setup"
+            android:parentActivityName=".activities.SettingsActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="it.techies.pranayama.activities.SettingsActivity"/>
+        </activity>
     </application>
 
 </manifest>

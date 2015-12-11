@@ -1,13 +1,17 @@
 package it.techies.pranayama.activities;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
@@ -15,8 +19,11 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Base64;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.KeyEvent;
 import android.view.View;
@@ -30,12 +37,29 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookRequestError;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.squareup.okhttp.ResponseBody;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import it.techies.pranayama.R;
 import it.techies.pranayama.api.ApiClient;
 import it.techies.pranayama.api.ApiFields;
@@ -59,12 +83,12 @@ import static android.Manifest.permission.READ_CONTACTS;
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor>
 {
 
+    public static final String USER_HISTORY = "USER_HISTORY_KEY";
+
     /**
      * Id to identity READ_CONTACTS permission request.
      */
     private static final int REQUEST_READ_CONTACTS = 0;
-
-    public static final String USER_HISTORY = "USER_HISTORY_KEY";
 
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -138,6 +162,20 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                             String field = error.getField();
                             View focusView = null;
 
+                            if("Invalid fb_id.".equals(error.getMessage()) && "fb_id".equals(error.getField()))
+                            {
+                                Utils.showErrorDialog(mContext, error.getMessage());
+                                LoginManager.getInstance().logOut();
+                                return;
+                            }
+
+                            if ("Please define valid email.".equals(error.getMessage()))
+                            {
+                                Utils.showErrorDialog(mContext, getString(R.string.error_account_does_not_exist));
+                                LoginManager.getInstance().logOut();
+                                return;
+                            }
+
                             switch (field)
                             {
                                 case ApiFields.FIELD_EMAIL:
@@ -180,12 +218,34 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     };
 
+    private CallbackManager callbackManager;
+
+    private LoginButton loginButton;
+
+    @OnClick(R.id.create_account_tv)
+    public void openRegister(View v)
+    {
+        startActivity(new Intent(mContext, RegisterActivity.class));
+    }
+
+    @OnClick(R.id.forgot_password_tv)
+    public void forgotPassword(View v)
+    {
+        startActivity(new Intent(mContext, ForgotPasswordActivity.class));
+    }
+
+    @OnClick(R.id.email_sign_in_button)
+    public void signInClick(View v)
+    {
+        attemptLogin();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        setupActionBar();
+        ButterKnife.bind(this);
 
         mDialog = new ProgressDialog(this);
 
@@ -208,26 +268,137 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-        TextView mForgotPasswordTextView = (TextView) findViewById(R.id.forgot_password_tv);
-        mForgotPasswordTextView.setOnClickListener(new OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                Intent intent = new Intent(mContext, ForgotPasswordActivity.class);
-                startActivity(intent);
-            }
-        });
+        initFacebookLogin();
+        // checkHash();
+    }
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener()
+    private void checkHash()
+    {
+        try
         {
-            @Override
-            public void onClick(View view)
+            PackageInfo info = getPackageManager()
+                    .getPackageInfo("it.techies.pranayama", PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures)
             {
-                attemptLogin();
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
             }
-        });
+        }
+        catch (PackageManager.NameNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+        catch (NoSuchAlgorithmException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Initialize the facebook login button.
+     */
+    private void initFacebookLogin()
+    {
+        callbackManager = CallbackManager.Factory.create();
+
+        loginButton = (LoginButton) findViewById(R.id.login_button);
+        loginButton.setReadPermissions("email");
+
+        LoginManager.getInstance()
+                .registerCallback(callbackManager, new FacebookCallback<LoginResult>()
+                {
+                    @Override
+                    public void onSuccess(LoginResult loginResult)
+                    {
+                        Timber.d("onSuccess");
+                        AccessToken accessToken = loginResult.getAccessToken();
+                        GraphRequest request = GraphRequest
+                                .newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback()
+                                {
+                                    @Override
+                                    public void onCompleted(JSONObject object,
+                                                            GraphResponse response)
+                                    {
+                                        FacebookRequestError error = response.getError();
+
+                                        if (error != null)
+                                        {
+                                            Timber.d(error.getErrorMessage());
+                                        }
+                                        else
+                                        {
+                                            try
+                                            {
+                                                String id = object.getString("id");
+                                                String email = object.getString("email");
+
+                                                /*Timber.d("Name - %s", object.getString("name"));
+                                                Timber.d("ID - %s", object.getString("id"));
+                                                Timber.d("Email - %s", object.getString("email"));
+                                                Timber.d("Gender - %s", object.getString("gender"));
+                                                */
+
+                                                loginWithFacebook(id, email);
+
+                                            }
+                                            catch (JSONException e)
+                                            {
+                                                e.printStackTrace();
+                                            }
+
+                                        }
+                                    }
+                                });
+
+                        Bundle parameters = new Bundle();
+                        parameters.putString("fields", "id, name, email, gender, birthday");
+                        request.setParameters(parameters);
+                        request.executeAsync();
+
+                    }
+
+                    @Override
+                    public void onCancel()
+                    {
+                        // App code
+                        Timber.d("onCancel");
+                    }
+
+                    @Override
+                    public void onError(FacebookException exception)
+                    {
+                        // App code
+                        Timber.d("onError");
+                    }
+                });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
+    /**
+     * Attempt login with facebook information.
+     *
+     * @param id    Facebook user id
+     * @param email Facebook email
+     */
+    private void loginWithFacebook(String id, String email)
+    {
+        showProgress(true);
+        ApiClient.ApiInterface client = ApiClient.getApiClient(null, null);
+        LoginRequest request = new LoginRequest();
+
+        request.setEmail(email);
+        request.setLoginVia("fb");
+        request.setFacebookId(id);
+
+        mAuthTask = client.login(request);
+        mAuthTask.enqueue(mLoginResponseCallback);
     }
 
     private void populateAutoComplete()
@@ -283,19 +454,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             {
                 populateAutoComplete();
             }
-        }
-    }
-
-    /**
-     * Set up the {@link android.app.ActionBar}, if the API is available.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    private void setupActionBar()
-    {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-        {
-            // Show the Up button in the action bar.
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
     }
 
@@ -382,7 +540,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     private void showProgress(boolean show)
     {
-        if(show)
+        if (show)
         {
             Utils.showLoadingDialog(mDialog, "Signing in...");
         }
