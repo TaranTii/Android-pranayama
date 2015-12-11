@@ -18,7 +18,7 @@ import it.techies.pranayama.api.timing.AasanTime;
 /**
  * Created by jdtechies on 11/12/2015.
  */
-public class AasanListAdapter extends ListAdapter
+public class AasanListAdapter extends ArrayAdapter
 {
     private Activity context;
 
