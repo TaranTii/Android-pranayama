@@ -81,61 +81,73 @@ public class ApiClient {
 
     public interface ApiInterface {
 
+        // 1
         @PUT("user/reset-token")
         Call<ResetTokenResponse> resetToken(
                 @Body ResetTokenRequest resetToken
         );
 
+        // 2
         @POST("user/login")
         Call<LoginResponse> login(
                 @Body LoginRequest request
         );
 
+        // 3
         @POST("user/forgot-password")
         Call<SuccessResponse> forgotPassword(
                 @Body ForgotPasswordRequest request
         );
 
+        // 4
         @POST("daily-routine/set-routine")
         Call<EmptyResponse> setDailyRoutine(
                 @Body List<DailyRoutine> request
         );
 
+        // 5
         @POST("daily-routine/list-database-contents")
         Call<List<Aasan>> getHistory(
                 @Body HistoryRequest request
         );
 
+        // 6
         @GET("pranayama/get-pranayama-timings")
         Call<ArrayList<AasanTime>> getAasanTiming();
 
+        // 7
         @POST("pranayama/set-pranayama-timings")
         Call<EmptyResponse> setPranayamaTiming(
                 @Body List<AasanTime> request
         );
 
+        // 8
         @PUT("user/change-password/{userId}")
         Call<SuccessResponse> changePassword(
                 @Body ChangePasswordRequest request,
                 @Path("userId") int userId
         );
 
+        // 9
         @GET("user/view/{userId}")
         Call<UserProfile> getUserProfile(
                 @Path("userId") int userId
         );
 
+        // 10
         @PUT("user/update/{userId}")
         Call<EmptyResponse> updateUserProfile(
                 @Body UserProfile userProfile,
                 @Path("userId") int userId
         );
 
+        // 11
         @POST("user/signup")
         Call<EmptyResponse> signup(
                 @Body RegisterRequest request
         );
 
+        // 12
         @DELETE("user/logout/{userId}")
         Call<EmptyResponse> doSignOut(
                 @Path("userId") int userId

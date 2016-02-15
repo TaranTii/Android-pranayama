@@ -1,9 +1,11 @@
 package it.techies.pranayama.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
@@ -14,13 +16,15 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import it.techies.pranayama.R;
+import it.techies.pranayama.api.DailyRoutine;
 import it.techies.pranayama.api.timing.AasanInformation;
 import it.techies.pranayama.api.timing.AasanTime;
-import it.techies.pranayama.infrastructure.BaseActivity;
+import it.techies.pranayama.api.timing.Timings;
 import it.techies.pranayama.infrastructure.BaseBoundActivity;
 import timber.log.Timber;
 
 public class AasanActivity extends BaseBoundActivity {
+
     @Bind(R.id.timer_tv)
     TextView mTimerTextView;
 
@@ -36,12 +40,17 @@ public class AasanActivity extends BaseBoundActivity {
     /**
      * Index of the current Aasan in Aasan's list.
      */
-    private Integer currentAasanIndex;
+    private Integer mCurrentAasanIndex;
 
     /**
      * Prayanama information.
      */
-    private AasanInformation aasanInformation;
+    private AasanInformation mAasanInformation;
+
+    /**
+     * Daily routine information to send at the end of pranayama.
+     */
+    private DailyRoutine mDailyRoutine;
 
     /**
      * CountDownTimer
@@ -73,14 +82,31 @@ public class AasanActivity extends BaseBoundActivity {
     {
         Timber.d("stop button click");
 
-        if (mCountDownTimer != null)
-        {
-            mCountDownTimer.cancel();
-        }
+        new AlertDialog.Builder(this)
+                .setTitle("Stop the Prayanama?")
+                .setPositiveButton("Stop", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        if (mCountDownTimer != null)
+                        {
+                            mCountDownTimer.cancel();
+                        }
 
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+                        Intent intent = new Intent(AasanActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        dialog.dismiss();
+                    }
+                })
+                .create()
+                .show();
     }
 
     @OnClick(R.id.skip_btn)
@@ -94,7 +120,7 @@ public class AasanActivity extends BaseBoundActivity {
         }
 
         // check if this aasan is the last one
-        if (currentAasanIndex == aasanInformation.getAasanTimes().size() - 1)
+        if (mCurrentAasanIndex == mAasanInformation.getAasanTimes().size() - 1)
         {
             showFinalScreen();
         }
@@ -135,13 +161,16 @@ public class AasanActivity extends BaseBoundActivity {
         Timber.tag(AasanActivity.class.getSimpleName());
 
         // get aasan's information
-        aasanInformation = getIntent().getParcelableExtra(MainActivity.AASAN_LIST_KEY);
+        mAasanInformation = getIntent().getParcelableExtra(MainActivity.AASAN_LIST_KEY);
+
+        // get daily routine information
+        mDailyRoutine = getIntent().getParcelableExtra(MainActivity.DAILY_ROUTINE_KEY);
 
         // get current aasan index
-        currentAasanIndex = aasanInformation.getCurrentAasanIndex();
+        mCurrentAasanIndex = mAasanInformation.getCurrentAasanIndex();
 
         // get current aasan information from aasan list
-        final AasanTime aasanTime = aasanInformation.getAasanTimes().get(currentAasanIndex);
+        final AasanTime aasanTime = mAasanInformation.getAasanTimes().get(mCurrentAasanIndex);
 
         // update the title bar with the name of current aasan
         ab.setTitle(aasanTime.getName());
@@ -155,35 +184,14 @@ public class AasanActivity extends BaseBoundActivity {
         // update the current aasan and total aasan on screen
         mSetTextView.setText(String.format("%d of %d", currentSet, totalSets));
 
-        // parse the aasan time string, i.e "00:00:30"
-        String[] timeArray = aasanTime.getTime().split(":");
-
-        // according to time format array length should be 3
-        if (timeArray.length == 3)
-        {
-            try
-            {
-                long hours = Long.valueOf(timeArray[0]);
-                long minutes = Long.valueOf(timeArray[1]);
-                long seconds = Long.valueOf(timeArray[2]);
-
-                mSingleSetDuration = (hours * 3600 + minutes * 60 + seconds) * 1000;
-                createTimer(mSingleSetDuration);
-            } catch (NumberFormatException e)
-            {
-                Timber.e(e, "NumberFormatException");
-                Toast.makeText(this, "Unable to read aasan time", Toast.LENGTH_SHORT).show();
-                finish();
-            }
-        }
-        else
-        {
-            Toast.makeText(this, "Unable to read aasan time", Toast.LENGTH_SHORT).show();
-            finish();
-        }
-
+        Timings timings = aasanTime.getTimings();
+        mSingleSetDuration = timings.getSingleSetDuration();
+        createTimer(timings.getSingleSetDuration());
     }
 
+    /**
+     * Start countdown timer.
+     */
     private void startTimer()
     {
         mTimerTextView.setText(String.format(
@@ -217,9 +225,9 @@ public class AasanActivity extends BaseBoundActivity {
                 }
                 else
                 {
+                    setIsCompleted();
                     startBreak();
                 }
-
             }
         };
 
@@ -227,17 +235,28 @@ public class AasanActivity extends BaseBoundActivity {
         mCountDownTimer.start();
     }
 
+    /**
+     * Start new timer with given seconds.
+     *
+     * @param seconds Timer seconds8
+     */
     private void createTimer(long seconds)
     {
         timerSeconds = seconds;
         startTimer();
     }
 
+    /**
+     * Resume the timer after pause.
+     */
     private void resumeTimer()
     {
         startTimer();
     }
 
+    /**
+     * Pause timer.
+     */
     private void pauseTimer()
     {
         mCountDownTimer.cancel();
@@ -275,7 +294,7 @@ public class AasanActivity extends BaseBoundActivity {
         if (mBound)
         {
             mService.playMeditationBellMusic();
-            Timber.d("play bell");
+            Timber.d("play bell music...");
         }
         else
         {
@@ -283,19 +302,56 @@ public class AasanActivity extends BaseBoundActivity {
         }
 
         // get current aasan index
-        currentAasanIndex = aasanInformation.getCurrentAasanIndex();
+        mCurrentAasanIndex = mAasanInformation.getCurrentAasanIndex();
 
         // check if this aasan is the last one
-        if (currentAasanIndex + 1 == aasanInformation.getAasanTimes().size())
+        if (mCurrentAasanIndex + 1 == mAasanInformation.getAasanTimes().size())
         {
             showFinalScreen();
         }
         else
         {
             Intent intent = new Intent(this, BreakActivity.class);
-            intent.putExtra(MainActivity.AASAN_LIST_KEY, aasanInformation);
+            intent.putExtra(MainActivity.DAILY_ROUTINE_KEY, mDailyRoutine);
+            intent.putExtra(MainActivity.AASAN_LIST_KEY, mAasanInformation);
             startActivity(intent);
             finish();
+        }
+    }
+
+    /**
+     * Mark the aasan completed in daily routine report.
+     */
+    private void setIsCompleted()
+    {
+        AasanTime aasanTime = mAasanInformation.getAasanTimes().get(mCurrentAasanIndex);
+        String name = aasanTime.getName();
+        mDailyRoutine.addTime(aasanTime.getTimings());
+
+        switch (name)
+        {
+            case "Bhastrika":
+                mDailyRoutine.setBhastrika("1");
+
+                break;
+            case "Kapalbhati":
+                mDailyRoutine.setKapalbhati("1");
+                break;
+            case "Bahi":
+                mDailyRoutine.setBahi("1");
+                break;
+            case "Agnisar Kriya":
+                mDailyRoutine.setAgnisarKriya("1");
+                break;
+            case "Anulom Vilom":
+                mDailyRoutine.setAnulomVilom("1");
+                break;
+            case "Bharmari":
+                mDailyRoutine.setBharmari("1");
+                break;
+            case "Udgeeth":
+                mDailyRoutine.setUdgeeth("1");
+                break;
         }
     }
 
@@ -306,8 +362,9 @@ public class AasanActivity extends BaseBoundActivity {
     {
         // open the final screen
         Intent intent = new Intent(this, EndActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(MainActivity.DAILY_ROUTINE_KEY, mDailyRoutine);
         startActivity(intent);
+        finish();
     }
 
 }

@@ -8,8 +8,7 @@ import java.util.ArrayList;
 /**
  * Created by jdtechies on 03/12/2015.
  */
-public class AasanInformation implements Parcelable
-{
+public class AasanInformation implements Parcelable {
 
     public AasanInformation(int currentAasanIndex, ArrayList<AasanTime> aasanTimes)
     {
@@ -18,8 +17,7 @@ public class AasanInformation implements Parcelable
     }
 
     @SuppressWarnings("unused")
-    public static final Parcelable.Creator<AasanInformation> CREATOR = new Parcelable.Creator<AasanInformation>()
-    {
+    public static final Parcelable.Creator<AasanInformation> CREATOR = new Parcelable.Creator<AasanInformation>() {
         @Override
         public AasanInformation createFromParcel(Parcel in)
         {

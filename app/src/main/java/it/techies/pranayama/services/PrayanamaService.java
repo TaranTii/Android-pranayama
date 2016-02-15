@@ -82,6 +82,7 @@ public class PrayanamaService extends Service implements MediaPlayer.OnCompletio
         mPlayer.setScreenOnWhilePlaying(true);
         mPlayer.setOnErrorListener(this);
         mPlayer.setOnBufferingUpdateListener(this);
+        mPlayer.setScreenOnWhilePlaying(true);
     }
 
     public void playYogaMusic()

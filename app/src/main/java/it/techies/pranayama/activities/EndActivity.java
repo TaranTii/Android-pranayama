@@ -2,16 +2,22 @@ package it.techies.pranayama.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import it.techies.pranayama.R;
+import it.techies.pranayama.api.DailyRoutine;
+import it.techies.pranayama.api.EmptyResponse;
 import it.techies.pranayama.infrastructure.BaseActivity;
+import retrofit.Call;
+import retrofit.Callback;
+import retrofit.Response;
+import retrofit.Retrofit;
 import timber.log.Timber;
 
 public class EndActivity extends BaseActivity {
@@ -21,8 +27,8 @@ public class EndActivity extends BaseActivity {
     {
         // open the final screen
         Intent intent = new Intent(this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+        finish();
     }
 
     @OnClick(R.id.share_btn)
@@ -40,6 +46,45 @@ public class EndActivity extends BaseActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        DailyRoutine dailyRoutine = getIntent().getParcelableExtra(MainActivity.DAILY_ROUTINE_KEY);
+
+        dailyRoutine.setTime("00:20:00");
+
+        List<DailyRoutine> dailyRoutineList = new ArrayList<>();
+        dailyRoutineList.add(dailyRoutine);
+
+        Call<EmptyResponse> call = mApiClient.setDailyRoutine(dailyRoutineList);
+        call.enqueue(new Callback<EmptyResponse>() {
+            @Override
+            public void onResponse(Response<EmptyResponse> response, Retrofit retrofit)
+            {
+                if (response.isSuccess())
+                {
+                    Timber.d("isSuccess()");
+                }
+                else
+                {
+                    int statusCode = response.code();
+                    if (statusCode == 403)
+                    {
+                        // reset token
+                    }
+                    else
+                    {
+                        Timber.d("Status code %d", statusCode);
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t)
+            {
+                onRetrofitFailure(t);
+            }
+        });
+
     }
 
 }

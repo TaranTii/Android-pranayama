@@ -19,6 +19,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import it.techies.pranayama.R;
 import it.techies.pranayama.api.AasanNames;
+import it.techies.pranayama.api.DailyRoutine;
 import it.techies.pranayama.api.history.Aasan;
 import it.techies.pranayama.api.history.HistoryRequest;
 import it.techies.pranayama.api.timing.AasanInformation;
@@ -60,7 +61,8 @@ public class MainActivity extends BaseBoundActivity {
 
     private ArrayList<AasanTime> aasanTimes;
 
-    public static final String AASAN_LIST_KEY = "aasan_list_key";
+    public static final String AASAN_LIST_KEY = "AASAN_LIST_KEY";
+    public static final String DAILY_ROUTINE_KEY = "DAILY_ROUTINE_KEY";
 
     @OnClick(R.id.start_button)
     public void start(View v)
@@ -71,7 +73,10 @@ public class MainActivity extends BaseBoundActivity {
 
             int currentAasanIndex = 0;
             AasanInformation aasanInformation = new AasanInformation(currentAasanIndex, aasanTimes);
+            DailyRoutine dailyRoutine = new DailyRoutine();
+
             intent.putExtra(AASAN_LIST_KEY, aasanInformation);
+            intent.putExtra(DAILY_ROUTINE_KEY, dailyRoutine);
 
             startActivity(intent);
             finish();

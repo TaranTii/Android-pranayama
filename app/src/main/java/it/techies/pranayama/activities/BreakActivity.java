@@ -17,6 +17,7 @@ import it.techies.pranayama.infrastructure.BaseBoundActivity;
 import timber.log.Timber;
 
 public class BreakActivity extends BaseBoundActivity {
+
     @Bind(R.id.timer_tv)
     TextView mTimerTextView;
 
@@ -94,7 +95,7 @@ public class BreakActivity extends BaseBoundActivity {
         if (mBound)
         {
             mService.playYogaMusic();
-            Timber.d("play yoga music");
+            Timber.d("play yoga music...");
         }
         else
         {
@@ -109,6 +110,7 @@ public class BreakActivity extends BaseBoundActivity {
 
         Intent intent = new Intent(this, AasanActivity.class);
         intent.putExtra(MainActivity.AASAN_LIST_KEY, aasanInformation);
+        intent.putExtra(MainActivity.DAILY_ROUTINE_KEY, getIntent().getParcelableExtra(MainActivity.DAILY_ROUTINE_KEY));
         startActivity(intent);
         finish();
     }

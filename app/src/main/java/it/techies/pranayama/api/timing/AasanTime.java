@@ -9,24 +9,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by jdtechies on 30/11/2015.
  */
-public class AasanTime implements Parcelable
-{
-
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<AasanTime> CREATOR = new Parcelable.Creator<AasanTime>()
-    {
-        @Override
-        public AasanTime createFromParcel(Parcel in)
-        {
-            return new AasanTime(in);
-        }
-
-        @Override
-        public AasanTime[] newArray(int size)
-        {
-            return new AasanTime[size];
-        }
-    };
+public class AasanTime implements Parcelable {
 
     @SerializedName("name")
     @Expose
@@ -51,14 +34,6 @@ public class AasanTime implements Parcelable
         this.set = set;
     }
 
-    protected AasanTime(Parcel in)
-    {
-        name = in.readString();
-        time = in.readString();
-        set = in.readByte() == 0x00 ? null : in.readInt();
-        breakTime = in.readString();
-    }
-
     public String getName()
     {
         return name;
@@ -72,6 +47,11 @@ public class AasanTime implements Parcelable
     public String getTime()
     {
         return time;
+    }
+
+    public Timings getTimings()
+    {
+        return new Timings(time);
     }
 
     public void setTime(String time)
@@ -99,6 +79,16 @@ public class AasanTime implements Parcelable
         this.breakTime = breakTime;
     }
 
+    // ----------------------------------------- Parcelable ------------------------------------ //
+
+    protected AasanTime(Parcel in)
+    {
+        name = in.readString();
+        time = in.readString();
+        set = in.readByte() == 0x00 ? null : in.readInt();
+        breakTime = in.readString();
+    }
+
     @Override
     public int describeContents()
     {
@@ -121,4 +111,21 @@ public class AasanTime implements Parcelable
         }
         dest.writeString(breakTime);
     }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<AasanTime> CREATOR = new Parcelable.Creator<AasanTime>() {
+        @Override
+        public AasanTime createFromParcel(Parcel in)
+        {
+            return new AasanTime(in);
+        }
+
+        @Override
+        public AasanTime[] newArray(int size)
+        {
+            return new AasanTime[size];
+        }
+    };
+
+    // ----------------------------------------------------------------------------------------- //
 }
