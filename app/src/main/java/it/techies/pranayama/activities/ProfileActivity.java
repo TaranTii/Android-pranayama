@@ -14,7 +14,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
@@ -29,19 +28,15 @@ import com.bumptech.glide.Glide;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import it.techies.pranayama.R;
-import it.techies.pranayama.api.ApiClient;
 import it.techies.pranayama.api.EmptyResponse;
-import it.techies.pranayama.api.token.ResetTokenCallBack;
 import it.techies.pranayama.api.user.UserProfile;
-import it.techies.pranayama.utils.SessionStorage;
+import it.techies.pranayama.infrastructure.BaseActivity;
+import it.techies.pranayama.infrastructure.OnResetTokenSuccessCallBack;
 import it.techies.pranayama.utils.Utils;
 import retrofit.Call;
 import retrofit.Callback;
@@ -49,10 +44,9 @@ import retrofit.Response;
 import retrofit.Retrofit;
 import timber.log.Timber;
 
-public class ProfileActivity extends AppCompatActivity
-{
-    private static final int REQUEST_IMAGE_CAPTURE = 1;
+public class ProfileActivity extends BaseActivity {
 
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_IMAGE_FROM_FILE = 2;
 
     @Bind(R.id.profile_photo_iv)
@@ -91,14 +85,7 @@ public class ProfileActivity extends AppCompatActivity
     @Bind(R.id.user_profile_form)
     ScrollView mUserProfileForm;
 
-    ApiClient.ApiInterface apiClient;
-
     UserProfile userProfile;
-
-    /**
-     * To store user id of customer.
-     */
-    private int userId;
 
     /**
      * User's profile photo.
@@ -106,17 +93,9 @@ public class ProfileActivity extends AppCompatActivity
     private Bitmap userProfileImage = null;
 
     /**
-     * Progress dialog.
-     */
-    private ProgressDialog mDialog;
-
-    private Context mContext = this;
-
-    /**
      * Get user profile API callback.
      */
-    Callback<UserProfile> mGetUserProfileCallback = new Callback<UserProfile>()
-    {
+    Callback<UserProfile> mGetUserProfileCallback = new Callback<UserProfile>() {
         @Override
         public void onResponse(Response<UserProfile> response, Retrofit retrofit)
         {
@@ -129,9 +108,10 @@ public class ProfileActivity extends AppCompatActivity
 
                 if (userProfile.getImage() != null && !TextUtils.isEmpty(userProfile.getImage()))
                 {
-                    Glide.with(mContext)
+                    Glide.with(mUserProfileImageView.getContext())
                             .load("http://pranayama.seobudd.com" + userProfile.getImage())
-                            .override(150, 150).into(mUserProfileImageView);
+                            .override(150, 150)
+                            .into(mUserProfileImageView);
                 }
 
                 mFullNameView.setText(userProfile.getFullname());
@@ -151,20 +131,13 @@ public class ProfileActivity extends AppCompatActivity
 
                 if (statusCode == 401)
                 {
-                    final SessionStorage settings = new SessionStorage(mContext);
-                    final String email = settings.getEmail();
-                    String token = settings.getAccessToken();
-
-                    Utils.resetToken(mContext, apiClient, email, token, new ResetTokenCallBack()
-                    {
+                    resetToken(new OnResetTokenSuccessCallBack() {
                         @Override
                         public void onSuccess(String token)
                         {
-                            settings.setAccessToken(token);
-                            apiClient = ApiClient.getApiClient(email, token);
-
                             // get user's profile
-                            Call<UserProfile> call = apiClient.getUserProfile(userId);
+                            mAuth.setToken(ProfileActivity.this, token);
+                            Call<UserProfile> call = mApiClient.getUserProfile(mAuth.getUser().getUserId());
                             call.enqueue(mGetUserProfileCallback);
                         }
                     });
@@ -188,8 +161,7 @@ public class ProfileActivity extends AppCompatActivity
     /**
      * Edit profile API callback.
      */
-    Callback<EmptyResponse> mEditProfileCallback = new Callback<EmptyResponse>()
-    {
+    Callback<EmptyResponse> mEditProfileCallback = new Callback<EmptyResponse>() {
         @Override
         public void onResponse(Response<EmptyResponse> response, Retrofit retrofit)
         {
@@ -197,37 +169,27 @@ public class ProfileActivity extends AppCompatActivity
 
             if (response.isSuccess())
             {
-                Utils.hideLoadingDialog(mDialog);
-                Utils.showToast(mContext, "Profile updated");
+                hideLoadingDialog();
+                showToast("Profile updated");
             }
             else
             {
                 int statusCode = response.code();
                 if (statusCode == 401)
                 {
-                    final SessionStorage settings = new SessionStorage(mContext);
-                    final String email = settings.getEmail();
-                    String token = settings.getAccessToken();
-
-                    Utils.resetToken(mContext, apiClient, email, token, new ResetTokenCallBack()
-                    {
+                    resetToken(new OnResetTokenSuccessCallBack() {
                         @Override
                         public void onSuccess(String token)
                         {
-                            settings.setAccessToken(token);
-                            apiClient = ApiClient.getApiClient(email, token);
-
                             // edit user's profile
-                            Call<EmptyResponse> call = apiClient
-                                    .updateUserProfile(userProfile, userId);
-
+                            Call<EmptyResponse> call = mApiClient.updateUserProfile(userProfile, mAuth.getUser().getUserId());
                             call.enqueue(mEditProfileCallback);
                         }
                     });
                 }
                 else
                 {
-                    Utils.hideLoadingDialog(mDialog);
+                    hideLoadingDialog();
                     Timber.d("[Err] unable to update user profile, statusCode: %d", statusCode);
                 }
             }
@@ -236,38 +198,16 @@ public class ProfileActivity extends AppCompatActivity
         @Override
         public void onFailure(Throwable t)
         {
-            Utils.hideLoadingDialog(mDialog);
+            hideLoadingDialog();
             Timber.e(t, "mEditProfileCallback");
-            if (t != null)
-            {
-                String message = t.getMessage();
-
-                if (t instanceof SocketTimeoutException || t instanceof UnknownHostException || t instanceof SocketException)
-                {
-                    Timber.e("Timeout occurred");
-                    Toast.makeText(mContext, "Check your network connection.", Toast.LENGTH_LONG)
-                            .show();
-                }
-                else if (t instanceof IOException)
-                {
-                    if (message.equals("Canceled"))
-                    {
-                        Timber.e("onFailure() : Canceled");
-                    }
-                    else
-                    {
-                        Timber.e("onFailure() : %s", message);
-                    }
-                }
-            }
+            onRetrofitFailure(t);
         }
     };
 
     @OnClick(R.id.profile_photo_iv)
     public void selectPhoto(View v)
     {
-        AlertDialog imagePickDialog = createImagePickDialog();
-        imagePickDialog.show();
+        showImagePickerDialog();
     }
 
     @OnClick(R.id.reload_btn)
@@ -341,21 +281,21 @@ public class ProfileActivity extends AppCompatActivity
             cancel = true;
         }
 
-        if(cancel)
+        if (cancel)
         {
             focusView.requestFocus();
         }
         else
         {
             /*
-            * String fullName = mFullNameView.getText().toString();
-        String address = mAddressView.getText().toString();
-        String city = mCityView.getText().toString();
-        String state = mStateView.getText().toString();
-        String country = mCountryView.getText().toString();
-        String dob = mDateOfBirthView.getText().toString();
-        String phone = mPhoneNumberView.getText().toString();
-        String timezone = mTimezoneView.getText().toString();
+            *   String fullName = mFullNameView.getText().toString();
+                String address = mAddressView.getText().toString();
+                String city = mCityView.getText().toString();
+                String state = mStateView.getText().toString();
+                String country = mCountryView.getText().toString();
+                String dob = mDateOfBirthView.getText().toString();
+                String phone = mPhoneNumberView.getText().toString();
+                String timezone = mTimezoneView.getText().toString();
             * */
 
             userProfile.setFullname(fullName);
@@ -368,7 +308,7 @@ public class ProfileActivity extends AppCompatActivity
             userProfile.setPhone(phone);
             userProfile.setTimezone(timezone);
 
-            Call<EmptyResponse> call = apiClient.updateUserProfile(userProfile, userId);
+            Call<EmptyResponse> call = mApiClient.updateUserProfile(userProfile, mAuth.getUser().getUserId());
             Utils.showLoadingDialog(mDialog, "Updating...");
             call.enqueue(mEditProfileCallback);
         }
@@ -387,12 +327,6 @@ public class ProfileActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        SessionStorage settings = new SessionStorage(this);
-        String email = settings.getEmail();
-        String token = settings.getAccessToken();
-        userId = settings.getUserId();
-
-        apiClient = ApiClient.getApiClient(email, token);
         loadUserProfile();
     }
 
@@ -405,7 +339,7 @@ public class ProfileActivity extends AppCompatActivity
         showProgress(true);
 
         // get user's profile
-        Call<UserProfile> call = apiClient.getUserProfile(userId);
+        Call<UserProfile> call = mApiClient.getUserProfile(mAuth.getUser().getUserId());
         call.enqueue(mGetUserProfileCallback);
     }
 
@@ -424,8 +358,7 @@ public class ProfileActivity extends AppCompatActivity
 
             mUserProfileForm.setVisibility(show ? View.GONE : View.VISIBLE);
             mUserProfileForm.animate().setDuration(shortAnimTime).alpha(show ? 0 : 1)
-                    .setListener(new AnimatorListenerAdapter()
-                    {
+                    .setListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation)
                         {
@@ -435,8 +368,7 @@ public class ProfileActivity extends AppCompatActivity
 
             mLoadingView.setVisibility(show ? View.VISIBLE : View.GONE);
             mLoadingView.animate().setDuration(shortAnimTime).alpha(show ? 1 : 0)
-                    .setListener(new AnimatorListenerAdapter()
-                    {
+                    .setListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation)
                         {
@@ -468,8 +400,7 @@ public class ProfileActivity extends AppCompatActivity
 
             mUserProfileForm.setVisibility(show ? View.GONE : View.VISIBLE);
             mUserProfileForm.animate().setDuration(shortAnimTime).alpha(show ? 0 : 1)
-                    .setListener(new AnimatorListenerAdapter()
-                    {
+                    .setListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation)
                         {
@@ -479,8 +410,7 @@ public class ProfileActivity extends AppCompatActivity
 
             mReloadView.setVisibility(show ? View.VISIBLE : View.GONE);
             mReloadView.animate().setDuration(shortAnimTime).alpha(show ? 1 : 0)
-                    .setListener(new AnimatorListenerAdapter()
-                    {
+                    .setListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation)
                         {
@@ -554,8 +484,7 @@ public class ProfileActivity extends AppCompatActivity
 
                 Timber.d("REQUEST_IMAGE_FROM_FILE: %s", imageUri.toString());
                 setUserProfilePhoto(imageUri);
-            }
-            catch (IOException e)
+            } catch (IOException e)
             {
                 Timber.e(e, "onActivityResult() : REQUEST_IMAGE_FROM_FILE");
             }
@@ -567,7 +496,6 @@ public class ProfileActivity extends AppCompatActivity
      *
      * @param context Context
      * @param bitmap  Bitmap
-     *
      * @return Uri of given Bitmap
      */
     public Uri getImageUri(Context context, Bitmap bitmap)
@@ -596,36 +524,34 @@ public class ProfileActivity extends AppCompatActivity
      *
      * @return AlertDialog
      */
-    public AlertDialog createImagePickDialog()
+    public void showImagePickerDialog()
     {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.pick_image);
-        builder.setItems(R.array.images_option_array, new DialogInterface.OnClickListener()
-        {
-            public void onClick(DialogInterface dialog, int which)
-            {
-                // The 'which' argument contains the index position
-                // of the selected item
-                if (which == 0)
-                {
-                    dispatchTakePictureIntent();
-                }
-                else if (which == 1)
-                {
-                    //pick from file
-                    dispatchFromFileIntent();
-                }
-            }
-        });
-
-        return builder.create();
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.pick_image)
+                .setItems(R.array.images_option_array, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        // The 'which' argument contains the index position
+                        // of the selected item
+                        if (which == 0)
+                        {
+                            dispatchTakePictureIntent();
+                        }
+                        else if (which == 1)
+                        {
+                            //pick from file
+                            dispatchFromFileIntent();
+                        }
+                    }
+                })
+                .create()
+                .show();
     }
 
     /**
      * Converts the given bitmap image to base64 string and sends update profile API call.
      */
-    private class EncodeBitmapToBase64 extends AsyncTask<Bitmap, Integer, String>
-    {
+    private class EncodeBitmapToBase64 extends AsyncTask<Bitmap, Integer, String> {
         protected String doInBackground(Bitmap... images)
         {
             return Utils.bitmapToString(images[0]);
@@ -634,7 +560,7 @@ public class ProfileActivity extends AppCompatActivity
         protected void onPostExecute(String result)
         {
             userProfile.setImage(result);
-            Call<EmptyResponse> call = apiClient.updateUserProfile(userProfile, userId);
+            Call<EmptyResponse> call = mApiClient.updateUserProfile(userProfile, mAuth.getUser().getUserId());
             call.enqueue(mEditProfileCallback);
         }
     }

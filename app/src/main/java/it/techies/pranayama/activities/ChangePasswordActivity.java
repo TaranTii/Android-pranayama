@@ -3,12 +3,8 @@ package it.techies.pranayama.activities;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -17,7 +13,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.okhttp.ResponseBody;
 
@@ -27,13 +22,12 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import it.techies.pranayama.R;
-import it.techies.pranayama.api.ApiClient;
 import it.techies.pranayama.api.ApiFields;
 import it.techies.pranayama.api.SuccessResponse;
 import it.techies.pranayama.api.errors.ErrorArray;
 import it.techies.pranayama.api.errors.ErrorObject;
 import it.techies.pranayama.api.login.ChangePasswordRequest;
-import it.techies.pranayama.utils.SessionStorage;
+import it.techies.pranayama.infrastructure.BaseActivity;
 import it.techies.pranayama.utils.Utils;
 import retrofit.Call;
 import retrofit.Callback;
@@ -44,8 +38,7 @@ import timber.log.Timber;
 /**
  * A login screen that offers login via email/password.
  */
-public class ChangePasswordActivity extends AppCompatActivity
-{
+public class ChangePasswordActivity extends BaseActivity {
     @Bind(R.id.current_password)
     EditText mCurrentPasswordView;
 
@@ -64,90 +57,6 @@ public class ChangePasswordActivity extends AppCompatActivity
 
     private View mLoginFormView;
 
-    private Context mContext = this;
-
-    Callback<SuccessResponse> mChangePasswordCallback = new Callback<SuccessResponse>()
-    {
-        @Override
-        public void onResponse(Response<SuccessResponse> response, Retrofit retrofit)
-        {
-            showProgress(false);
-            mAuthTask = null;
-
-            if (response.isSuccess())
-            {
-                SuccessResponse successResponse = response.body();
-                Toast.makeText(mContext, successResponse.getMessage(), Toast.LENGTH_LONG).show();
-                finish();
-            }
-            else
-            {
-                int statusCode = response.code();
-                Timber.d("[Err] could not change password, statusCode: %d", statusCode);
-
-                if (statusCode == 401)
-                {
-                    try
-                    {
-                        ErrorObject error = Utils.getErrorObject(response.errorBody());
-                        Toast.makeText(mContext, error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                    catch (IOException e)
-                    {
-                        e.printStackTrace();
-                    }
-                }
-                else if (statusCode == 422)
-                {
-                    ResponseBody mErrorBody = response.errorBody();
-
-                    try
-                    {
-                        List<ErrorArray> errors = Utils.getErrorList(mErrorBody);
-                        for (ErrorArray error : errors)
-                        {
-                            String field = error.getField();
-                            View focusView = null;
-
-                            switch (field)
-                            {
-                                case ApiFields.FIELD_NEW_PASSWORD:
-                                    focusView = mNewPasswordView;
-                                    mNewPasswordView.setError(error.getMessage());
-                                    break;
-                                case ApiFields.FIELD_CURRENT_PASSWORD:
-                                    focusView = mCurrentPasswordView;
-                                    mCurrentPasswordView.setError(error.getMessage());
-                                    break;
-                            }
-
-                            if (focusView != null)
-                            {
-                                focusView.requestFocus();
-                            }
-                        }
-                    }
-                    catch (IOException e)
-                    {
-                        Timber.e(e, "[Err] cannot read errors from response body");
-                    }
-                }
-                else
-                {
-                    Timber.d("onResponse statusCode: %d", statusCode);
-                }
-            }
-        }
-
-        @Override
-        public void onFailure(Throwable t)
-        {
-            Timber.e(t, "mChangePasswordCallback");
-            showProgress(false);
-            mAuthTask = null;
-        }
-    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -155,8 +64,10 @@ public class ChangePasswordActivity extends AppCompatActivity
         setContentView(R.layout.activity_change_password);
         ButterKnife.bind(this);
 
-        mConfirmNewPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener()
-        {
+        // Show the Up button in the action bar.
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        mConfirmNewPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent)
             {
@@ -170,8 +81,7 @@ public class ChangePasswordActivity extends AppCompatActivity
         });
 
         Button mChangePasswordButton = (Button) findViewById(R.id.change_password_button);
-        mChangePasswordButton.setOnClickListener(new OnClickListener()
-        {
+        mChangePasswordButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view)
             {
@@ -181,19 +91,6 @@ public class ChangePasswordActivity extends AppCompatActivity
 
         mLoginFormView = findViewById(R.id.change_password_form);
         mProgressView = findViewById(R.id.change_password_progress);
-    }
-
-    /**
-     * Set up the {@link android.app.ActionBar}, if the API is available.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    private void setupActionBar()
-    {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-        {
-            // Show the Up button in the action bar.
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
     }
 
     /**
@@ -255,19 +152,100 @@ public class ChangePasswordActivity extends AppCompatActivity
         }
         else
         {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
-            showProgress(true);
-            SessionStorage settings = new SessionStorage(this);
-            String email = settings.getEmail();
-            String token = settings.getAccessToken();
-            int userId = settings.getUserId();
+            sendChangePasswordRequest(currentPassword, newPassword);
 
-            ApiClient.ApiInterface client = ApiClient.getApiClient(email, token);
-            mAuthTask = client
-                    .changePassword(new ChangePasswordRequest(currentPassword, newPassword), userId);
-            mAuthTask.enqueue(mChangePasswordCallback);
         }
+    }
+
+    private void sendChangePasswordRequest(String currentPassword, String newPassword)
+    {
+        // Show a progress spinner, and kick off a background task to
+        // perform the user login attempt.
+        showProgress(true);
+
+        mAuthTask = mApiClient.changePassword(
+                new ChangePasswordRequest(currentPassword, newPassword),
+                mAuth.getUser().getUserId()
+        );
+
+        mAuthTask.enqueue(new Callback<SuccessResponse>() {
+            @Override
+            public void onResponse(Response<SuccessResponse> response, Retrofit retrofit)
+            {
+                showProgress(false);
+                mAuthTask = null;
+
+                if (response.isSuccess())
+                {
+                    SuccessResponse successResponse = response.body();
+                    showToast(successResponse.getMessage());
+                    finish();
+                }
+                else
+                {
+                    int statusCode = response.code();
+                    Timber.d("[Err] could not change password, statusCode: %d", statusCode);
+
+                    if (statusCode == 401)
+                    {
+                        try
+                        {
+                            ErrorObject error = Utils.getErrorObject(response.errorBody());
+                            showToast(error.getMessage());
+                        } catch (IOException e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                    else if (statusCode == 422)
+                    {
+                        ResponseBody mErrorBody = response.errorBody();
+
+                        try
+                        {
+                            List<ErrorArray> errors = Utils.getErrorList(mErrorBody);
+                            for (ErrorArray error : errors)
+                            {
+                                String field = error.getField();
+                                View focusView = null;
+
+                                switch (field)
+                                {
+                                    case ApiFields.FIELD_NEW_PASSWORD:
+                                        focusView = mNewPasswordView;
+                                        mNewPasswordView.setError(error.getMessage());
+                                        break;
+                                    case ApiFields.FIELD_CURRENT_PASSWORD:
+                                        focusView = mCurrentPasswordView;
+                                        mCurrentPasswordView.setError(error.getMessage());
+                                        break;
+                                }
+
+                                if (focusView != null)
+                                {
+                                    focusView.requestFocus();
+                                }
+                            }
+                        } catch (IOException e)
+                        {
+                            Timber.e(e, "[Err] cannot read errors from response body");
+                        }
+                    }
+                    else
+                    {
+                        Timber.d("onResponse statusCode: %d", statusCode);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t)
+            {
+                Timber.e(t, "mChangePasswordCallback");
+                showProgress(false);
+                mAuthTask = null;
+            }
+        });
     }
 
     /**
@@ -285,8 +263,7 @@ public class ChangePasswordActivity extends AppCompatActivity
 
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
             mLoginFormView.animate().setDuration(shortAnimTime).alpha(show ? 0 : 1)
-                    .setListener(new AnimatorListenerAdapter()
-                    {
+                    .setListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation)
                         {
@@ -296,8 +273,7 @@ public class ChangePasswordActivity extends AppCompatActivity
 
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mProgressView.animate().setDuration(shortAnimTime).alpha(show ? 1 : 0)
-                    .setListener(new AnimatorListenerAdapter()
-                    {
+                    .setListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation)
                         {

@@ -16,11 +16,11 @@ import butterknife.OnClick;
 import it.techies.pranayama.R;
 import it.techies.pranayama.api.timing.AasanInformation;
 import it.techies.pranayama.api.timing.AasanTime;
+import it.techies.pranayama.infrastructure.BaseActivity;
+import it.techies.pranayama.infrastructure.BaseBoundActivity;
 import timber.log.Timber;
 
-public class AasanActivity extends BaseActivity
-{
-
+public class AasanActivity extends BaseBoundActivity {
     @Bind(R.id.timer_tv)
     TextView mTimerTextView;
 
@@ -96,7 +96,7 @@ public class AasanActivity extends BaseActivity
         // check if this aasan is the last one
         if (currentAasanIndex == aasanInformation.getAasanTimes().size() - 1)
         {
-            startFinalScreen();
+            showFinalScreen();
         }
         else
         {
@@ -169,8 +169,7 @@ public class AasanActivity extends BaseActivity
 
                 mSingleSetDuration = (hours * 3600 + minutes * 60 + seconds) * 1000;
                 createTimer(mSingleSetDuration);
-            }
-            catch (NumberFormatException e)
+            } catch (NumberFormatException e)
             {
                 Timber.e(e, "NumberFormatException");
                 Toast.makeText(this, "Unable to read aasan time", Toast.LENGTH_SHORT).show();
@@ -188,17 +187,16 @@ public class AasanActivity extends BaseActivity
     private void startTimer()
     {
         mTimerTextView.setText(String.format(
-                "%02d:%02d",
-                (timerSeconds / 60000) % 60,
-                (timerSeconds / (60 * 1000) % 60) )
+                        "%02d:%02d",
+                        (timerSeconds / 60000) % 60,
+                        (timerSeconds / (60 * 1000) % 60))
         );
 
-        mCountDownTimer = new CountDownTimer(timerSeconds, 1000)
-        {
+        mCountDownTimer = new CountDownTimer(timerSeconds + 1000, 1000) {
             @Override
             public void onTick(long millisUntilFinished)
             {
-                Timber.d("millisUntilFinished %02d", millisUntilFinished);
+                // Timber.d("millisUntilFinished %02d", millisUntilFinished);
                 timerSeconds = millisUntilFinished;
 
                 long seconds = millisUntilFinished / 1000 % 60;
@@ -274,27 +272,37 @@ public class AasanActivity extends BaseActivity
      */
     private void startBreak()
     {
+        if (mBound)
+        {
+            mService.playMeditationBellMusic();
+            Timber.d("play bell");
+        }
+        else
+        {
+            Timber.d("service not bound yet");
+        }
+
         // get current aasan index
         currentAasanIndex = aasanInformation.getCurrentAasanIndex();
 
         // check if this aasan is the last one
         if (currentAasanIndex + 1 == aasanInformation.getAasanTimes().size())
         {
-            startFinalScreen();
+            showFinalScreen();
         }
         else
         {
             Intent intent = new Intent(this, BreakActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.putExtra(MainActivity.AASAN_LIST_KEY, aasanInformation);
             startActivity(intent);
+            finish();
         }
     }
 
     /**
      * Show the final screen after completing the Prayanama.
      */
-    private void startFinalScreen()
+    private void showFinalScreen()
     {
         // open the final screen
         Intent intent = new Intent(this, EndActivity.class);

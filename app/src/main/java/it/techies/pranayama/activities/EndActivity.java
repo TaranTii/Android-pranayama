@@ -11,10 +11,10 @@ import android.view.View;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import it.techies.pranayama.R;
+import it.techies.pranayama.infrastructure.BaseActivity;
 import timber.log.Timber;
 
-public class EndActivity extends BaseActivity
-{
+public class EndActivity extends BaseActivity {
 
     @OnClick(R.id.home_btn)
     public void homeButtonClick(View v)

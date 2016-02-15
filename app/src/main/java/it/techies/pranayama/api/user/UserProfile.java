@@ -6,8 +6,8 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by jdtechies on 09/12/2015.
  */
-public class UserProfile
-{
+public class UserProfile {
+
     @SerializedName("id")
     @Expose
     private Integer id;

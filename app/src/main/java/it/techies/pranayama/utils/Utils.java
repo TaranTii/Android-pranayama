@@ -134,7 +134,7 @@ public class Utils
      */
     public static void logoutUser(Context context)
     {
-        SessionStorage settings = new SessionStorage(context);
+        ApplicationSettings settings = new ApplicationSettings(context);
         settings.clearUserData();
 
         Intent intent = new Intent(context, LoginActivity.class);

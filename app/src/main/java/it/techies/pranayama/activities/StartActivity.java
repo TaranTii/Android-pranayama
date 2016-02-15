@@ -1,22 +1,20 @@
 package it.techies.pranayama.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import it.techies.pranayama.utils.SessionStorage;
+import it.techies.pranayama.R;
+import it.techies.pranayama.infrastructure.BaseActivity;
 
-public class StartActivity extends Activity
-{
+public class StartActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_start);
 
-        SessionStorage sessionStorage = new SessionStorage(this);
-
-        if (sessionStorage.hasUserData())
+        if (mAuth.isLoggedIn())
         {
             // open main page
             Intent intent = new Intent(this, MainActivity.class);

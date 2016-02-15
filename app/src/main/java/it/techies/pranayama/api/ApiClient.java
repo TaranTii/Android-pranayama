@@ -23,6 +23,7 @@ import retrofit.Call;
 import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
 import retrofit.http.Body;
+import retrofit.http.DELETE;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.PUT;
@@ -32,15 +33,14 @@ import timber.log.Timber;
 /**
  * Created by jdtechies on 30/11/2015.
  */
-public class ApiClient
-{
+public class ApiClient {
+
     public static ApiInterface getApiClient(final String email, final String token)
     {
         final String API_BASE_URL = "http://pranayama-seobudd-com-j76980zityhl.runscope.net/api/v1/";
 
         OkHttpClient client = new OkHttpClient();
-        client.interceptors().add(new Interceptor()
-        {
+        client.interceptors().add(new Interceptor() {
             @Override
             public com.squareup.okhttp.Response intercept(
                     Interceptor.Chain chain) throws IOException
@@ -79,38 +79,66 @@ public class ApiClient
         return retrofit.create(ApiInterface.class);
     }
 
-    public interface ApiInterface
-    {
+    public interface ApiInterface {
+
         @PUT("user/reset-token")
-        Call<ResetTokenResponse> resetToken(@Body ResetTokenRequest resetToken);
+        Call<ResetTokenResponse> resetToken(
+                @Body ResetTokenRequest resetToken
+        );
 
         @POST("user/login")
-        Call<LoginResponse> login(@Body LoginRequest request);
+        Call<LoginResponse> login(
+                @Body LoginRequest request
+        );
 
         @POST("user/forgot-password")
-        Call<SuccessResponse> forgotPassword(@Body ForgotPasswordRequest request);
+        Call<SuccessResponse> forgotPassword(
+                @Body ForgotPasswordRequest request
+        );
+
+        @POST("daily-routine/set-routine")
+        Call<EmptyResponse> setDailyRoutine(
+                @Body List<DailyRoutine> request
+        );
 
         @POST("daily-routine/list-database-contents")
-        Call<List<Aasan>> getHistory(@Body HistoryRequest request);
+        Call<List<Aasan>> getHistory(
+                @Body HistoryRequest request
+        );
 
         @GET("pranayama/get-pranayama-timings")
         Call<ArrayList<AasanTime>> getAasanTiming();
 
         @POST("pranayama/set-pranayama-timings")
-        Call<EmptyResponse> setPranayamaTiming(@Body List<AasanTime> request);
+        Call<EmptyResponse> setPranayamaTiming(
+                @Body List<AasanTime> request
+        );
 
         @PUT("user/change-password/{userId}")
-        Call<SuccessResponse> changePassword(@Body ChangePasswordRequest request,
-                                             @Path("userId") int userId);
+        Call<SuccessResponse> changePassword(
+                @Body ChangePasswordRequest request,
+                @Path("userId") int userId
+        );
 
         @GET("user/view/{userId}")
-        Call<UserProfile> getUserProfile(@Path("userId") int userId);
+        Call<UserProfile> getUserProfile(
+                @Path("userId") int userId
+        );
 
         @PUT("user/update/{userId}")
-        Call<EmptyResponse> updateUserProfile(@Body UserProfile userProfile,
-                                            @Path("userId") int userId);
+        Call<EmptyResponse> updateUserProfile(
+                @Body UserProfile userProfile,
+                @Path("userId") int userId
+        );
 
         @POST("user/signup")
-        Call<EmptyResponse> signup(@Body RegisterRequest request);
+        Call<EmptyResponse> signup(
+                @Body RegisterRequest request
+        );
+
+        @DELETE("user/logout/{userId}")
+        Call<EmptyResponse> doSignOut(
+                @Path("userId") int userId
+        );
     }
 }

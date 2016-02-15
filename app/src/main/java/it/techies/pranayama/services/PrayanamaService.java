@@ -4,25 +4,34 @@ import android.app.Service;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
+import android.os.Binder;
 import android.os.IBinder;
-import android.util.Log;
+
+import com.squareup.otto.Bus;
 
 import java.io.IOException;
 
+import it.techies.pranayama.MyApplication;
+import it.techies.pranayama.infrastructure.Auth;
 import timber.log.Timber;
 
 
 public class PrayanamaService extends Service implements MediaPlayer.OnCompletionListener,
         MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener,
-        MediaPlayer.OnBufferingUpdateListener
-{
+        MediaPlayer.OnBufferingUpdateListener {
+
     private static final String TAG = PrayanamaService.class.getSimpleName();
+
+    protected Auth mAuth;
+    protected Bus mBus;
+    protected MyApplication mApplication;
+
+    // Binder given to clients
+    private final IBinder mBinder = new LocalBinder();
 
     private MediaPlayer mPlayer;
 
-    public PrayanamaService()
-    {
-    }
+    private boolean isPlayingYogaMusic = false;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
@@ -35,21 +44,59 @@ public class PrayanamaService extends Service implements MediaPlayer.OnCompletio
     @Override
     public IBinder onBind(Intent intent)
     {
-        // TODO: Return the communication channel to the service.
-        throw new UnsupportedOperationException("Not yet implemented");
+        return mBinder;
+    }
+
+    /**
+     * Class used for the client Binder.  Because we know this service always
+     * runs in the same process as its clients, we don't need to deal with IPC.
+     */
+    public class LocalBinder extends Binder {
+        public PrayanamaService getService()
+        {
+            // Return this instance of LocalService so clients can call public methods
+            return PrayanamaService.this;
+        }
     }
 
     @Override
     public void onCreate()
     {
         super.onCreate();
-        Log.d(TAG, "onCreate()");
+        Timber.tag(TAG);
+        Timber.d("onCreate()");
+
+        mApplication = (MyApplication) getApplication();
+        mBus = mApplication.getBus();
+        mAuth = mApplication.getAuth();
+        mBus.register(this);
+
+        playYogaMusic();
+    }
+
+    private void initPlayer()
+    {
         mPlayer = new MediaPlayer();
         mPlayer.setOnCompletionListener(this);
         mPlayer.setOnPreparedListener(this);
         mPlayer.setScreenOnWhilePlaying(true);
         mPlayer.setOnErrorListener(this);
         mPlayer.setOnBufferingUpdateListener(this);
+    }
+
+    public void playYogaMusic()
+    {
+        if (mPlayer == null)
+        {
+            initPlayer();
+        }
+
+        if (mPlayer.isPlaying())
+        {
+            mPlayer.stop();
+        }
+
+        mPlayer.reset();
 
         try
         {
@@ -57,8 +104,39 @@ public class PrayanamaService extends Service implements MediaPlayer.OnCompletio
             mPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
             Timber.d("prepareAsync()");
             mPlayer.prepareAsync();
+
+            isPlayingYogaMusic = true;
+
+        } catch (IOException e)
+        {
+            Timber.e(e, "Media Player");
         }
-        catch (IOException e)
+    }
+
+    public void playMeditationBellMusic()
+    {
+        if (mPlayer == null)
+        {
+            initPlayer();
+        }
+
+        if (mPlayer.isPlaying())
+        {
+            mPlayer.stop();
+        }
+
+        mPlayer.reset();
+
+        try
+        {
+            AssetFileDescriptor afd = getAssets().openFd("meditation-bell.mp3");
+            mPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+            Timber.d("prepareAsync()");
+            mPlayer.prepareAsync();
+
+            isPlayingYogaMusic = false;
+
+        } catch (IOException e)
         {
             Timber.e(e, "Media Player");
         }
@@ -68,9 +146,12 @@ public class PrayanamaService extends Service implements MediaPlayer.OnCompletio
     public void onDestroy()
     {
         super.onDestroy();
-        Log.d(TAG, "onDestroy()");
 
-        if(mPlayer != null)
+        mBus.unregister(this);
+
+        Timber.d("onDestroy()");
+
+        if (mPlayer != null)
         {
             mPlayer.stop();
             mPlayer.release();
@@ -81,15 +162,23 @@ public class PrayanamaService extends Service implements MediaPlayer.OnCompletio
     @Override
     public void onCompletion(MediaPlayer mp)
     {
-        Timber.d("onCompletion(%s)", mp.toString());
-        mp.seekTo(0);
-        mp.start();
+        Timber.d("onCompletion()");
+
+        if (isPlayingYogaMusic)
+        {
+            mp.seekTo(0);
+            mp.start();
+        }
+        else
+        {
+            playYogaMusic();
+        }
     }
 
     @Override
     public void onPrepared(MediaPlayer mp)
     {
-        Timber.d("onPrepared(%s)", mp.toString());
+        Timber.d("onPrepared()");
         mp.start();
     }
 

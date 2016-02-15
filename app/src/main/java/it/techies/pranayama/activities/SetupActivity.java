@@ -1,7 +1,6 @@
 package it.techies.pranayama.activities;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ListView;
@@ -14,11 +13,10 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import it.techies.pranayama.R;
 import it.techies.pranayama.adapters.AasanListAdapter;
-import it.techies.pranayama.api.ApiClient;
 import it.techies.pranayama.api.EmptyResponse;
 import it.techies.pranayama.api.timing.AasanTime;
-import it.techies.pranayama.api.token.ResetTokenCallBack;
-import it.techies.pranayama.utils.SessionStorage;
+import it.techies.pranayama.infrastructure.BaseActivity;
+import it.techies.pranayama.infrastructure.OnResetTokenSuccessCallBack;
 import it.techies.pranayama.utils.Utils;
 import retrofit.Call;
 import retrofit.Callback;
@@ -26,8 +24,7 @@ import retrofit.Response;
 import retrofit.Retrofit;
 import timber.log.Timber;
 
-public class SetupActivity extends AppCompatActivity
-{
+public class SetupActivity extends BaseActivity {
 
     @Bind(R.id.aasan_timing_lv)
     ListView mAasanTimingListView;
@@ -37,10 +34,6 @@ public class SetupActivity extends AppCompatActivity
 
     @Bind(R.id.reload_ll)
     View mReloadView;
-
-    private ApiClient.ApiInterface mApiClient;
-
-    private SessionStorage mSessionStorage;
 
     private AasanListAdapter adapter;
 
@@ -59,12 +52,6 @@ public class SetupActivity extends AppCompatActivity
         setContentView(R.layout.activity_setup);
 
         ButterKnife.bind(this);
-
-        mSessionStorage = new SessionStorage(this);
-        String email = mSessionStorage.getEmail();
-        String token = mSessionStorage.getAccessToken();
-
-        mApiClient = ApiClient.getApiClient(email, token);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -91,8 +78,7 @@ public class SetupActivity extends AppCompatActivity
     private void setPranayamaTiming(final List<AasanTime> aasanTimeList)
     {
         Call<EmptyResponse> call = mApiClient.setPranayamaTiming(aasanTimeList);
-        call.enqueue(new Callback<EmptyResponse>()
-        {
+        call.enqueue(new Callback<EmptyResponse>() {
             @Override
             public void onResponse(Response<EmptyResponse> response, Retrofit retrofit)
             {
@@ -107,19 +93,11 @@ public class SetupActivity extends AppCompatActivity
 
                     if (statusCode == 401)
                     {
-                        final String email = mSessionStorage.getEmail();
-                        String token = mSessionStorage.getAccessToken();
-
-                        Utils.resetToken(getApplicationContext(), mApiClient, email, token, new ResetTokenCallBack()
-                        {
+                        resetToken(new OnResetTokenSuccessCallBack() {
                             @Override
                             public void onSuccess(String token)
                             {
-                                Timber.d("resetToken : onSuccess()");
-
-                                mSessionStorage.setAccessToken(token);
-                                mApiClient = ApiClient.getApiClient(email, token);
-
+                                mAuth.setToken(SetupActivity.this, token);
                                 setPranayamaTiming(aasanTimeList);
                             }
                         });
@@ -140,8 +118,7 @@ public class SetupActivity extends AppCompatActivity
         showLoading(true);
 
         Call<ArrayList<AasanTime>> call = mApiClient.getAasanTiming();
-        call.enqueue(new Callback<ArrayList<AasanTime>>()
-        {
+        call.enqueue(new Callback<ArrayList<AasanTime>>() {
             @Override
             public void onResponse(Response<ArrayList<AasanTime>> response, Retrofit retrofit)
             {
@@ -161,19 +138,11 @@ public class SetupActivity extends AppCompatActivity
 
                     if (statusCode == 401)
                     {
-                        final String email = mSessionStorage.getEmail();
-                        String token = mSessionStorage.getAccessToken();
-
-                        Utils.resetToken(getApplicationContext(), mApiClient, email, token, new ResetTokenCallBack()
-                        {
+                        resetToken(new OnResetTokenSuccessCallBack() {
                             @Override
                             public void onSuccess(String token)
                             {
-                                Timber.d("resetToken : onSuccess()");
-
-                                mSessionStorage.setAccessToken(token);
-                                mApiClient = ApiClient.getApiClient(email, token);
-
+                                mAuth.setToken(SetupActivity.this, token);
                                 getAasanTiming();
                             }
                         });

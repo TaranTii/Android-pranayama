@@ -13,11 +13,10 @@ import butterknife.OnClick;
 import it.techies.pranayama.R;
 import it.techies.pranayama.api.timing.AasanInformation;
 import it.techies.pranayama.api.timing.AasanTime;
+import it.techies.pranayama.infrastructure.BaseBoundActivity;
 import timber.log.Timber;
 
-public class BreakActivity extends BaseActivity
-{
-
+public class BreakActivity extends BaseBoundActivity {
     @Bind(R.id.timer_tv)
     TextView mTimerTextView;
 
@@ -59,12 +58,12 @@ public class BreakActivity extends BaseActivity
         AasanTime aasanTime = aasanInformation.getAasanTimes().get(currentAasanIndex);
 
         mTimerTextView.setText(String.format("%02d:%02d", 10, 0));
-        mCountDownTimer = new CountDownTimer(10 * 1000, 1000)
-        {
+        mCountDownTimer = new CountDownTimer(10 * 1000 + 2000, 1000) {
             @Override
             public void onTick(long millisUntilFinished)
             {
-                Timber.d("millisUntilFinished %02d", millisUntilFinished);
+                millisUntilFinished = millisUntilFinished - 1000;
+
                 long seconds = millisUntilFinished / 1000 % 60;
                 long minutes = millisUntilFinished / (60 * 1000) % 60;
 
@@ -92,6 +91,16 @@ public class BreakActivity extends BaseActivity
 
     private void startNextAasan()
     {
+        if (mBound)
+        {
+            mService.playYogaMusic();
+            Timber.d("play yoga music");
+        }
+        else
+        {
+            Timber.d("service not bound yet");
+        }
+
         // get current aasan index
         currentAasanIndex = aasanInformation.getCurrentAasanIndex();
 
@@ -99,9 +108,9 @@ public class BreakActivity extends BaseActivity
         aasanInformation.setCurrentAasanIndex(currentAasanIndex + 1);
 
         Intent intent = new Intent(this, AasanActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(MainActivity.AASAN_LIST_KEY, aasanInformation);
         startActivity(intent);
+        finish();
     }
 
 }

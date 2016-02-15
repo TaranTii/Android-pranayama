@@ -27,7 +27,7 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
         <activity
             android:name=".activities.StartActivity"
-            android:theme="@android:style/Theme.NoDisplay">
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -124,6 +124,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="it.techies.pranayama.activities.SettingsActivity"/>
         </activity>
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="7fee093304fbce6b8d990928143ed324a07e81fe"/>
+
+        <service
+            android:name=".services.ApiService"
+            android:exported="false">
+        </service>
     </application>
 
 </manifest>

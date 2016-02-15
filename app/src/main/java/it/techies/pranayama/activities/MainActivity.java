@@ -1,7 +1,5 @@
 package it.techies.pranayama.activities;
 
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
@@ -21,14 +19,12 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import it.techies.pranayama.R;
 import it.techies.pranayama.api.AasanNames;
-import it.techies.pranayama.api.ApiClient;
 import it.techies.pranayama.api.history.Aasan;
 import it.techies.pranayama.api.history.HistoryRequest;
 import it.techies.pranayama.api.timing.AasanInformation;
 import it.techies.pranayama.api.timing.AasanTime;
-import it.techies.pranayama.api.token.ResetTokenCallBack;
-import it.techies.pranayama.services.PrayanamaService;
-import it.techies.pranayama.utils.SessionStorage;
+import it.techies.pranayama.infrastructure.BaseBoundActivity;
+import it.techies.pranayama.infrastructure.OnResetTokenSuccessCallBack;
 import it.techies.pranayama.utils.Utils;
 import retrofit.Call;
 import retrofit.Callback;
@@ -36,8 +32,8 @@ import retrofit.Response;
 import retrofit.Retrofit;
 import timber.log.Timber;
 
-public class MainActivity extends BaseActivity
-{
+public class MainActivity extends BaseBoundActivity {
+
     @Bind(R.id.time_tv)
     TextView mTimeTextView;
 
@@ -62,24 +58,14 @@ public class MainActivity extends BaseActivity
     @Bind(R.id.textView7)
     TextView mUdgeeth;
 
-    private Integer mHistory;
-
-    private SessionStorage sessionStorage;
-
-    private Context mContext = this;
-
-    private ApiClient.ApiInterface apiClient;
-
     private ArrayList<AasanTime> aasanTimes;
 
     public static final String AASAN_LIST_KEY = "aasan_list_key";
 
-    private ProgressDialog mDialog;
-
     @OnClick(R.id.start_button)
     public void start(View v)
     {
-        if(aasanTimes != null && aasanTimes.size() != 0)
+        if (aasanTimes != null && aasanTimes.size() != 0)
         {
             Intent intent = new Intent(this, AasanActivity.class);
 
@@ -88,6 +74,7 @@ public class MainActivity extends BaseActivity
             intent.putExtra(AASAN_LIST_KEY, aasanInformation);
 
             startActivity(intent);
+            finish();
         }
         else
         {
@@ -103,32 +90,24 @@ public class MainActivity extends BaseActivity
         ButterKnife.bind(this);
 
         Timber.tag(MainActivity.class.getSimpleName());
-        Timber.d("onCreate(Bundle savedInstanceState)");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         // if user has mHistory this will be 1 otherwise 0
-        mHistory = getIntent().getIntExtra(LoginActivity.USER_HISTORY, -1);
-
-        sessionStorage = new SessionStorage(this);
-        String email = sessionStorage.getEmail();
-        String token = sessionStorage.getAccessToken();
-
-        apiClient = ApiClient.getApiClient(email, token);
+        Integer mHistory = getIntent().getIntExtra(LoginActivity.USER_HISTORY, -1);
 
         // start background music service
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
-        startService(new Intent(this, PrayanamaService.class));
 
-        mDialog = new ProgressDialog(this);
-        Utils.showLoadingDialog(mDialog, "Loading...");
-        // read history
+        showLoadingDialog("Loading...");
+
         getHistory();
     }
 
     @Override
-    protected void onResume() {
+    protected void onResume()
+    {
         super.onResume();
 
         // Logs 'install' and 'app activate' App Events.
@@ -136,7 +115,8 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
-    protected void onPause() {
+    protected void onPause()
+    {
         super.onPause();
 
         // Logs 'app deactivate' App Event.
@@ -148,7 +128,6 @@ public class MainActivity extends BaseActivity
     {
         super.onDestroy();
         Timber.d("onDestroy()");
-        // stopService(new Intent(this, PrayanamaService.class));
     }
 
     @Override
@@ -161,9 +140,6 @@ public class MainActivity extends BaseActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         if (id == R.id.action_settings)
@@ -177,10 +153,9 @@ public class MainActivity extends BaseActivity
 
     private void getHistory()
     {
-        Call<List<Aasan>> call = apiClient.getHistory(new HistoryRequest(""));
+        Call<List<Aasan>> call = mApiClient.getHistory(new HistoryRequest(""));
 
-        call.enqueue(new Callback<List<Aasan>>()
-        {
+        call.enqueue(new Callback<List<Aasan>>() {
             @Override
             public void onResponse(Response<List<Aasan>> response, Retrofit retrofit)
             {
@@ -190,6 +165,11 @@ public class MainActivity extends BaseActivity
                     getAasanTiming();
 
                     List<Aasan> aasans = response.body();
+
+                    if (aasans == null)
+                    {
+                        return;
+                    }
 
                     for (Aasan aasan : aasans)
                     {
@@ -212,19 +192,11 @@ public class MainActivity extends BaseActivity
 
                     if (statusCode == 401)
                     {
-                        final String email = sessionStorage.getEmail();
-                        String token = sessionStorage.getAccessToken();
-
-                        Utils.resetToken(mContext, apiClient, email, token, new ResetTokenCallBack()
-                        {
+                        resetToken(new OnResetTokenSuccessCallBack() {
                             @Override
                             public void onSuccess(String token)
                             {
-                                Timber.d("resetToken : onSuccess()");
-
-                                sessionStorage.setAccessToken(token);
-                                apiClient = ApiClient.getApiClient(email, token);
-
+                                mAuth.setToken(MainActivity.this, token);
                                 getHistory();
                             }
                         });
@@ -241,22 +213,21 @@ public class MainActivity extends BaseActivity
             {
                 Timber.e(t, "getHistory");
                 Utils.hideLoadingDialog(mDialog);
-                Utils.handleRetrofitFailure(mContext, t);
+                Utils.handleRetrofitFailure(MainActivity.this, t);
             }
         });
     }
 
     private void getAasanTiming()
     {
-        Call<ArrayList<AasanTime>> call = apiClient.getAasanTiming();
-        call.enqueue(new Callback<ArrayList<AasanTime>>()
-        {
+        Call<ArrayList<AasanTime>> call = mApiClient.getAasanTiming();
+        call.enqueue(new Callback<ArrayList<AasanTime>>() {
             @Override
             public void onResponse(Response<ArrayList<AasanTime>> response, Retrofit retrofit)
             {
-                if(response.isSuccess())
+                if (response.isSuccess())
                 {
-                    Utils.hideLoadingDialog(mDialog);
+                    hideLoadingDialog();
                     aasanTimes = response.body();
                     Timber.d("aasan times size %d ", aasanTimes.size());
                 }
@@ -267,19 +238,11 @@ public class MainActivity extends BaseActivity
 
                     if (statusCode == 401)
                     {
-                        final String email = sessionStorage.getEmail();
-                        String token = sessionStorage.getAccessToken();
-
-                        Utils.resetToken(mContext, apiClient, email, token, new ResetTokenCallBack()
-                        {
+                        resetToken(new OnResetTokenSuccessCallBack() {
                             @Override
                             public void onSuccess(String token)
                             {
-                                Timber.d("resetToken : onSuccess()");
-
-                                sessionStorage.setAccessToken(token);
-                                apiClient = ApiClient.getApiClient(email, token);
-
+                                mAuth.setToken(MainActivity.this, token);
                                 getAasanTiming();
                             }
                         });
@@ -295,8 +258,8 @@ public class MainActivity extends BaseActivity
             public void onFailure(Throwable t)
             {
                 Timber.e(t, "getAasanTiming");
-                Utils.hideLoadingDialog(mDialog);
-                Utils.handleRetrofitFailure(mContext, t);
+                hideLoadingDialog();
+                onRetrofitFailure(t);
             }
         });
     }
@@ -316,9 +279,9 @@ public class MainActivity extends BaseActivity
         String time = aasan.getTime();
         String[] times = time.split(":");
 
-        if(times.length == 3)
+        if (times.length == 3)
         {
-            if(times[0].equals("00"))
+            if (times[0].equals("00"))
             {
                 mTimeTextView.setText(String.format("%s:%s mins", times[1], times[2]));
             }
