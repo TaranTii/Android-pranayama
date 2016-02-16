@@ -67,14 +67,69 @@ public class Timings {
         return singleSetDuration;
     }
 
-    public void addSeconds(long seconds)
+    /**
+     * Adds the number of seconds in the current timing.
+     *
+     * @param sec Seconds
+     */
+    public void addSeconds(long sec)
     {
-        // TODO: 15/02/16 implement this
+        long h, m, s;
+
+        h = sec / 3600;
+        m = (sec % 3600) / 60;
+        s = (sec % 3600) % 60;
+
+        if (s + seconds > 59)
+        {
+            seconds = (s + seconds) % 60;
+            addOneMinute();
+        }
+        else
+        {
+            seconds += s;
+        }
+
+        if (minutes + m > 59)
+        {
+            minutes = (m + minutes) % 60;
+            addOneHour();
+        }
+        else
+        {
+            minutes += m;
+        }
+
+        hours += h;
+    }
+
+    /**
+     * Adds one minute to the current timing.
+     */
+    private void addOneMinute()
+    {
+        if (minutes + 1 > 59)
+        {
+            minutes = 0;
+            addOneHour();
+        }
+        else
+        {
+            minutes++;
+        }
+    }
+
+    /**
+     * Adds one hour to the current timing.
+     */
+    private void addOneHour()
+    {
+        hours++;
     }
 
     @Override
     public String toString()
     {
-        return String.format(Locale.getDefault(), "%2d:%2d:%2d:", hours, minutes, seconds);
+        return String.format(Locale.getDefault(), "%02d:%02d:%02d", (int) hours, (int) minutes, (int) seconds);
     }
 }

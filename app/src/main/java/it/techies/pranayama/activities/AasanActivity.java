@@ -9,13 +9,13 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import it.techies.pranayama.R;
+import it.techies.pranayama.api.AasanNames;
 import it.techies.pranayama.api.DailyRoutine;
 import it.techies.pranayama.api.timing.AasanInformation;
 import it.techies.pranayama.api.timing.AasanTime;
@@ -196,15 +196,15 @@ public class AasanActivity extends BaseBoundActivity {
     {
         mTimerTextView.setText(String.format(
                         "%02d:%02d",
-                        (timerSeconds / 60000) % 60,
+                        (timerSeconds / 60 * 1000) % 60,
                         (timerSeconds / (60 * 1000) % 60))
         );
 
         mCountDownTimer = new CountDownTimer(timerSeconds + 1000, 1000) {
+
             @Override
             public void onTick(long millisUntilFinished)
             {
-                // Timber.d("millisUntilFinished %02d", millisUntilFinished);
                 timerSeconds = millisUntilFinished;
 
                 long seconds = millisUntilFinished / 1000 % 60;
@@ -217,7 +217,12 @@ public class AasanActivity extends BaseBoundActivity {
             public void onFinish()
             {
                 Timber.d("aasan timer finished...");
+
+                // update the timer text
                 mTimerTextView.setText(String.format("%02d:%02d", 0, 0));
+
+                // mark the aasan completed even if one set is done
+                setIsCompleted();
 
                 if (currentSet < totalSets)
                 {
@@ -225,10 +230,10 @@ public class AasanActivity extends BaseBoundActivity {
                 }
                 else
                 {
-                    setIsCompleted();
                     startBreak();
                 }
             }
+
         };
 
         // start the timer
@@ -326,30 +331,31 @@ public class AasanActivity extends BaseBoundActivity {
     {
         AasanTime aasanTime = mAasanInformation.getAasanTimes().get(mCurrentAasanIndex);
         String name = aasanTime.getName();
+
+        // add the current aasan time in total pranayama time for daily routine
         mDailyRoutine.addTime(aasanTime.getTimings());
 
         switch (name)
         {
-            case "Bhastrika":
+            case AasanNames.Bhastrika:
                 mDailyRoutine.setBhastrika("1");
-
                 break;
-            case "Kapalbhati":
+            case AasanNames.Kapalbhati:
                 mDailyRoutine.setKapalbhati("1");
                 break;
-            case "Bahi":
+            case AasanNames.Bahi:
                 mDailyRoutine.setBahi("1");
                 break;
-            case "Agnisar Kriya":
+            case AasanNames.Agnisar_Kriya:
                 mDailyRoutine.setAgnisarKriya("1");
                 break;
-            case "Anulom Vilom":
+            case AasanNames.Anulom_Vilom:
                 mDailyRoutine.setAnulomVilom("1");
                 break;
-            case "Bharmari":
+            case AasanNames.Bharmari:
                 mDailyRoutine.setBharmari("1");
                 break;
-            case "Udgeeth":
+            case AasanNames.Udgeeth:
                 mDailyRoutine.setUdgeeth("1");
                 break;
         }

@@ -2,17 +2,23 @@ package it.techies.pranayama.activities;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.TextView;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import it.techies.pranayama.R;
+import it.techies.pranayama.api.AasanNames;
 import it.techies.pranayama.api.history.Aasan;
 import it.techies.pranayama.api.history.HistoryRequest;
 import it.techies.pranayama.infrastructure.BaseActivity;
@@ -28,6 +34,45 @@ public class HistoryActivity extends BaseActivity {
     @Bind(R.id.calendarView)
     MaterialCalendarView mCalendarView;
 
+    @Bind(R.id.time_tv)
+    TextView mTimeTextView;
+
+    @Bind(R.id.day_tv)
+    TextView mDayTextView;
+
+    @Bind(R.id.day_text_tv)
+    TextView mDayTextTextView;
+
+    @Bind(R.id.month_year_tv)
+    TextView mMonthYearTextView;
+
+    @Bind(R.id.textView1)
+    TextView mBhastrika;
+
+    @Bind(R.id.textView2)
+    TextView mKapalBhati;
+
+    @Bind(R.id.textView3)
+    TextView mBahaya;
+
+    @Bind(R.id.textView4)
+    TextView mAgnisarKriya;
+
+    @Bind(R.id.textView5)
+    TextView mAnulomVilom;
+
+    @Bind(R.id.textView6)
+    TextView mBharamri;
+
+    @Bind(R.id.textView7)
+    TextView mUdgeeth;
+
+    @Bind(R.id.progress_rl)
+    View mProgressView;
+
+    @Bind(R.id.meta_ll)
+    View mMetaView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -41,15 +86,15 @@ public class HistoryActivity extends BaseActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mCalendarView.setCurrentDate(new Date());
         mCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
             @Override
             public void onDateSelected(MaterialCalendarView widget, CalendarDay date,
                                        boolean selected)
             {
-                int day = date.getDay();
-                int month = date.getMonth();
-                int year = date.getYear();
+
+                int day = date.getCalendar().get(Calendar.DAY_OF_MONTH);
+                int month = date.getCalendar().get(Calendar.MONTH) + 1;
+                int year = date.getCalendar().get(Calendar.YEAR);
 
                 String mDate = String.format("%d-%02d-%02d", year, month, day);
 
@@ -57,10 +102,33 @@ public class HistoryActivity extends BaseActivity {
                 getHistory(mDate);
             }
         });
+
+        mCalendarView.setCurrentDate(new Date());
+        mCalendarView.setDateSelected(new Date(), true);
+
+        int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+        int month = Calendar.getInstance().get(Calendar.MONTH) + 1;
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+
+        String mDate = String.format("%d-%02d-%02d", year, month, day);
+        getHistory(mDate);
+    }
+
+    public void showProgress(boolean state)
+    {
+        mProgressView.setVisibility(state ? View.VISIBLE : View.GONE);
+    }
+
+    public void showHistory(boolean state)
+    {
+        mMetaView.setVisibility(state ? View.VISIBLE : View.GONE);
     }
 
     private void getHistory(final String date)
     {
+        showProgress(true);
+        showHistory(false);
+
         Call<List<Aasan>> call = mApiClient.getHistory(new HistoryRequest(date));
 
         call.enqueue(new Callback<List<Aasan>>() {
@@ -76,15 +144,19 @@ public class HistoryActivity extends BaseActivity {
                         if (aasan.getName() != null)
                         {
                             // this is an aasan
-                            // readAasan(aasan);
-                            Timber.d(aasan.getName());
+                            Timber.d("Name: %s, isCompleted: %d", aasan.getName(), aasan.getIsCompleted());
+                            readAasan(aasan);
                         }
                         else
                         {
                             // this is meta
-                            // readMeta(aasan);
+                            readMeta(aasan);
                         }
                     }
+
+                    // show history
+                    showProgress(false);
+                    showHistory(true);
                 }
                 else
                 {
@@ -105,6 +177,10 @@ public class HistoryActivity extends BaseActivity {
                     else if (statusCode == 422)
                     {
                         showToast("History was not found for selected date");
+
+                        // hide progress and history
+                        showProgress(false);
+                        showHistory(false);
                     }
                 }
             }
@@ -114,8 +190,135 @@ public class HistoryActivity extends BaseActivity {
             {
                 Timber.e(t, "getHistory");
                 onRetrofitFailure(t);
+
+                showProgress(false);
+                showHistory(false);
             }
         });
+    }
+
+    /**
+     * Read the meta data of the history.
+     *
+     * @param aasan Aasan information
+     */
+    private void readMeta(Aasan aasan)
+    {
+        // "date": "2015-09-03",
+        // "gmt": "IST",
+        // "time": "00:00:00",
+        // "time_zone": "Asia/Kolkata"
+
+        String time = aasan.getTime();
+        String[] times = time.split(":");
+
+        if (times.length == 3)
+        {
+            if (times[0].equals("00"))
+            {
+                mTimeTextView.setText(String.format("%s:%s mins", times[1], times[2]));
+            }
+            else
+            {
+                mTimeTextView.setText(String.format("%s mins", time));
+            }
+        }
+
+        CalendarDay mCalender = mCalendarView.getSelectedDate();
+
+        SimpleDateFormat dateFormat0 = new SimpleDateFormat("d", Locale.getDefault());
+        mDayTextView.setText(dateFormat0.format(mCalender.getDate()));
+
+        SimpleDateFormat dateFormat1 = new SimpleDateFormat("EEEE", Locale.getDefault());
+        mDayTextTextView.setText(dateFormat1.format(mCalender.getDate()));
+
+        SimpleDateFormat dateFormat2 = new SimpleDateFormat("LLL yyyy", Locale.getDefault());
+        mMonthYearTextView.setText(dateFormat2.format(mCalender.getDate()));
+    }
+
+    /**
+     * Read the aasan details from history.
+     *
+     * @param aasan Aasan information
+     */
+    private void readAasan(Aasan aasan)
+    {
+        String name = aasan.getName();
+        int isCompleted = aasan.getIsCompleted();
+
+        switch (name)
+        {
+            case AasanNames.Agnisar_Kriya:
+                if (isCompleted == 1)
+                {
+                    mAgnisarKriya.setTextColor(getResources().getColor(R.color.colorPrimary));
+                }
+                else
+                {
+                    mAgnisarKriya.setTextColor(getResources().getColor(android.R.color.black));
+                }
+                break;
+            case AasanNames.Anulom_Vilom:
+                if (isCompleted == 1)
+                {
+                    mAnulomVilom.setTextColor(getResources().getColor(R.color.colorPrimary));
+                }
+                else
+                {
+                    mAnulomVilom.setTextColor(getResources().getColor(android.R.color.black));
+                }
+                break;
+            case AasanNames.Kapalbhati:
+                if (isCompleted == 1)
+                {
+                    mKapalBhati.setTextColor(getResources().getColor(R.color.colorPrimary));
+                }
+                else
+                {
+                    mKapalBhati.setTextColor(getResources().getColor(android.R.color.black));
+                }
+                break;
+            case AasanNames.Bharmari:
+                if (isCompleted == 1)
+                {
+                    mBharamri.setTextColor(getResources().getColor(R.color.colorPrimary));
+                }
+                else
+                {
+                    mBharamri.setTextColor(getResources().getColor(android.R.color.black));
+                }
+                break;
+            case AasanNames.Bhastrika:
+                if (isCompleted == 1)
+                {
+                    mBhastrika.setTextColor(getResources().getColor(R.color.colorPrimary));
+                }
+                else
+                {
+                    mBhastrika.setTextColor(getResources().getColor(android.R.color.black));
+                }
+                break;
+            case AasanNames.Bahi:
+                if (isCompleted == 1)
+                {
+                    mBahaya.setTextColor(getResources().getColor(R.color.colorPrimary));
+                }
+                else
+                {
+                    mBahaya.setTextColor(getResources().getColor(android.R.color.black));
+                }
+                break;
+            case AasanNames.Udgeeth:
+                if (isCompleted == 1)
+                {
+                    mUdgeeth.setTextColor(getResources().getColor(R.color.colorPrimary));
+                }
+                else
+                {
+                    mUdgeeth.setTextColor(getResources().getColor(android.R.color.black));
+                }
+                break;
+        }
     }
 
 }

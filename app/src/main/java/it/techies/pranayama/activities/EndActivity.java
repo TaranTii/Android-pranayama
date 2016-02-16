@@ -14,6 +14,7 @@ import it.techies.pranayama.R;
 import it.techies.pranayama.api.DailyRoutine;
 import it.techies.pranayama.api.EmptyResponse;
 import it.techies.pranayama.infrastructure.BaseActivity;
+import it.techies.pranayama.infrastructure.OnResetTokenSuccessCallBack;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
@@ -47,9 +48,12 @@ public class EndActivity extends BaseActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DailyRoutine dailyRoutine = getIntent().getParcelableExtra(MainActivity.DAILY_ROUTINE_KEY);
+        sendDailyRouting();
+    }
 
-        dailyRoutine.setTime("00:20:00");
+    private void sendDailyRouting()
+    {
+        DailyRoutine dailyRoutine = getIntent().getParcelableExtra(MainActivity.DAILY_ROUTINE_KEY);
 
         List<DailyRoutine> dailyRoutineList = new ArrayList<>();
         dailyRoutineList.add(dailyRoutine);
@@ -69,6 +73,14 @@ public class EndActivity extends BaseActivity {
                     if (statusCode == 403)
                     {
                         // reset token
+                        resetToken(new OnResetTokenSuccessCallBack() {
+                            @Override
+                            public void onSuccess(String token)
+                            {
+                                mAuth.setToken(EndActivity.this, token);
+                                sendDailyRouting();
+                            }
+                        });
                     }
                     else
                     {
@@ -84,7 +96,6 @@ public class EndActivity extends BaseActivity {
                 onRetrofitFailure(t);
             }
         });
-
     }
 
 }

@@ -276,10 +276,11 @@ public class MainActivity extends BaseBoundActivity {
      */
     private void readMeta(Aasan aasan)
     {
+
 //        "date": "2015-09-03",
-//            "gmt": "IST",
-//            "time": "00:00:00",
-//            "time_zone": "Asia/Kolkata"
+//        "gmt": "IST",
+//        "time": "00:00:00",
+//        "time_zone": "Asia/Kolkata"
 
         String time = aasan.getTime();
         String[] times = time.split(":");

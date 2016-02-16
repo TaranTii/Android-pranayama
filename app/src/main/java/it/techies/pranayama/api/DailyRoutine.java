@@ -86,7 +86,8 @@ public class DailyRoutine implements Parcelable {
 
     public String getTime()
     {
-        return time;
+        Timings currentTime = new Timings(time);
+        return currentTime.toString();
     }
 
     public void setTime(String time)
@@ -191,7 +192,8 @@ public class DailyRoutine implements Parcelable {
     public void addTime(Timings timings)
     {
         Timings currentTime = new Timings(time);
-
+        currentTime.addSeconds(timings.getTotalTimeInSeconds());
+        time = currentTime.toString();
     }
 
     // ----------------------------------------- Parcelable ------------------------------------ //
