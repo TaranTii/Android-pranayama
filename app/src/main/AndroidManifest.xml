@@ -125,6 +125,10 @@
                 android:value="it.techies.pranayama.activities.SettingsActivity"/>
         </activity>
 
+        <activity
+            android:name="com.soundcloud.android.crop.CropImageActivity"
+            android:screenOrientation="portrait"/>
+
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="7fee093304fbce6b8d990928143ed324a07e81fe"/>
@@ -133,6 +137,7 @@
             android:name=".services.ApiService"
             android:exported="false">
         </service>
+
     </application>
 
 </manifest>

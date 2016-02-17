@@ -214,14 +214,15 @@ public class HistoryActivity extends BaseActivity {
 
         if (times.length == 3)
         {
-            if (times[0].equals("00"))
-            {
-                mTimeTextView.setText(String.format("%s:%s mins", times[1], times[2]));
-            }
-            else
-            {
-                mTimeTextView.setText(String.format("%s mins", time));
-            }
+            mTimeTextView.setText(String.format("%s:%s mins", times[1], times[2]));
+
+//            if (times[0].equals("00"))
+//            {
+//            }
+//            else
+//            {
+//                mTimeTextView.setText(String.format("%s mins", time));
+//            }
         }
 
         CalendarDay mCalender = mCalendarView.getSelectedDate();

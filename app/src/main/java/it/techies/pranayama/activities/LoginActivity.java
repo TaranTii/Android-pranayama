@@ -25,6 +25,7 @@ import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.okhttp.ResponseBody;
 
 import org.json.JSONException;
@@ -64,10 +65,10 @@ public class LoginActivity extends BaseActivity {
 
     // UI references.
     @Bind(R.id.email)
-    EditText mEmailView;
+    MaterialEditText mEmailView;
 
     @Bind(R.id.password)
-    EditText mPasswordView;
+    MaterialEditText mPasswordView;
 
     private CallbackManager callbackManager;
 
@@ -238,10 +239,6 @@ public class LoginActivity extends BaseActivity {
      */
     private void attemptLogin()
     {
-        // Reset errors.
-        mEmailView.setError(null);
-        mPasswordView.setError(null);
-
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
@@ -400,6 +397,7 @@ public class LoginActivity extends BaseActivity {
             {
                 hideLoadingDialog();
                 onRetrofitFailure(t);
+                Timber.e(t, "login");
                 showToast("Please check your internet connection.");
             }
         });

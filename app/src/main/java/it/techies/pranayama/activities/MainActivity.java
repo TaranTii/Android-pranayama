@@ -234,7 +234,10 @@ public class MainActivity extends BaseBoundActivity {
                 {
                     hideLoadingDialog();
                     aasanTimes = response.body();
-                    Timber.d("aasan times size %d ", aasanTimes.size());
+                    if (aasanTimes != null)
+                    {
+                        Timber.d("aasan times size %d ", aasanTimes.size());
+                    }
                 }
                 else
                 {

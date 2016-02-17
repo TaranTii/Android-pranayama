@@ -4,4 +4,6 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="text_margin">16dp</dimen>
+    <dimen name="profile_photo_width">100dp</dimen>
+    <dimen name="profile_photo_height">100dp</dimen>
 </resources>
