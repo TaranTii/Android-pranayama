@@ -27,10 +27,21 @@ public class Timings {
             try
             {
                 hours = Long.valueOf(timeArray[0]);
+
                 minutes = Long.valueOf(timeArray[1]);
+                if (minutes > 59)
+                {
+                    throw new IllegalArgumentException("Minutes cannot be greater than 59");
+                }
+
                 seconds = Long.valueOf(timeArray[2]);
+                if (seconds > 59)
+                {
+                    throw new IllegalArgumentException("Seconds cannot be greater than 59");
+                }
 
                 singleSetDuration = (hours * 3600 + minutes * 60 + seconds) * 1000;
+
             } catch (NumberFormatException e)
             {
                 throw new IllegalArgumentException("Timings format should be 00:00:00");
@@ -74,6 +85,11 @@ public class Timings {
      */
     public void addSeconds(long sec)
     {
+        if (sec < 0)
+        {
+            throw new IllegalArgumentException("sec should be a positive number");
+        }
+
         long h, m, s;
 
         h = sec / 3600;
@@ -130,6 +146,6 @@ public class Timings {
     @Override
     public String toString()
     {
-        return String.format(Locale.getDefault(), "%02d:%02d:%02d", (int) hours, (int) minutes, (int) seconds);
+        return String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, seconds);
     }
 }

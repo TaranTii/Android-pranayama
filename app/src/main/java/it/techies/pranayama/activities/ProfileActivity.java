@@ -16,7 +16,6 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.soundcloud.android.crop.Crop;
@@ -511,14 +510,11 @@ public class ProfileActivity extends BaseActivity {
         {
             Timber.d("REQUEST_CROP");
 
-            try
+            userProfileImage = convertUriToBitmap(mCurrentPhotoUri);
+
+            if (userProfileImage != null)
             {
-                userProfileImage = MediaStore.Images.Media.getBitmap(this.getContentResolver(), mCurrentPhotoUri);
                 setUserProfilePhoto(mCurrentPhotoUri);
-            } catch (IOException e)
-            {
-                showAlert("Unable to save image...");
-                e.printStackTrace();
             }
         }
     }
@@ -530,12 +526,32 @@ public class ProfileActivity extends BaseActivity {
      * @param bitmap  Bitmap
      * @return Uri of given Bitmap
      */
-    public Uri getImageUri(Context context, Bitmap bitmap)
+    private Uri convertBitmapToUri(Context context, Bitmap bitmap)
     {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
         String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap, "Title", null);
         return Uri.parse(path);
+    }
+
+    /**
+     * Return Bitmap from a Uri.
+     *
+     * @param uri Uri
+     * @return Bitmap or null
+     */
+    private Bitmap convertUriToBitmap(Uri uri)
+    {
+        try
+        {
+            return MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
+        } catch (IOException e)
+        {
+            showAlert("Unable to save image...");
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     /**
@@ -549,6 +565,7 @@ public class ProfileActivity extends BaseActivity {
                 .load(uri)
                 .resizeDimen(R.dimen.profile_photo_width, R.dimen.profile_photo_height)
                 .centerCrop()
+                .placeholder(R.drawable.ic_aasan)
                 .into(mUserProfileImageView);
     }
 
@@ -563,6 +580,7 @@ public class ProfileActivity extends BaseActivity {
                 .load("http://pranayama.seobudd.com" + url)
                 .resizeDimen(R.dimen.profile_photo_width, R.dimen.profile_photo_height)
                 .centerCrop()
+                .placeholder(R.drawable.ic_aasan)
                 .into(mUserProfileImageView);
     }
 
@@ -618,6 +636,11 @@ public class ProfileActivity extends BaseActivity {
      */
     private void sendEditProfileRequest()
     {
+        if(userProfile.getImage() != null && userProfile.getImage().trim().isEmpty())
+        {
+            userProfile.setImage(null);
+        }
+
         Call<EmptyResponse> call = mApiClient.updateUserProfile(userProfile, mAuth.getUser().getUserId());
         call.enqueue(new Callback<EmptyResponse>() {
             @Override

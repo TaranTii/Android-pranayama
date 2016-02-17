@@ -24,7 +24,7 @@ import it.techies.pranayama.api.history.Aasan;
 import it.techies.pranayama.api.history.HistoryRequest;
 import it.techies.pranayama.api.timing.AasanInformation;
 import it.techies.pranayama.api.timing.AasanTime;
-import it.techies.pranayama.infrastructure.BaseBoundActivity;
+import it.techies.pranayama.infrastructure.BaseActivity;
 import it.techies.pranayama.infrastructure.OnResetTokenSuccessCallBack;
 import it.techies.pranayama.utils.Utils;
 import retrofit.Call;
@@ -33,7 +33,7 @@ import retrofit.Response;
 import retrofit.Retrofit;
 import timber.log.Timber;
 
-public class MainActivity extends BaseBoundActivity {
+public class MainActivity extends BaseActivity {
 
     @Bind(R.id.time_tv)
     TextView mTimeTextView;
@@ -275,15 +275,14 @@ public class MainActivity extends BaseBoundActivity {
     /**
      * Read the meta data of the history.
      *
-     * @param aasan
+     * @param aasan Aasan information
      */
     private void readMeta(Aasan aasan)
     {
-
-//        "date": "2015-09-03",
-//        "gmt": "IST",
-//        "time": "00:00:00",
-//        "time_zone": "Asia/Kolkata"
+        // "date": "2015-09-03",
+        // "gmt": "IST",
+        // "time": "00:00:00",
+        // "time_zone": "Asia/Kolkata"
 
         String time = aasan.getTime();
         String[] times = time.split(":");

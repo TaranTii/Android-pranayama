@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
@@ -36,6 +37,15 @@ public class AasanActivity extends BaseBoundActivity {
 
     @Bind(R.id.benefits_tv)
     TextView mBenefitsTextView;
+
+    @Bind(R.id.toggle_btn)
+    FloatingActionButton mToggleButton;
+
+    @Bind(R.id.skip_btn)
+    FloatingActionButton mSkipButton;
+
+    @Bind(R.id.stop_btn)
+    FloatingActionButton mStopButton;
 
     /**
      * Index of the current Aasan in Aasan's list.
@@ -78,7 +88,7 @@ public class AasanActivity extends BaseBoundActivity {
     private long mSingleSetDuration;
 
     @OnClick(R.id.stop_btn)
-    public void stopButtonClick(View view)
+    public void stopButtonClick(FloatingActionButton button)
     {
         Timber.d("stop button click");
 
@@ -110,7 +120,7 @@ public class AasanActivity extends BaseBoundActivity {
     }
 
     @OnClick(R.id.skip_btn)
-    public void skipButtonClick(View view)
+    public void skipButtonClick(FloatingActionButton button)
     {
         Timber.d("skip button click");
 
@@ -130,20 +140,43 @@ public class AasanActivity extends BaseBoundActivity {
         }
     }
 
-    @OnClick(R.id.toggleButton)
-    public void toggleButtonClick(ToggleButton button)
+    @OnClick(R.id.toggle_btn)
+    public void toggleButtonClick(FloatingActionButton button)
     {
-        Timber.d("Toggle button is checked %b", button.isChecked());
+        Timber.d("Toggle button is checked %s", button.getTag());
 
-        if (button.isChecked())
-        {
-            // resume the timer
-            resumeTimer();
-        }
-        else
+        if (button.getTag() == null)
         {
             // pause the timer
             pauseTimer();
+            button.setTag("resume");
+            button.setImageResource(R.drawable.ic_play_arrow_white_24dp);
+
+            mSkipButton.show();
+            mStopButton.show();
+        }
+        else
+        {
+            if (String.valueOf(button.getTag()).equals("resume"))
+            {
+                // resume the timer
+                resumeTimer();
+                button.setTag("pause");
+                button.setImageResource(R.drawable.ic_pause_white_24dp);
+
+                mSkipButton.hide();
+                mStopButton.hide();
+            }
+            else
+            {
+                // pause the timer
+                pauseTimer();
+                button.setTag("resume");
+                button.setImageResource(R.drawable.ic_play_arrow_white_24dp);
+
+                mSkipButton.show();
+                mStopButton.show();
+            }
         }
     }
 
@@ -153,6 +186,9 @@ public class AasanActivity extends BaseBoundActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_aasan);
         ButterKnife.bind(this);
+
+        mSkipButton.hide();
+        mStopButton.hide();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -192,15 +228,26 @@ public class AasanActivity extends BaseBoundActivity {
     /**
      * Start countdown timer.
      */
-    private void startTimer()
+    private void startTimer(boolean addOne)
     {
-        mTimerTextView.setText(String.format(
-                        "%02d:%02d",
-                        (timerSeconds / 60 * 1000) % 60,
-                        (timerSeconds / (60 * 1000) % 60))
-        );
+        long timer;
 
-        mCountDownTimer = new CountDownTimer(timerSeconds + 1000, 1000) {
+        if (addOne)
+        {
+            timer = timerSeconds + 1000;
+
+            mTimerTextView.setText(String.format(
+                            "%02d:%02d",
+                            (timerSeconds / 60 * 1000) % 60,
+                            (timerSeconds / (60 * 1000) % 60))
+            );
+        }
+        else
+        {
+            timer = timerSeconds;
+        }
+
+        mCountDownTimer = new CountDownTimer(timer, 1000) {
 
             @Override
             public void onTick(long millisUntilFinished)
@@ -248,7 +295,7 @@ public class AasanActivity extends BaseBoundActivity {
     private void createTimer(long seconds)
     {
         timerSeconds = seconds;
-        startTimer();
+        startTimer(true);
     }
 
     /**
@@ -256,7 +303,7 @@ public class AasanActivity extends BaseBoundActivity {
      */
     private void resumeTimer()
     {
-        startTimer();
+        startTimer(false);
     }
 
     /**

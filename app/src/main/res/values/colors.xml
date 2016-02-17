@@ -3,6 +3,14 @@
     <color name="colorPrimary">#20d0e7</color>
     <color name="colorPrimaryDark">#00b3ca</color>
     <color name="colorAccent">#76bd05</color>
-    <color name="textColorButton">#ffffffff</color>
-    <color name="redButton">#d83852</color>
+    <color name="colorAccentDark">#66a503</color>
+
+    <color name="colorButtonText">#ffffff</color>
+
+    <color name="colorButtonCyan">#20d0e7</color>
+    <color name="colorButtonCyanDark">#00b3ca</color>
+    <color name="colorButtonGreen">#76bd05</color>
+    <color name="colorButtonGreenDark">#66a503</color>
+    <color name="colorButtonRed">#d83852</color>
+    <color name="colorButtonRedDark">#c5203b</color>
 </resources>

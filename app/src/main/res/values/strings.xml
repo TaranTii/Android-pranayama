@@ -123,6 +123,8 @@
     <string name="hint_country">Country</string>
     <string name="hint_phone_number">Phone number</string>
     <string name="hint_timezone">Timezone</string>
+    <string name="label_set">Set</string>
+    <string name="label_break_time">Break time</string>
 
 
 </resources>

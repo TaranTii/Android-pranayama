@@ -125,7 +125,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:backgroundTint="@color/colorAccent"
-                android:textColor="@color/textColorButton"
+                android:textColor="@color/colorButtonText"
                 android:text="@string/action_sign_up"/>
 
             <com.facebook.login.widget.LoginButton

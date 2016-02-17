@@ -6,4 +6,5 @@
     <dimen name="text_margin">16dp</dimen>
     <dimen name="profile_photo_width">100dp</dimen>
     <dimen name="profile_photo_height">100dp</dimen>
+    <dimen name="btn_circle_wh">70dp</dimen>
 </resources>
