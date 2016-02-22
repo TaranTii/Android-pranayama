@@ -1,11 +1,16 @@
 package it.techies.pranayama.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
+
+import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -30,7 +35,7 @@ public class BreakActivity extends BaseBoundActivity {
     private CountDownTimer mCountDownTimer;
 
     @OnClick(R.id.skip_btn)
-    public void skipButtonClick(View view)
+    public void skipButtonClick(View v)
     {
         if (mCountDownTimer != null)
         {
@@ -58,7 +63,7 @@ public class BreakActivity extends BaseBoundActivity {
         // get current aasan information from aasan list
         AasanTime aasanTime = aasanInformation.getAasanTimes().get(currentAasanIndex);
 
-        mTimerTextView.setText(String.format("%02d:%02d", 10, 0));
+        mTimerTextView.setText(String.format(Locale.getDefault(), "%02d:%02d", 10, 0));
         mCountDownTimer = new CountDownTimer(10 * 1000 + 2000, 1000) {
             @Override
             public void onTick(long millisUntilFinished)
@@ -68,14 +73,14 @@ public class BreakActivity extends BaseBoundActivity {
                 long seconds = millisUntilFinished / 1000 % 60;
                 long minutes = millisUntilFinished / (60 * 1000) % 60;
 
-                mTimerTextView.setText(String.format("%02d:%02d", minutes, seconds));
+                mTimerTextView.setText(String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds));
             }
 
             @Override
             public void onFinish()
             {
                 Timber.d("break timer finished...");
-                mTimerTextView.setText(String.format("%02d:%02d", 0, 0));
+                mTimerTextView.setText(String.format(Locale.getDefault(), "%02d:%02d", 0, 0));
                 startNextAasan();
             }
         };
@@ -88,6 +93,41 @@ public class BreakActivity extends BaseBoundActivity {
     {
         super.onDestroy();
         mCountDownTimer.cancel();
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        showStopAasanDialog();
+    }
+
+    private void showStopAasanDialog()
+    {
+        new AlertDialog.Builder(this)
+                .setTitle("Stop the Prayanama?")
+                .setPositiveButton("Stop", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        if (mCountDownTimer != null)
+                        {
+                            mCountDownTimer.cancel();
+                        }
+
+                        Intent intent = new Intent(BreakActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        dialog.dismiss();
+                    }
+                })
+                .create()
+                .show();
     }
 
     private void startNextAasan()

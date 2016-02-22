@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 import java.util.Locale;
 
 /**
+ * Wrapper class for conversion and addition of aasan timing for daily routine.
+ * <p/>
  * Created by jagdeep on 15/02/16.
  */
 public class Timings {

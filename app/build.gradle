@@ -13,6 +13,7 @@ apply plugin: 'io.fabric'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
+    maven { url "https://jitpack.io" }
 }
 
 android {
@@ -21,7 +22,7 @@ android {
 
     defaultConfig {
         applicationId "it.techies.pranayama"
-        minSdkVersion 16
+        minSdkVersion 22
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -70,4 +71,5 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'de.hdodenhof:circleimageview:2.0.0'
     compile 'com.soundcloud.android:android-crop:1.0.1@aar'
+    compile 'com.github.bmarrdev:android-DecoView-charting:v0.9.5'
 }

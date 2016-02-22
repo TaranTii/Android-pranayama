@@ -173,7 +173,7 @@ public class TimingsTest {
     public void check_single_set_duration_isCorrect()
     {
         Timings timings = new Timings("01:01:30");
-        assertEquals(3690000, timings.getSingleSetDuration());
+        assertEquals(3690 * 1000, timings.getSingleSetDuration());
     }
 
     @Test()

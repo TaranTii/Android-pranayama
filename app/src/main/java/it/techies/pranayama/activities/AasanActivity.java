@@ -1,16 +1,28 @@
 package it.techies.pranayama.activities;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.animation.LinearInterpolator;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+
+import com.hookedonplay.decoviewlib.DecoView;
+import com.hookedonplay.decoviewlib.charts.SeriesItem;
+import com.hookedonplay.decoviewlib.events.DecoEvent;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -46,6 +58,9 @@ public class AasanActivity extends BaseBoundActivity {
 
     @Bind(R.id.stop_btn)
     FloatingActionButton mStopButton;
+
+    @Bind(R.id.active_pin_iv)
+    ImageView mActivePinImageView;
 
     /**
      * Index of the current Aasan in Aasan's list.
@@ -87,11 +102,18 @@ public class AasanActivity extends BaseBoundActivity {
      */
     private long mSingleSetDuration;
 
+    ObjectAnimator animator;
+
     @OnClick(R.id.stop_btn)
     public void stopButtonClick(FloatingActionButton button)
     {
         Timber.d("stop button click");
 
+        showStopAasanDialog();
+    }
+
+    private void showStopAasanDialog()
+    {
         new AlertDialog.Builder(this)
                 .setTitle("Stop the Prayanama?")
                 .setPositiveButton("Stop", new DialogInterface.OnClickListener() {
@@ -148,6 +170,7 @@ public class AasanActivity extends BaseBoundActivity {
         if (button.getTag() == null)
         {
             // pause the timer
+            pauseAnimation();
             pauseTimer();
             button.setTag("resume");
             button.setImageResource(R.drawable.ic_play_arrow_white_24dp);
@@ -160,6 +183,7 @@ public class AasanActivity extends BaseBoundActivity {
             if (String.valueOf(button.getTag()).equals("resume"))
             {
                 // resume the timer
+                resumeAnimation();
                 resumeTimer();
                 button.setTag("pause");
                 button.setImageResource(R.drawable.ic_pause_white_24dp);
@@ -170,6 +194,7 @@ public class AasanActivity extends BaseBoundActivity {
             else
             {
                 // pause the timer
+                pauseAnimation();
                 pauseTimer();
                 button.setTag("resume");
                 button.setImageResource(R.drawable.ic_play_arrow_white_24dp);
@@ -186,6 +211,8 @@ public class AasanActivity extends BaseBoundActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_aasan);
         ButterKnife.bind(this);
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         mSkipButton.hide();
         mStopButton.hide();
@@ -225,27 +252,68 @@ public class AasanActivity extends BaseBoundActivity {
         createTimer(timings.getSingleSetDuration());
     }
 
+    private void startAnimation(long timer)
+    {
+        // update timer
+        animator = ObjectAnimator.ofFloat(mActivePinImageView, "rotation", 0f, 360f);
+        animator.setDuration(timer);
+        animator.setRepeatCount(totalSets);
+        animator.setInterpolator(new LinearInterpolator());
+        animator.setRepeatMode(ObjectAnimator.INFINITE);
+        animator.start();
+    }
+
+    private void pauseAnimation()
+    {
+        if (animator != null)
+        {
+            if (animator.isRunning())
+            {
+                animator.end();
+            }
+        }
+    }
+
+    private void resumeAnimation()
+    {
+        if (animator != null)
+        {
+            if (animator.isPaused())
+            {
+                animator.start();
+            }
+        }
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        showStopAasanDialog();
+    }
+
     /**
      * Start countdown timer.
      */
     private void startTimer(boolean addOne)
     {
-        long timer;
+        final long timer;
 
         if (addOne)
         {
             timer = timerSeconds + 1000;
 
             mTimerTextView.setText(String.format(
-                            "%02d:%02d",
-                            (timerSeconds / 60 * 1000) % 60,
-                            (timerSeconds / (60 * 1000) % 60))
+                    "%02d:%02d",
+                    (timerSeconds / 60 * 1000) % 60,
+                    (timerSeconds / (60 * 1000) % 60))
             );
         }
         else
         {
             timer = timerSeconds;
         }
+
+        startAnimation(timer);
 
         mCountDownTimer = new CountDownTimer(timer, 1000) {
 

@@ -1,6 +1,7 @@
 package it.techies.pranayama.activities;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.BindDrawable;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import it.techies.pranayama.R;
@@ -58,6 +60,12 @@ public class MainActivity extends BaseActivity {
 
     @Bind(R.id.textView7)
     TextView mUdgeeth;
+
+    @BindDrawable(R.drawable.ic_aasan_active)
+    Drawable mIcAasanActive;
+
+    @BindDrawable(R.drawable.ic_aasan_deactive)
+    Drawable mIcAasanDeActive;
 
     private ArrayList<AasanTime> aasanTimes;
 
@@ -315,43 +323,43 @@ public class MainActivity extends BaseActivity {
             case AasanNames.Agnisar_Kriya:
                 if (isCompleted == 1)
                 {
-                    mAgnisarKriya.setTextColor(getResources().getColor(R.color.colorPrimary));
+                    mAgnisarKriya.setCompoundDrawablesWithIntrinsicBounds(null, mIcAasanActive, null, null);
                 }
                 break;
             case AasanNames.Anulom_Vilom:
                 if (isCompleted == 1)
                 {
-                    mAnulomVilom.setTextColor(getResources().getColor(R.color.colorPrimary));
+                    mAnulomVilom.setCompoundDrawablesWithIntrinsicBounds(null, mIcAasanActive, null, null);
                 }
                 break;
             case AasanNames.Kapalbhati:
                 if (isCompleted == 1)
                 {
-                    mKapalBhati.setTextColor(getResources().getColor(R.color.colorPrimary));
+                    mKapalBhati.setCompoundDrawablesWithIntrinsicBounds(null, mIcAasanActive, null, null);
                 }
                 break;
             case AasanNames.Bharmari:
                 if (isCompleted == 1)
                 {
-                    mBharamri.setTextColor(getResources().getColor(R.color.colorPrimary));
+                    mBharamri.setCompoundDrawablesWithIntrinsicBounds(null, mIcAasanActive, null, null);
                 }
                 break;
             case AasanNames.Bhastrika:
                 if (isCompleted == 1)
                 {
-                    mBhastrika.setTextColor(getResources().getColor(R.color.colorPrimary));
+                    mBhastrika.setCompoundDrawablesWithIntrinsicBounds(null, mIcAasanActive, null, null);
                 }
                 break;
             case AasanNames.Bahi:
                 if (isCompleted == 1)
                 {
-                    mBahaya.setTextColor(getResources().getColor(R.color.colorPrimary));
+                    mBahaya.setCompoundDrawablesWithIntrinsicBounds(null, mIcAasanActive, null, null);
                 }
                 break;
             case AasanNames.Udgeeth:
                 if (isCompleted == 1)
                 {
-                    mUdgeeth.setTextColor(getResources().getColor(R.color.colorPrimary));
+                    mUdgeeth.setCompoundDrawablesWithIntrinsicBounds(null, mIcAasanActive, null, null);
                 }
                 break;
         }

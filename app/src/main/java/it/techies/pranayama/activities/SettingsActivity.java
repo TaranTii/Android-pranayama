@@ -9,10 +9,10 @@ import android.view.View;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import it.techies.pranayama.R;
+import it.techies.pranayama.infrastructure.BaseActivity;
 import it.techies.pranayama.utils.Utils;
 
-public class SettingsActivity extends AppCompatActivity
-{
+public class SettingsActivity extends BaseActivity {
 
     @OnClick(R.id.item_profile)
     public void openProfile(View v)
@@ -53,7 +53,7 @@ public class SettingsActivity extends AppCompatActivity
     @OnClick(R.id.item_logout)
     public void doLogout(View v)
     {
-        Utils.logoutUser(this);
+        logoutUser();
     }
 
     @Override
