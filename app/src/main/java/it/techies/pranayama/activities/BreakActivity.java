@@ -1,5 +1,6 @@
 package it.techies.pranayama.activities;
 
+import android.animation.ObjectAnimator;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +9,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.Locale;
@@ -34,6 +37,9 @@ public class BreakActivity extends BaseBoundActivity {
 
     private CountDownTimer mCountDownTimer;
 
+    @Bind(R.id.active_pin_iv)
+    ImageView mActivePinImageView;
+
     @OnClick(R.id.skip_btn)
     public void skipButtonClick(View v)
     {
@@ -55,7 +61,7 @@ public class BreakActivity extends BaseBoundActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        aasanInformation = getIntent().getParcelableExtra(MainActivity.AASAN_LIST_KEY);
+        aasanInformation = getIntent().getParcelableExtra(LauncherActivity.AASAN_LIST_KEY);
 
         // get current aasan index
         currentAasanIndex = aasanInformation.getCurrentAasanIndex();
@@ -64,11 +70,16 @@ public class BreakActivity extends BaseBoundActivity {
         AasanTime aasanTime = aasanInformation.getAasanTimes().get(currentAasanIndex);
 
         mTimerTextView.setText(String.format(Locale.getDefault(), "%02d:%02d", 10, 0));
-        mCountDownTimer = new CountDownTimer(10 * 1000 + 2000, 1000) {
+
+        long timer = 10 * 1000;
+
+        startAnimation(timer);
+
+        mCountDownTimer = new CountDownTimer(timer, 1000) {
             @Override
             public void onTick(long millisUntilFinished)
             {
-                millisUntilFinished = millisUntilFinished - 1000;
+                // millisUntilFinished = millisUntilFinished - 1000;
 
                 long seconds = millisUntilFinished / 1000 % 60;
                 long minutes = millisUntilFinished / (60 * 1000) % 60;
@@ -86,6 +97,15 @@ public class BreakActivity extends BaseBoundActivity {
         };
 
         mCountDownTimer.start();
+    }
+
+    private void startAnimation(long timer)
+    {
+        // update timer
+        ObjectAnimator animator = ObjectAnimator.ofFloat(mActivePinImageView, "rotation", 0f, 360f);
+        animator.setDuration(timer);
+        animator.setInterpolator(new LinearInterpolator());
+        animator.start();
     }
 
     @Override
@@ -114,7 +134,7 @@ public class BreakActivity extends BaseBoundActivity {
                             mCountDownTimer.cancel();
                         }
 
-                        Intent intent = new Intent(BreakActivity.this, MainActivity.class);
+                        Intent intent = new Intent(BreakActivity.this, LauncherActivity.class);
                         startActivity(intent);
                         finish();
                     }
@@ -149,8 +169,8 @@ public class BreakActivity extends BaseBoundActivity {
         aasanInformation.setCurrentAasanIndex(currentAasanIndex + 1);
 
         Intent intent = new Intent(this, AasanActivity.class);
-        intent.putExtra(MainActivity.AASAN_LIST_KEY, aasanInformation);
-        intent.putExtra(MainActivity.DAILY_ROUTINE_KEY, getIntent().getParcelableExtra(MainActivity.DAILY_ROUTINE_KEY));
+        intent.putExtra(LauncherActivity.AASAN_LIST_KEY, aasanInformation);
+        intent.putExtra(LauncherActivity.DAILY_ROUTINE_KEY, getIntent().getParcelableExtra(LauncherActivity.DAILY_ROUTINE_KEY));
         startActivity(intent);
         finish();
     }

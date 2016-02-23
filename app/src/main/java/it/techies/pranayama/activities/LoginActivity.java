@@ -313,7 +313,7 @@ public class LoginActivity extends BaseActivity {
                     mAuth.update(LoginActivity.this);
                     mAuth.setToken(LoginActivity.this, loginResponse.getToken());
 
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    Intent intent = new Intent(LoginActivity.this, LauncherActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent.putExtra(USER_HISTORY, loginResponse.getHistory());
                     startActivity(intent);

@@ -78,18 +78,17 @@
 			android:layout_gravity="center_horizontal"
 			android:layout_marginTop="32dp">
 
-
 			<ImageView
 				android:id="@+id/all_pin_iv"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:src="@drawable/allpin"/>
+				android:src="@drawable/outer"/>
 
 			<ImageView
 				android:id="@+id/active_pin_iv"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:src="@drawable/activepin"/>
+				android:src="@drawable/inner"/>
 
 			<TextView
 				android:id="@+id/timer_tv"
@@ -97,8 +96,6 @@
 				android:layout_height="wrap_content"
 				android:layout_alignBottom="@+id/active_pin_iv"
 				android:layout_alignEnd="@+id/active_pin_iv"
-				android:layout_alignLeft="@+id/active_pin_iv"
-				android:layout_alignRight="@+id/active_pin_iv"
 				android:layout_alignStart="@+id/active_pin_iv"
 				android:layout_alignTop="@+id/active_pin_iv"
 				android:gravity="center"

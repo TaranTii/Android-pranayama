@@ -1,157 +1,138 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    package="it.techies.pranayama"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest package="it.techies.pranayama"
+          xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+	<uses-permission android:name="android.permission.INTERNET"/>
 
-    <!-- To auto-complete the email text field in the login form with the user's emails -->
-    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
-    <uses-permission android:name="android.permission.READ_PROFILE"/>
-    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+	<!-- To auto-complete the email text field in the login form with the user's emails -->
+	<uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+	<uses-permission android:name="android.permission.READ_PROFILE"/>
+	<uses-permission android:name="android.permission.READ_CONTACTS"/>
 
-    <application
-        android:name=".MyApplication"
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+	<application
+		android:name=".MyApplication"
+		android:allowBackup="true"
+		android:icon="@mipmap/ic_launcher"
+		android:label="@string/app_name"
+		android:supportsRtl="true"
+		android:theme="@style/AppTheme">
+		<meta-data
+			android:name="com.facebook.sdk.ApplicationId"
+			android:value="@string/facebook_app_id"/>
 
-        <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id"/>
+		<activity
+			android:name="com.facebook.FacebookActivity"
+			android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+			android:label="@string/app_name"
+			android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+		<activity
+			android:name=".activities.StartActivity"
+			android:theme="@style/AppTheme.NoActionBar">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN"/>
 
-        <activity
-            android:name="com.facebook.FacebookActivity"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:label="@string/app_name"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+				<category android:name="android.intent.category.LAUNCHER"/>
+			</intent-filter>
+		</activity>
+		<activity
+			android:name=".activities.LoginActivity"
+			android:label="@string/title_activity_login">
+		</activity>
+		<activity
+			android:name=".activities.RegisterActivity"
+			android:label="@string/title_activity_register"
+			android:parentActivityName=".activities.LoginActivity">
+			<meta-data
+				android:name="android.support.PARENT_ACTIVITY"
+				android:value="it.techies.pranayama.activities.LoginActivity"/>
+		</activity>
+		<activity
+			android:name=".activities.ForgotPasswordActivity"
+			android:label="@string/title_activity_forgot_password"
+			android:parentActivityName=".activities.LoginActivity">
+			<meta-data
+				android:name="android.support.PARENT_ACTIVITY"
+				android:value="it.techies.pranayama.activities.LoginActivity"/>
+		</activity>
+		<activity
+			android:name=".activities.BreakActivity"
+			android:label="@string/title_activity_break"
+			android:theme="@style/AppTheme.NoActionBar">
+		</activity>
+		<activity
+			android:name=".activities.AasanActivity"
+			android:label="@string/title_activity_aasan"
+			android:theme="@style/AppTheme.NoActionBar">
+		</activity>
+		<activity
+			android:name=".activities.EndActivity"
+			android:theme="@style/AppTheme.NoActionBar">
+		</activity>
 
-        <activity
-            android:name=".activities.StartActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+		<service
+			android:name=".services.PrayanamaService"
+			android:enabled="true"
+			android:exported="false">
+		</service>
 
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-        </activity>
+		<activity
+			android:name=".activities.ProfileActivity"
+			android:label="@string/title_activity_profile"
+			android:parentActivityName=".activities.LauncherActivity"
+			android:theme="@style/AppTheme.NoActionBar">
+			<meta-data
+				android:name="android.support.PARENT_ACTIVITY"
+				android:value=".activities.LauncherActivity"/>
+		</activity>
 
-        <activity
-            android:name=".activities.MainActivity"
-            android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+		<activity
+			android:name=".activities.ChangePasswordActivity"
+			android:label="@string/title_activity_change_password"
+			android:parentActivityName=".activities.LauncherActivity">
+			<meta-data
+				android:name="android.support.PARENT_ACTIVITY"
+				android:value=".activities.LauncherActivity"/>
+		</activity>
 
-        <activity
-            android:name=".activities.LoginActivity"
-            android:label="@string/title_activity_login">
-        </activity>
+		<activity
+			android:name=".activities.HistoryActivity"
+			android:label="@string/title_activity_history"
+			android:parentActivityName=".activities.LauncherActivity"
+			android:theme="@style/AppTheme.NoActionBar">
+			<meta-data
+				android:name="android.support.PARENT_ACTIVITY"
+				android:value="it.techies.pranayama.activities.LauncherActivity"/>
+		</activity>
 
-        <activity
-            android:name=".activities.RegisterActivity"
-            android:label="@string/title_activity_register"
-            android:parentActivityName=".activities.LoginActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="it.techies.pranayama.activities.LoginActivity"/>
-        </activity>
+		<activity
+			android:name=".activities.SetupActivity"
+			android:label="@string/title_activity_setup"
+			android:parentActivityName=".activities.LauncherActivity"
+			android:theme="@style/AppTheme.NoActionBar">
+			<meta-data
+				android:name="android.support.PARENT_ACTIVITY"
+				android:value="it.techies.pranayama.activities.LauncherActivity"/>
+		</activity>
 
-        <activity
-            android:name=".activities.ForgotPasswordActivity"
-            android:label="@string/title_activity_forgot_password"
-            android:parentActivityName=".activities.LoginActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="it.techies.pranayama.activities.LoginActivity"/>
-        </activity>
+		<activity
+			android:name="com.soundcloud.android.crop.CropImageActivity"
+			android:screenOrientation="portrait"/>
 
-        <activity
-            android:name=".activities.BreakActivity"
-            android:label="@string/title_activity_break"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+		<meta-data
+			android:name="io.fabric.ApiKey"
+			android:value="7fee093304fbce6b8d990928143ed324a07e81fe"/>
 
-        <activity
-            android:name=".activities.AasanActivity"
-            android:label="@string/title_activity_aasan"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+		<service
+			android:name=".services.ApiService"
+			android:exported="false">
+		</service>
 
-        <activity
-            android:name=".activities.EndActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+		<activity
+			android:name=".activities.LauncherActivity"
+			android:label="@string/app_name"
+			android:theme="@style/AppTheme.NoActionBar">
+		</activity>
 
-        <service
-            android:name=".services.PrayanamaService"
-            android:enabled="true"
-            android:exported="false">
-        </service>
-
-        <activity
-            android:name=".activities.SettingsActivity"
-            android:label="@string/title_activity_settings"
-            android:parentActivityName=".activities.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="it.techies.pranayama.activities.MainActivity"/>
-        </activity>
-
-        <activity
-            android:name=".activities.ProfileActivity"
-            android:label="@string/title_activity_profile"
-            android:parentActivityName=".activities.SettingsActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.SettingsActivity"/>
-        </activity>
-
-        <activity
-            android:name=".activities.ChangePasswordActivity"
-            android:label="@string/title_activity_change_password"
-            android:parentActivityName=".activities.SettingsActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.SettingsActivity"/>
-        </activity>
-
-        <activity
-            android:name=".activities.HistoryActivity"
-            android:label="@string/title_activity_history"
-            android:parentActivityName=".activities.SettingsActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="it.techies.pranayama.activities.SettingsActivity"/>
-        </activity>
-
-        <activity
-            android:name=".activities.SetupActivity"
-            android:label="@string/title_activity_setup"
-            android:parentActivityName=".activities.SettingsActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="it.techies.pranayama.activities.SettingsActivity"/>
-        </activity>
-
-        <activity
-            android:name="com.soundcloud.android.crop.CropImageActivity"
-            android:screenOrientation="portrait"/>
-
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="7fee093304fbce6b8d990928143ed324a07e81fe"/>
-
-        <service
-            android:name=".services.ApiService"
-            android:exported="false">
-        </service>
-
-    </application>
+	</application>
 
 </manifest>

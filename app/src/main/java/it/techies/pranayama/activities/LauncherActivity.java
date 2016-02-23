@@ -4,13 +4,19 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
 import com.facebook.appevents.AppEventsLogger;
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +33,7 @@ import it.techies.pranayama.api.history.HistoryRequest;
 import it.techies.pranayama.api.timing.AasanInformation;
 import it.techies.pranayama.api.timing.AasanTime;
 import it.techies.pranayama.infrastructure.BaseActivity;
+import it.techies.pranayama.infrastructure.BaseDrawerActivity;
 import it.techies.pranayama.infrastructure.OnResetTokenSuccessCallBack;
 import it.techies.pranayama.utils.Utils;
 import retrofit.Call;
@@ -35,7 +42,7 @@ import retrofit.Response;
 import retrofit.Retrofit;
 import timber.log.Timber;
 
-public class MainActivity extends BaseActivity {
+public class LauncherActivity extends BaseDrawerActivity {
 
     @Bind(R.id.time_tv)
     TextView mTimeTextView;
@@ -64,48 +71,28 @@ public class MainActivity extends BaseActivity {
     @BindDrawable(R.drawable.ic_aasan_active)
     Drawable mIcAasanActive;
 
-    @BindDrawable(R.drawable.ic_aasan_deactive)
-    Drawable mIcAasanDeActive;
-
     private ArrayList<AasanTime> aasanTimes;
 
     public static final String AASAN_LIST_KEY = "AASAN_LIST_KEY";
     public static final String DAILY_ROUTINE_KEY = "DAILY_ROUTINE_KEY";
 
-    @OnClick(R.id.start_button)
-    public void start(View v)
-    {
-        if (aasanTimes != null && aasanTimes.size() != 0)
-        {
-            Intent intent = new Intent(this, AasanActivity.class);
-
-            int currentAasanIndex = 0;
-            AasanInformation aasanInformation = new AasanInformation(currentAasanIndex, aasanTimes);
-            DailyRoutine dailyRoutine = new DailyRoutine();
-
-            intent.putExtra(AASAN_LIST_KEY, aasanInformation);
-            intent.putExtra(DAILY_ROUTINE_KEY, dailyRoutine);
-
-            startActivity(intent);
-            finish();
-        }
-        else
-        {
-            Timber.d("aasan times is zero or null");
-        }
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_launcher);
         ButterKnife.bind(this);
-
-        Timber.tag(MainActivity.class.getSimpleName());
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        setupDrawer(toolbar, savedInstanceState);
+        init();
+    }
+
+    private void init()
+    {
+        Timber.tag(LauncherActivity.class.getSimpleName());
 
         // if user has mHistory this will be 1 otherwise 0
         Integer mHistory = getIntent().getIntExtra(LoginActivity.USER_HISTORY, -1);
@@ -136,32 +123,27 @@ public class MainActivity extends BaseActivity {
         AppEventsLogger.deactivateApp(this);
     }
 
-    @Override
-    protected void onDestroy()
+    @OnClick(R.id.start_button)
+    public void start(View v)
     {
-        super.onDestroy();
-        Timber.d("onDestroy()");
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        int id = item.getItemId();
-
-        if (id == R.id.action_settings)
+        if (aasanTimes != null && aasanTimes.size() != 0)
         {
-            startActivity(new Intent(this, SettingsActivity.class));
-            return true;
-        }
+            Intent intent = new Intent(this, AasanActivity.class);
 
-        return super.onOptionsItemSelected(item);
+            int currentAasanIndex = 0;
+            AasanInformation aasanInformation = new AasanInformation(currentAasanIndex, aasanTimes);
+            DailyRoutine dailyRoutine = new DailyRoutine();
+
+            intent.putExtra(AASAN_LIST_KEY, aasanInformation);
+            intent.putExtra(DAILY_ROUTINE_KEY, dailyRoutine);
+
+            startActivity(intent);
+            finish();
+        }
+        else
+        {
+            Timber.d("aasan times is zero or null");
+        }
     }
 
     private void getHistory()
@@ -209,7 +191,7 @@ public class MainActivity extends BaseActivity {
                             @Override
                             public void onSuccess(String token)
                             {
-                                mAuth.setToken(MainActivity.this, token);
+                                mAuth.setToken(LauncherActivity.this, token);
                                 getHistory();
                             }
                         });
@@ -226,7 +208,7 @@ public class MainActivity extends BaseActivity {
             {
                 Timber.e(t, "getHistory");
                 Utils.hideLoadingDialog(mDialog);
-                Utils.handleRetrofitFailure(MainActivity.this, t);
+                Utils.handleRetrofitFailure(LauncherActivity.this, t);
             }
         });
     }
@@ -258,7 +240,7 @@ public class MainActivity extends BaseActivity {
                             @Override
                             public void onSuccess(String token)
                             {
-                                mAuth.setToken(MainActivity.this, token);
+                                mAuth.setToken(LauncherActivity.this, token);
                                 getAasanTiming();
                             }
                         });

@@ -17,7 +17,7 @@ public class StartActivity extends BaseActivity {
         if (mAuth.isLoggedIn())
         {
             // open main page
-            Intent intent = new Intent(this, MainActivity.class);
+            Intent intent = new Intent(this, LauncherActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         }

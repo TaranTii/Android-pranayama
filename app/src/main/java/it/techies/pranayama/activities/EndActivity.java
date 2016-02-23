@@ -27,7 +27,7 @@ public class EndActivity extends BaseActivity {
     public void homeButtonClick(View v)
     {
         // open the final screen
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, LauncherActivity.class);
         startActivity(intent);
         finish();
     }
@@ -53,7 +53,7 @@ public class EndActivity extends BaseActivity {
 
     private void sendDailyRouting()
     {
-        DailyRoutine dailyRoutine = getIntent().getParcelableExtra(MainActivity.DAILY_ROUTINE_KEY);
+        DailyRoutine dailyRoutine = getIntent().getParcelableExtra(LauncherActivity.DAILY_ROUTINE_KEY);
 
         List<DailyRoutine> dailyRoutineList = new ArrayList<>();
         dailyRoutineList.add(dailyRoutine);

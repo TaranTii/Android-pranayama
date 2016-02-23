@@ -1,28 +1,18 @@
 package it.techies.pranayama.activities;
 
-import android.animation.Animator;
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.ToggleButton;
-
-import com.hookedonplay.decoviewlib.DecoView;
-import com.hookedonplay.decoviewlib.charts.SeriesItem;
-import com.hookedonplay.decoviewlib.events.DecoEvent;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -125,7 +115,7 @@ public class AasanActivity extends BaseBoundActivity {
                             mCountDownTimer.cancel();
                         }
 
-                        Intent intent = new Intent(AasanActivity.this, MainActivity.class);
+                        Intent intent = new Intent(AasanActivity.this, LauncherActivity.class);
                         startActivity(intent);
                         finish();
                     }
@@ -224,10 +214,10 @@ public class AasanActivity extends BaseBoundActivity {
         Timber.tag(AasanActivity.class.getSimpleName());
 
         // get aasan's information
-        mAasanInformation = getIntent().getParcelableExtra(MainActivity.AASAN_LIST_KEY);
+        mAasanInformation = getIntent().getParcelableExtra(LauncherActivity.AASAN_LIST_KEY);
 
         // get daily routine information
-        mDailyRoutine = getIntent().getParcelableExtra(MainActivity.DAILY_ROUTINE_KEY);
+        mDailyRoutine = getIntent().getParcelableExtra(LauncherActivity.DAILY_ROUTINE_KEY);
 
         // get current aasan index
         mCurrentAasanIndex = mAasanInformation.getCurrentAasanIndex();
@@ -432,8 +422,8 @@ public class AasanActivity extends BaseBoundActivity {
         else
         {
             Intent intent = new Intent(this, BreakActivity.class);
-            intent.putExtra(MainActivity.DAILY_ROUTINE_KEY, mDailyRoutine);
-            intent.putExtra(MainActivity.AASAN_LIST_KEY, mAasanInformation);
+            intent.putExtra(LauncherActivity.DAILY_ROUTINE_KEY, mDailyRoutine);
+            intent.putExtra(LauncherActivity.AASAN_LIST_KEY, mAasanInformation);
             startActivity(intent);
             finish();
         }
@@ -483,7 +473,7 @@ public class AasanActivity extends BaseBoundActivity {
     {
         // open the final screen
         Intent intent = new Intent(this, EndActivity.class);
-        intent.putExtra(MainActivity.DAILY_ROUTINE_KEY, mDailyRoutine);
+        intent.putExtra(LauncherActivity.DAILY_ROUTINE_KEY, mDailyRoutine);
         startActivity(intent);
         finish();
     }
