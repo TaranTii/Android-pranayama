@@ -5,18 +5,10 @@ import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.view.View;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
 import com.facebook.appevents.AppEventsLogger;
-import com.mikepenz.google_material_typeface_library.GoogleMaterial;
-import com.mikepenz.materialdrawer.Drawer;
-import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +24,6 @@ import it.techies.pranayama.api.history.Aasan;
 import it.techies.pranayama.api.history.HistoryRequest;
 import it.techies.pranayama.api.timing.AasanInformation;
 import it.techies.pranayama.api.timing.AasanTime;
-import it.techies.pranayama.infrastructure.BaseActivity;
 import it.techies.pranayama.infrastructure.BaseDrawerActivity;
 import it.techies.pranayama.infrastructure.OnResetTokenSuccessCallBack;
 import it.techies.pranayama.utils.Utils;
@@ -68,7 +59,7 @@ public class LauncherActivity extends BaseDrawerActivity {
     @Bind(R.id.textView7)
     TextView mUdgeeth;
 
-    @BindDrawable(R.drawable.ic_aasan_active)
+    @BindDrawable(R.drawable.ic_aasan_active_48dp)
     Drawable mIcAasanActive;
 
     private ArrayList<AasanTime> aasanTimes;

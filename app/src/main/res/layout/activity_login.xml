@@ -36,8 +36,8 @@
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:layout_gravity="center"
-					android:layout_marginTop="16dp"
 					android:layout_marginBottom="16dp"
+					android:layout_marginTop="16dp"
 					android:src="@drawable/ic_logo"/>
 
 				<com.rengwuxian.materialedittext.MaterialEditText
@@ -77,11 +77,11 @@
 
 				<Button
 					android:id="@+id/email_sign_in_button"
-					style="?android:textAppearanceSmall"
+					style="?android:textAppearanceButton"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:layout_marginTop="16dp"
-					android:background="@color/colorAccent"
+					android:backgroundTint="@color/colorAccent"
 					android:text="@string/action_sign_in"
 					android:textColor="@color/textColorSubHead"/>
 
@@ -92,7 +92,8 @@
 					android:layout_gravity="center_horizontal"
 					android:layout_marginTop="16dp"
 					android:paddingBottom="16dp"
-					android:paddingTop="16dp"/>
+					android:paddingTop="16dp"
+					android:visibility="gone"/>
 
 				<RelativeLayout
 					android:layout_width="match_parent"

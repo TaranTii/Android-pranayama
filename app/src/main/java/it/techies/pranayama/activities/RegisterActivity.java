@@ -24,6 +24,7 @@ import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.okhttp.ResponseBody;
 
 import org.json.JSONException;
@@ -54,18 +55,17 @@ import timber.log.Timber;
  */
 public class RegisterActivity extends BaseActivity {
 
-
     @Bind(R.id.full_name)
-    EditText mFullNameView;
+    MaterialEditText mFullNameView;
 
     @Bind(R.id.email)
-    AutoCompleteTextView mEmailView;
+    MaterialEditText mEmailView;
 
     @Bind(R.id.password)
-    EditText mPasswordView;
+    MaterialEditText mPasswordView;
 
     @Bind(R.id.confirm_password)
-    EditText mConfirmPasswordView;
+    MaterialEditText mConfirmPasswordView;
 
     @Bind(R.id.email_sign_up_button)
     Button mEmailSignUpButton;

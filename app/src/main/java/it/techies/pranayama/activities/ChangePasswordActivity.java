@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.okhttp.ResponseBody;
 
 import java.io.IOException;
@@ -39,14 +40,15 @@ import timber.log.Timber;
  * A login screen that offers login via email/password.
  */
 public class ChangePasswordActivity extends BaseActivity {
+
     @Bind(R.id.current_password)
-    EditText mCurrentPasswordView;
+    MaterialEditText mCurrentPasswordView;
 
     @Bind(R.id.new_password)
-    EditText mNewPasswordView;
+    MaterialEditText mNewPasswordView;
 
     @Bind(R.id.confirm_new_password)
-    EditText mConfirmNewPasswordView;
+    MaterialEditText mConfirmNewPasswordView;
 
     /**
      * Keep track of the login task to ensure we can cancel it if requested.

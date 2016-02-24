@@ -363,6 +363,12 @@ public class LoginActivity extends BaseActivity {
                                     return;
                                 }
 
+                                if ("Please verify your email id.".equals(error.getMessage()))
+                                {
+                                    showAlert(error.getMessage());
+                                    return;
+                                }
+
                                 switch (field)
                                 {
                                     case ApiFields.FIELD_EMAIL:

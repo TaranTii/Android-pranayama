@@ -32,12 +32,6 @@ public class EndActivity extends BaseActivity {
         finish();
     }
 
-    @OnClick(R.id.share_btn)
-    public void shareButtonClick(View v)
-    {
-        Timber.d("Sharing...");
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {

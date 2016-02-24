@@ -8,6 +8,7 @@ import android.view.View;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.Nameable;
@@ -48,6 +49,8 @@ public class BaseDrawerActivity extends BaseActivity implements Drawer.OnDrawerI
                                 .withIcon(GoogleMaterial.Icon.gmd_person)
                                 .withSelectable(false),
 
+                        new DividerDrawerItem(),
+
                         new PrimaryDrawerItem()
                                 .withName(R.string.drawer_item_change_password)
                                 .withIcon(GoogleMaterial.Icon.gmd_lock)
@@ -63,10 +66,13 @@ public class BaseDrawerActivity extends BaseActivity implements Drawer.OnDrawerI
                                 .withIcon(GoogleMaterial.Icon.gmd_alarm)
                                 .withSelectable(false),
 
+                        new DividerDrawerItem(),
+
                         new PrimaryDrawerItem()
                                 .withName(R.string.drawer_item_logout)
                                 .withIcon(GoogleMaterial.Icon.gmd_power_settings_new)
                                 .withSelectable(false)
+
                 )
                 // add the items we want to use with our Drawer
                 .withOnDrawerItemClickListener(this)
@@ -111,16 +117,16 @@ public class BaseDrawerActivity extends BaseActivity implements Drawer.OnDrawerI
                 case 2:
                     startActivity(new Intent(this, ProfileActivity.class));
                     break;
-                case 3:
+                case 4:
                     startActivity(new Intent(this, ChangePasswordActivity.class));
                     break;
-                case 4:
+                case 5:
                     showToast("Settings...");
                     break;
-                case 5:
+                case 6:
                     startActivity(new Intent(this, SetupActivity.class));
                     break;
-                case 6:
+                case 8:
                     logoutUser();
                     break;
             }

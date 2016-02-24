@@ -39,7 +39,7 @@
 				android:layout_margin="8dp"
 				android:layout_row="0"
 				android:drawablePadding="4dp"
-				android:drawableTop="@drawable/ic_aasan_deactive"
+				android:drawableTop="@drawable/ic_aasan_deactive_48dp"
 				android:gravity="center"
 				android:text="@string/aasan_bhastrika"
 				android:textColor="@color/textColorSubHead"/>
@@ -52,7 +52,7 @@
 				android:layout_margin="8dp"
 				android:layout_row="0"
 				android:drawablePadding="4dp"
-				android:drawableTop="@drawable/ic_aasan_deactive"
+				android:drawableTop="@drawable/ic_aasan_deactive_48dp"
 				android:gravity="center"
 				android:text="@string/aasan_kapal_bhati"
 				android:textColor="@color/textColorSubHead"/>
@@ -65,7 +65,7 @@
 				android:layout_margin="8dp"
 				android:layout_row="0"
 				android:drawablePadding="4dp"
-				android:drawableTop="@drawable/ic_aasan_deactive"
+				android:drawableTop="@drawable/ic_aasan_deactive_48dp"
 				android:gravity="center"
 				android:text="@string/aasan_bahaya"
 				android:textColor="@color/textColorSubHead"/>
@@ -78,7 +78,7 @@
 				android:layout_margin="8dp"
 				android:layout_row="0"
 				android:drawablePadding="4dp"
-				android:drawableTop="@drawable/ic_aasan_deactive"
+				android:drawableTop="@drawable/ic_aasan_deactive_48dp"
 				android:gravity="center"
 				android:text="@string/aasan_agnisar_kriya"
 				android:textColor="@color/textColorSubHead"/>
@@ -99,7 +99,7 @@
 				android:layout_margin="8dp"
 				android:layout_row="0"
 				android:drawablePadding="4dp"
-				android:drawableTop="@drawable/ic_aasan_deactive"
+				android:drawableTop="@drawable/ic_aasan_deactive_48dp"
 				android:gravity="center"
 				android:text="@string/aasan_anulom_vilom"
 				android:textColor="@color/textColorSubHead"/>
@@ -112,7 +112,7 @@
 				android:layout_margin="8dp"
 				android:layout_row="0"
 				android:drawablePadding="4dp"
-				android:drawableTop="@drawable/ic_aasan_deactive"
+				android:drawableTop="@drawable/ic_aasan_deactive_48dp"
 				android:gravity="center"
 				android:text="@string/aasan_bharamri"
 				android:textColor="@color/textColorSubHead"/>
@@ -125,7 +125,7 @@
 				android:layout_margin="8dp"
 				android:layout_row="0"
 				android:drawablePadding="4dp"
-				android:drawableTop="@drawable/ic_aasan_deactive"
+				android:drawableTop="@drawable/ic_aasan_deactive_48dp"
 				android:gravity="center"
 				android:text="@string/aasan_udgeeth"
 				android:textColor="@color/textColorSubHead"/>
