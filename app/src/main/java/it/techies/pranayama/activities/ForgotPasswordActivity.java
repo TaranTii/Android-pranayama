@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.okhttp.ResponseBody;
 
 import java.io.IOException;
@@ -43,7 +44,7 @@ public class ForgotPasswordActivity extends BaseActivity {
     private Call<SuccessResponse> mAuthTask = null;
 
     // UI references.
-    private EditText mEmailView;
+    private MaterialEditText mEmailView;
 
     Callback<SuccessResponse> mForgotPasswordCallback = new Callback<SuccessResponse>() {
         @Override
@@ -118,7 +119,7 @@ public class ForgotPasswordActivity extends BaseActivity {
         setupActionBar();
 
         // Set up the login form.
-        mEmailView = (EditText) findViewById(R.id.email);
+        mEmailView = (MaterialEditText) findViewById(R.id.email);
 
         mEmailView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override

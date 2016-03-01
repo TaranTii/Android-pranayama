@@ -8,6 +8,8 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 import it.techies.pranayama.R;
 import it.techies.pranayama.api.timing.AasanTime;
@@ -61,9 +63,14 @@ public class AasanListAdapter extends ArrayAdapter<AasanTime>
 
         viewHolder.aasanName.setText(aasanTime.getName());
         viewHolder.aasanTime.setText(String.format("Time: %s", aasanTime.getTime()));
-        viewHolder.sets.setText(String.format("Sets: %d", aasanTime.getSet()));
+        viewHolder.sets.setText(String.format(Locale.getDefault(), "Sets: %d", aasanTime.getSet()));
 
         return convertView;
+    }
+
+    public List<AasanTime> getAasanList()
+    {
+        return aasanTimeList;
     }
 
     static class ViewHolder

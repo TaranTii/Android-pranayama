@@ -1,14 +1,19 @@
 package it.techies.pranayama.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.support.v4.view.LayoutInflaterCompat;
 import android.view.View;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
 import com.facebook.appevents.AppEventsLogger;
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.iconics.context.IconicsContextWrapper;
+import com.mikepenz.iconics.context.IconicsLayoutInflater;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +64,12 @@ public class LauncherActivity extends BaseDrawerActivity {
     @Bind(R.id.textView7)
     TextView mUdgeeth;
 
+    @Bind(R.id.setup_schedule_ll)
+    View mSetupScheduleView;
+
+    @Bind(R.id.aasans_ll)
+    View mAasansView;
+
     @BindDrawable(R.drawable.ic_aasan_active_48dp)
     Drawable mIcAasanActive;
 
@@ -71,6 +82,7 @@ public class LauncherActivity extends BaseDrawerActivity {
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_launcher);
         ButterKnife.bind(this);
 
@@ -91,9 +103,19 @@ public class LauncherActivity extends BaseDrawerActivity {
         // start background music service
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
-        showLoadingDialog("Loading...");
-
         getHistory();
+
+        if (mHistory == 0)
+        {
+            // show setup schedule view
+            mSetupScheduleView.setVisibility(View.VISIBLE);
+            mAasansView.setVisibility(View.GONE);
+        }
+        else
+        {
+            mSetupScheduleView.setVisibility(View.GONE);
+            mAasansView.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -137,8 +159,30 @@ public class LauncherActivity extends BaseDrawerActivity {
         }
     }
 
+    @OnClick(R.id.setup_schedule_ll)
+    public void setupScheduleClick()
+    {
+        openSetupScheduleActivity();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CODE_SETUP)
+        {
+            if (resultCode == RESULT_OK)
+            {
+                getHistory();
+            }
+        }
+    }
+
     private void getHistory()
     {
+        showLoadingDialog("Loading...");
+
         Call<List<Aasan>> call = mApiClient.getHistory(new HistoryRequest(""));
 
         call.enqueue(new Callback<List<Aasan>>() {
@@ -189,7 +233,7 @@ public class LauncherActivity extends BaseDrawerActivity {
                     }
                     else
                     {
-                        Utils.hideLoadingDialog(mDialog);
+                        hideLoadingDialog();
                     }
                 }
             }
@@ -198,8 +242,8 @@ public class LauncherActivity extends BaseDrawerActivity {
             public void onFailure(Throwable t)
             {
                 Timber.e(t, "getHistory");
-                Utils.hideLoadingDialog(mDialog);
-                Utils.handleRetrofitFailure(LauncherActivity.this, t);
+                hideLoadingDialog();
+                onRetrofitFailure(t);
             }
         });
     }
@@ -238,7 +282,7 @@ public class LauncherActivity extends BaseDrawerActivity {
                     }
                     else
                     {
-                        Utils.hideLoadingDialog(mDialog);
+                        hideLoadingDialog();
                     }
                 }
             }

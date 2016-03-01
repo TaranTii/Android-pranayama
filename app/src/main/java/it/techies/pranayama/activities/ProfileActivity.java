@@ -646,7 +646,7 @@ public class ProfileActivity extends BaseActivity {
             @Override
             public void onResponse(Response<EmptyResponse> response, Retrofit retrofit)
             {
-                Utils.hideLoadingDialog(mDialog);
+                hideLoadingDialog();
 
                 if (response.isSuccess())
                 {

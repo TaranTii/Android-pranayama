@@ -1,16 +1,16 @@
 package it.techies.pranayama.activities;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -329,12 +329,21 @@ public class RegisterActivity extends BaseActivity {
                 {
                     Timber.d("Register success");
 
-                    EmptyResponse registerResponse = response.body();
+                    new AlertDialog.Builder(RegisterActivity.this)
+                            .setCancelable(false)
+                            .setMessage("Account created successfully. Please login.")
+                            .setPositiveButton(R.string.action_login, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which)
+                                {
+                                    dialog.dismiss();
+                                    Intent intent = new Intent(mContext, LoginActivity.class);
+                                    startActivity(intent);
+                                }
+                            })
+                            .create()
+                            .show();
 
-                    showAlert("Account created. Please login.");
-
-                    Intent intent = new Intent(mContext, LoginActivity.class);
-                    startActivity(intent);
                 }
                 else
                 {

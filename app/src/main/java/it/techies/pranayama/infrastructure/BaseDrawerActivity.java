@@ -22,7 +22,9 @@ import it.techies.pranayama.activities.SetupActivity;
 /**
  * Created by jagdeep on 23/02/16.
  */
-public class BaseDrawerActivity extends BaseActivity implements Drawer.OnDrawerItemClickListener {
+public class BaseDrawerActivity extends BaseBoundActivity implements Drawer.OnDrawerItemClickListener {
+
+    protected static final int REQUEST_CODE_SETUP = 1;
 
     // save our header or result
     protected Drawer result = null;
@@ -124,7 +126,7 @@ public class BaseDrawerActivity extends BaseActivity implements Drawer.OnDrawerI
                     showToast("Settings...");
                     break;
                 case 6:
-                    startActivity(new Intent(this, SetupActivity.class));
+                    openSetupScheduleActivity();
                     break;
                 case 8:
                     logoutUser();
@@ -134,5 +136,10 @@ public class BaseDrawerActivity extends BaseActivity implements Drawer.OnDrawerI
             result.closeDrawer();
         }
         return false;
+    }
+
+    protected void openSetupScheduleActivity()
+    {
+        startActivityForResult(new Intent(this, SetupActivity.class), REQUEST_CODE_SETUP);
     }
 }

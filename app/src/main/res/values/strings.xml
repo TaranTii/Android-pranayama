@@ -85,5 +85,8 @@
 	<string name="female">Female</string>
 	<string name="home">Home</string>
 	<string name="pranayama_completed">Pranayama completed</string>
+	<string name="dialog_message_discard_changes">Discard changes?</string>
+	<string name="dialog_action_discard">Discard</string>
+	<string name="action_login">Login</string>
 
 </resources>
