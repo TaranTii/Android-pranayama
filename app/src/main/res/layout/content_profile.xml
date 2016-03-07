@@ -1,145 +1,171 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical"
 
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="it.techies.customer.reliablecab.activities.ProfileActivity"
-    tools:showIn="@layout/activity_profile">
+	app:layout_behavior="@string/appbar_scrolling_view_behavior"
+	tools:context="it.techies.pranayama.activities.ProfileActivity"
+	tools:showIn="@layout/activity_profile">
 
-    <include layout="@layout/loading"/>
+	<include layout="@layout/loading"/>
 
-    <include layout="@layout/reload"/>
+	<include layout="@layout/reload"/>
 
-    <ScrollView
-        android:id="@+id/user_profile_form"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+	<ScrollView
+		android:id="@+id/user_profile_form"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
 
-        <LinearLayout
-            android:id="@+id/email_profile_form"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingBottom="@dimen/activity_vertical_margin"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin"
-            android:paddingTop="@dimen/activity_vertical_margin">
+		<LinearLayout
+			android:id="@+id/email_profile_form"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:paddingBottom="@dimen/activity_vertical_margin"
+			android:paddingLeft="@dimen/activity_horizontal_margin"
+			android:paddingRight="@dimen/activity_horizontal_margin"
+			android:paddingTop="@dimen/activity_vertical_margin">
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/profile_photo_iv"
-                android:layout_width="@dimen/profile_photo_width"
-                android:layout_height="@dimen/profile_photo_height"
-                android:layout_gravity="center_horizontal"
-                android:maxHeight="@dimen/profile_photo_width"
-                android:maxWidth="@dimen/profile_photo_height"
-                android:src="@drawable/ic_aasan"
-                app:civ_border_color="@color/colorPrimary"
-                app:civ_border_width="2dp"/>
+			<de.hdodenhof.circleimageview.CircleImageView
+				android:id="@+id/profile_photo_iv"
+				android:layout_width="@dimen/profile_photo_width"
+				android:layout_height="@dimen/profile_photo_height"
+				android:layout_gravity="center_horizontal"
+				android:maxHeight="@dimen/profile_photo_width"
+				android:maxWidth="@dimen/profile_photo_height"
+				android:src="@drawable/ic_aasan"
+				app:civ_border_color="@color/colorPrimary"
+				app:civ_border_width="2dp"/>
 
-            <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/full_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:hint="@string/hint_full_name"
-                android:inputType="textPersonName"
-                android:maxLines="1"
-                android:singleLine="true"
-                app:met_floatingLabel="highlight"
-                app:met_iconLeft="@drawable/ic_person_black_24dp"
-                app:met_primaryColor="?attr/colorAccent"/>
+			<com.rengwuxian.materialedittext.MaterialEditText
+				android:id="@+id/full_name"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="16dp"
+				android:hint="@string/hint_full_name"
+				android:inputType="textPersonName"
+				android:maxLines="1"
+				android:singleLine="true"
+				app:met_floatingLabel="none"
+				app:met_iconLeft="@drawable/ic_person_black_24dp"
+				app:met_primaryColor="?attr/colorAccent"/>
 
-            <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/date_of_birth"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/hint_dob"
-                android:inputType="date"
-                android:maxLines="1"
-                android:singleLine="true"
-                app:met_floatingLabel="highlight"
-                app:met_iconLeft="@drawable/ic_date_range_black_24dp"
-                app:met_primaryColor="?attr/colorAccent"/>
+			<com.rengwuxian.materialedittext.MaterialEditText
+				android:id="@+id/date_of_birth"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:hint="@string/hint_dob"
+				android:inputType="date"
+				android:maxLines="1"
+				android:singleLine="true"
+				app:met_floatingLabel="none"
+				app:met_iconLeft="@drawable/ic_date_range_black_24dp"
+				app:met_primaryColor="?attr/colorAccent"/>
 
-            <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/address"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/hint_address"
-                android:inputType="textPostalAddress"
-                android:lines="2"
-                android:maxLines="2"
-                app:met_floatingLabel="highlight"
-                app:met_iconLeft="@drawable/ic_location_on_black_24dp"
-                app:met_primaryColor="?attr/colorAccent"/>
+			<com.rengwuxian.materialedittext.MaterialEditText
+				android:id="@+id/address"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:hint="@string/hint_address"
+				android:inputType="textPostalAddress"
+				android:lines="2"
+				android:maxLines="2"
+				app:met_floatingLabel="none"
+				app:met_iconLeft="@drawable/ic_location_on_black_24dp"
+				app:met_primaryColor="?attr/colorAccent"/>
 
-            <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/city"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/hint_city"
-                android:inputType="textPostalAddress"
-                android:maxLines="1"
-                android:singleLine="true"
-                app:met_floatingLabel="highlight"
-                app:met_iconLeft="@drawable/ic_location_city_black_24dp"
-                app:met_primaryColor="?attr/colorAccent"/>
+			<com.rengwuxian.materialedittext.MaterialEditText
+				android:id="@+id/city"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:hint="@string/hint_city"
+				android:inputType="textPostalAddress"
+				android:maxLines="1"
+				android:singleLine="true"
+				app:met_floatingLabel="none"
+				app:met_iconLeft="@drawable/ic_location_city_black_24dp"
+				app:met_primaryColor="?attr/colorAccent"/>
 
-            <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/state"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/hint_state"
-                android:inputType="textPostalAddress"
-                android:maxLines="1"
-                android:singleLine="true"
-                app:met_floatingLabel="highlight"
-                app:met_iconLeft="@drawable/ic_location_on_black_24dp"
-                app:met_primaryColor="?attr/colorAccent"/>
+			<com.rengwuxian.materialedittext.MaterialEditText
+				android:id="@+id/state"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:hint="@string/hint_state"
+				android:inputType="textPostalAddress"
+				android:maxLines="1"
+				android:singleLine="true"
+				app:met_floatingLabel="none"
+				app:met_iconLeft="@drawable/ic_location_on_black_24dp"
+				app:met_primaryColor="?attr/colorAccent"/>
 
-            <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/country"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/hint_country"
-                android:inputType="textPostalAddress"
-                android:maxLines="1"
-                android:singleLine="true"
-                app:met_floatingLabel="highlight"
-                app:met_iconLeft="@drawable/ic_flag_black_24dp"
-                app:met_primaryColor="?attr/colorAccent"/>
+			<com.rengwuxian.materialedittext.MaterialEditText
+				android:id="@+id/phone_number"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:hint="@string/hint_phone_number"
+				android:inputType="phone"
+				android:maxLines="2"
+				android:singleLine="true"
+				app:met_floatingLabel="none"
+				app:met_iconLeft="@drawable/ic_phone_black_24dp"
+				app:met_primaryColor="?attr/colorAccent"/>
 
-            <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/phone_number"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/hint_phone_number"
-                android:inputType="phone"
-                android:maxLines="2"
-                android:singleLine="true"
-                app:met_floatingLabel="highlight"
-                app:met_iconLeft="@drawable/ic_phone_black_24dp"
-                app:met_primaryColor="?attr/colorAccent"/>
+			<RelativeLayout
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content">
 
-            <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/timezone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/hint_timezone"
-                android:inputType="text"
-                android:maxLines="1"
-                android:singleLine="true"
-                app:met_floatingLabel="highlight"
-                app:met_iconLeft="@drawable/ic_access_time_black_24dp"
-                app:met_primaryColor="?attr/colorAccent"/>
+				<ImageView
+					android:id="@+id/flag_iv"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginEnd="16dp"
+					android:padding="12dp"
+					android:src="@drawable/ic_flag_black_24dp"/>
 
-        </LinearLayout>
+				<fr.ganfra.materialspinner.MaterialSpinner
+					android:id="@+id/country"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_toEndOf="@+id/flag_iv"
+					app:ms_alignLabels="false"
+					app:ms_enableErrorLabel="false"
+					app:ms_enableFloatingLabel="false"
+					app:ms_hint="Country"
+					app:ms_multiline="false"/>
 
-    </ScrollView>
+			</RelativeLayout>
+
+			<RelativeLayout
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content">
+
+				<ImageView
+					android:id="@+id/time_iv"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginEnd="16dp"
+					android:padding="12dp"
+					android:src="@drawable/ic_access_time_black_24dp"/>
+
+				<fr.ganfra.materialspinner.MaterialSpinner
+					android:id="@+id/timezone"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_toEndOf="@+id/time_iv"
+					app:ms_alignLabels="false"
+					app:ms_enableErrorLabel="false"
+					app:ms_enableFloatingLabel="false"
+					app:ms_hint="Timezone"
+					app:ms_multiline="false"/>
+
+			</RelativeLayout>
+
+		</LinearLayout>
+
+	</ScrollView>
 
 </LinearLayout>

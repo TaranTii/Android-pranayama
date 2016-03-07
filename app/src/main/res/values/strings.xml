@@ -54,7 +54,7 @@
 	<string name="facebook_app_id">907528072657130</string>
 
 	<string name="hint_full_name">Full name</string>
-	<string name="hint_dob">Date of birth</string>
+	<string name="hint_dob">Date of birth (YYYY-MM-DD)</string>
 	<string name="hint_address">Address</string>
 	<string name="hint_city">City</string>
 	<string name="hint_state">State</string>

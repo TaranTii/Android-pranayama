@@ -16,7 +16,12 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.soundcloud.android.crop.Crop;
 import com.squareup.picasso.Picasso;
@@ -24,19 +29,25 @@ import com.squareup.picasso.Picasso;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
+import fr.ganfra.materialspinner.MaterialSpinner;
 import it.techies.pranayama.R;
 import it.techies.pranayama.api.EmptyResponse;
 import it.techies.pranayama.api.user.UserProfile;
 import it.techies.pranayama.infrastructure.BaseActivity;
 import it.techies.pranayama.infrastructure.OnResetTokenSuccessCallBack;
+import it.techies.pranayama.utils.Country;
+import it.techies.pranayama.utils.Timezone;
 import it.techies.pranayama.utils.Utils;
 import retrofit.Call;
 import retrofit.Callback;
@@ -47,7 +58,6 @@ import timber.log.Timber;
 public class ProfileActivity extends BaseActivity {
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
-    private static final int REQUEST_IMAGE_FROM_FILE = 2;
 
     @Bind(R.id.profile_photo_iv)
     CircleImageView mUserProfileImageView;
@@ -68,13 +78,13 @@ public class ProfileActivity extends BaseActivity {
     MaterialEditText mStateView;
 
     @Bind(R.id.country)
-    MaterialEditText mCountryView;
+    MaterialSpinner mCountryView;
 
     @Bind(R.id.phone_number)
     MaterialEditText mPhoneNumberView;
 
     @Bind(R.id.timezone)
-    MaterialEditText mTimezoneView;
+    MaterialSpinner mTimezoneView;
 
     @Bind(R.id.loading_ll)
     View mLoadingView;
@@ -101,6 +111,12 @@ public class ProfileActivity extends BaseActivity {
      */
     Uri mCurrentPhotoUri;
 
+    private String mSelectedCountryCode = "";
+    private List<Country> countries;
+
+    private List<Timezone> timezoneList;
+    private String mSelectedTimezoneCode;
+
     @OnClick(R.id.profile_photo_iv)
     public void selectPhoto(View v)
     {
@@ -125,7 +141,117 @@ public class ProfileActivity extends BaseActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        getCountryList();
+        getTimezoneList();
+
         loadUserProfile();
+    }
+
+    public String loadJSONFromAsset(String filename)
+    {
+        String json = null;
+        try
+        {
+            InputStream is = getAssets().open(filename);
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+        } catch (IOException ex)
+        {
+            ex.printStackTrace();
+            return null;
+        }
+        return json;
+    }
+
+    public void getCountryList()
+    {
+        String countriesJson = loadJSONFromAsset("countries.json");
+        if (countriesJson != null)
+        {
+            Gson gson = new Gson();
+
+            Type countiesListType = new TypeToken<List<Country>>() {
+            }.getType();
+
+            try
+            {
+                countries = gson.fromJson(countriesJson, countiesListType);
+                ArrayAdapter<Country> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, countries);
+                mCountryView.setAdapter(adapter);
+                mCountryView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+                    {
+                        if (position == -1)
+                        {
+                            return;
+                        }
+
+                        if (position > 0 && position < countries.size())
+                        {
+                            mSelectedCountryCode = countries.get(position).getCode();
+                        }
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent)
+                    {
+                        mSelectedCountryCode = "";
+                    }
+                });
+
+            } catch (JsonSyntaxException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void getTimezoneList()
+    {
+        String timezoneJson = loadJSONFromAsset("timezone.json");
+        if (timezoneJson != null)
+        {
+            Gson gson = new Gson();
+
+            Type timezoneListType = new TypeToken<List<Timezone>>() {
+            }.getType();
+
+            try
+            {
+                timezoneList = gson.fromJson(timezoneJson, timezoneListType);
+                ArrayAdapter<Timezone> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, timezoneList);
+                mTimezoneView.setAdapter(adapter);
+                mTimezoneView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+                    {
+                        if (position == -1)
+                        {
+                            return;
+                        }
+
+                        if (position > 0 && position < timezoneList.size())
+                        {
+                            mSelectedTimezoneCode = timezoneList.get(position).getValue();
+                        }
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent)
+                    {
+                        mSelectedTimezoneCode = "";
+                    }
+                });
+
+            } catch (JsonSyntaxException e)
+            {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -156,15 +282,14 @@ public class ProfileActivity extends BaseActivity {
         String address = mAddressView.getText().toString().trim();
         String city = mCityView.getText().toString().trim();
         String state = mStateView.getText().toString().trim();
-        String country = mCountryView.getText().toString().trim();
+
         String dob = mDateOfBirthView.getText().toString().trim();
         String phone = mPhoneNumberView.getText().toString().trim();
-        String timezone = mTimezoneView.getText().toString().trim();
 
         View focusView = null;
         boolean cancel = false;
 
-        if (TextUtils.isEmpty(timezone))
+        if (TextUtils.isEmpty(mSelectedTimezoneCode))
         {
             mTimezoneView.setError(getString(R.string.error_field_required));
             focusView = mTimezoneView;
@@ -178,7 +303,7 @@ public class ProfileActivity extends BaseActivity {
             cancel = true;
         }
 
-        if (TextUtils.isEmpty(country))
+        if (TextUtils.isEmpty(mSelectedCountryCode))
         {
             mCountryView.setError(getString(R.string.error_field_required));
             focusView = mCountryView;
@@ -241,11 +366,10 @@ public class ProfileActivity extends BaseActivity {
             userProfile.setAddress1(address);
             userProfile.setCity(city);
             userProfile.setState(state);
-            // TODO: 09/12/2015 convert country name to id
-            userProfile.setCountryId(91);
+            userProfile.setCountryId(Integer.valueOf(mSelectedCountryCode));
             userProfile.setDob(dob);
             userProfile.setPhone(phone);
-            userProfile.setTimezone(timezone);
+            userProfile.setTimezone(mSelectedTimezoneCode);
 
             showLoadingDialog("Updating...");
             new EncodeBitmapToBase64().execute(userProfileImage);
@@ -300,7 +424,16 @@ public class ProfileActivity extends BaseActivity {
 
                     if (userProfile.getCountryId() != null)
                     {
-                        mCountryView.setText(String.valueOf(userProfile.getCountryId()).trim());
+                        for (int position = 0; position < countries.size(); position++)
+                        {
+                            Country country = countries.get(position);
+
+                            if (country.getCode().equals(String.valueOf(userProfile.getCountryId()).trim()))
+                            {
+                                mCountryView.setSelection(position + 1);
+                                break;
+                            }
+                        }
                     }
 
                     if (userProfile.getDob() != null)
@@ -315,7 +448,18 @@ public class ProfileActivity extends BaseActivity {
 
                     if (userProfile.getTimezone() != null)
                     {
-                        mTimezoneView.setText(userProfile.getTimezone().trim());
+                        // mTimezoneView.setText(userProfile.getTimezone().trim());
+
+                        for (int position = 0; position < timezoneList.size(); position++)
+                        {
+                            Timezone timezone = timezoneList.get(position);
+
+                            if (timezone.getValue().equals(String.valueOf(userProfile.getTimezone()).trim()))
+                            {
+                                mTimezoneView.setSelection(position + 1);
+                                break;
+                            }
+                        }
                     }
                 }
                 else
@@ -636,7 +780,7 @@ public class ProfileActivity extends BaseActivity {
      */
     private void sendEditProfileRequest()
     {
-        if(userProfile.getImage() != null && userProfile.getImage().trim().isEmpty())
+        if (userProfile.getImage() != null && userProfile.getImage().trim().isEmpty())
         {
             userProfile.setImage(null);
         }
