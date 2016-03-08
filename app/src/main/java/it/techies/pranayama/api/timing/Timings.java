@@ -150,4 +150,9 @@ public class Timings {
     {
         return String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, seconds);
     }
+
+    public String getBreakTimeString()
+    {
+        return String.format(Locale.getDefault(), "%02d:%02d mins", minutes, seconds);
+    }
 }

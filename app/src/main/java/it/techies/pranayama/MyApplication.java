@@ -35,20 +35,6 @@ public class MyApplication extends Application {
         Timber.d("onCreate()");
     }
 
-    @Override
-    public void onTerminate()
-    {
-        super.onTerminate();
-        Timber.d("onTerminate()");
-    }
-
-    @Override
-    public void onTrimMemory(int level)
-    {
-        super.onTrimMemory(level);
-        Timber.d("onTrimMemory()");
-    }
-
     synchronized public Bus getBus()
     {
         if (mBus == null)

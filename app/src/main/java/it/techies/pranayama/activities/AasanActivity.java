@@ -102,6 +102,9 @@ public class AasanActivity extends BaseBoundActivity {
         showStopAasanDialog();
     }
 
+    /**
+     * Shows the stop aasan confirmation dialog.
+     */
     private void showStopAasanDialog()
     {
         new AlertDialog.Builder(this)
@@ -237,9 +240,14 @@ public class AasanActivity extends BaseBoundActivity {
         // update the current aasan and total aasan on screen
         mSetTextView.setText(String.format("%d of %d", currentSet, totalSets));
 
+        // show break time on view
+        Timings breakTimings = new Timings("00:00:00");
+        breakTimings.addSeconds(aasanTime.getBreakTime());
+        mBreakTimeTextView.setText(breakTimings.getBreakTimeString());
+
         Timings timings = aasanTime.getTimings();
         mSingleSetDuration = timings.getSingleSetDuration();
-        createTimer(timings.getSingleSetDuration());
+        createTimer(mSingleSetDuration);
     }
 
     private void startAnimation(long timer)
@@ -253,6 +261,9 @@ public class AasanActivity extends BaseBoundActivity {
         animator.start();
     }
 
+    /**
+     * Pause clock animation.
+     */
     private void pauseAnimation()
     {
         if (animator != null)
@@ -264,6 +275,9 @@ public class AasanActivity extends BaseBoundActivity {
         }
     }
 
+    /**
+     * Resume clock animation.
+     */
     private void resumeAnimation()
     {
         if (animator != null)

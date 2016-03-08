@@ -1,6 +1,7 @@
 package it.techies.pranayama.adapters;
 
 import android.app.Activity;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +14,17 @@ import java.util.Locale;
 
 import it.techies.pranayama.R;
 import it.techies.pranayama.api.timing.AasanTime;
+import it.techies.pranayama.api.timing.Timings;
+import timber.log.Timber;
 
 /**
  * Created by jdtechies on 11/12/2015.
  */
-public class AasanListAdapter extends ArrayAdapter<AasanTime>
-{
+public class AasanListAdapter extends ArrayAdapter<AasanTime> {
+
+    private static final int ITEM_TYPE_AASAN = 0;
+    private static final int ITEM_TYPE_BREAK = 1;
+
     private Activity context;
 
     private ArrayList<AasanTime> aasanTimeList;
@@ -31,6 +37,22 @@ public class AasanListAdapter extends ArrayAdapter<AasanTime>
     }
 
     @Override
+    public int getItemViewType(int position)
+    {
+        if (position == 7)
+        {
+            return ITEM_TYPE_BREAK;
+        }
+        return ITEM_TYPE_AASAN;
+    }
+
+    @Override
+    public int getViewTypeCount()
+    {
+        return 2;
+    }
+
+    @Override
     public int getCount()
     {
         return aasanTimeList.size();
@@ -39,12 +61,26 @@ public class AasanListAdapter extends ArrayAdapter<AasanTime>
     @Override
     public View getView(int position, View convertView, ViewGroup parent)
     {
-        // Check if an existing view is being reused, otherwise inflate the view
-        ViewHolder viewHolder; // view lookup cache stored in tag
+        if (getItemViewType(position) == ITEM_TYPE_AASAN)
+        {
+            convertView = bindAasanView(position, convertView, parent);
+        }
+        else if (getItemViewType(position) == ITEM_TYPE_BREAK)
+        {
+            convertView = bindBreakTimeView(position, convertView, parent);
+        }
+
+        return convertView;
+    }
+
+    @NonNull
+    protected View bindAasanView(int position, View convertView, ViewGroup parent)
+    {
+        AasanViewHolder viewHolder;
 
         if (convertView == null)
         {
-            viewHolder = new ViewHolder();
+            viewHolder = new AasanViewHolder();
             LayoutInflater inflater = LayoutInflater.from(getContext());
             convertView = inflater.inflate(R.layout.list_row_aasan_time, parent, false);
 
@@ -56,7 +92,7 @@ public class AasanListAdapter extends ArrayAdapter<AasanTime>
         }
         else
         {
-            viewHolder = (ViewHolder) convertView.getTag();
+            viewHolder = (AasanViewHolder) convertView.getTag();
         }
 
         AasanTime aasanTime = aasanTimeList.get(position);
@@ -68,17 +104,55 @@ public class AasanListAdapter extends ArrayAdapter<AasanTime>
         return convertView;
     }
 
+    @NonNull
+    protected View bindBreakTimeView(int position, View convertView, ViewGroup parent)
+    {
+        BreakViewHolder viewHolder;
+
+        if (convertView == null)
+        {
+            viewHolder = new BreakViewHolder();
+            LayoutInflater inflater = LayoutInflater.from(getContext());
+            convertView = inflater.inflate(R.layout.list_row_break_time, parent, false);
+
+            viewHolder.breakTime = (TextView) convertView.findViewById(R.id.break_time_tv);
+
+            convertView.setTag(viewHolder);
+        }
+        else
+        {
+            viewHolder = (BreakViewHolder) convertView.getTag();
+        }
+
+        AasanTime aasanTime = aasanTimeList.get(position);
+
+        Timings breakTimings = new Timings("00:00:00");
+        breakTimings.addSeconds(aasanTime.getBreakTime());
+
+        viewHolder.breakTime.setText(String.format("Time: %s", breakTimings.toString()));
+
+        return convertView;
+    }
+
     public List<AasanTime> getAasanList()
     {
         return aasanTimeList;
     }
 
-    static class ViewHolder
+    public void setBreakTime(long breakTime)
     {
-        public TextView sets;
+        for (int i = 0; i < getCount(); i++)
+        {
+            aasanTimeList.get(i).setBreakTime(breakTime);
+        }
+        notifyDataSetChanged();
+    }
 
-        public TextView aasanName;
+    static class AasanViewHolder {
+        public TextView sets, aasanName, aasanTime;
+    }
 
-        public TextView aasanTime;
+    static class BreakViewHolder {
+        public TextView breakTime;
     }
 }

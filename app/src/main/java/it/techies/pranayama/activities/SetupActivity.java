@@ -169,6 +169,11 @@ public class SetupActivity extends BaseActivity implements AdapterView.OnItemCli
 
     private void setPranayamaTiming(final List<AasanTime> aasanTimeList)
     {
+        if(aasanTimeList.size() == 8)
+        {
+            aasanTimeList.remove(7);
+        }
+
         showLoadingDialog("Updating...");
         Call<EmptyResponse> call = mApiClient.setPranayamaTiming(aasanTimeList);
         call.enqueue(new Callback<EmptyResponse>() {
@@ -227,7 +232,13 @@ public class SetupActivity extends BaseActivity implements AdapterView.OnItemCli
                     showLoading(false);
 
                     List<AasanTime> aasanTimes = response.body();
+
                     Timber.d("aasan times size %d ", aasanTimes.size());
+
+                    Timber.d("Break time - %s", aasanTimes.get(0).getBreakTime());
+
+                    aasanTimes.add(new AasanTime(aasanTimes.get(0).getBreakTime()));
+
                     adapter.addAll(aasanTimes);
                 }
                 else
@@ -271,26 +282,49 @@ public class SetupActivity extends BaseActivity implements AdapterView.OnItemCli
     {
         AasanTime aasanTime = adapter.getItem(position);
         picker(aasanTime, position);
+
+        Timber.d("Position - %d", position);
     }
 
     public void picker(final AasanTime aasanTime, final int position)
     {
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_aasan_setup, null);
 
+        View mSetLinearLayout = dialogView.findViewById(R.id.set_ll);
         final NumberPicker sets = (NumberPicker) dialogView.findViewById(R.id.set_np);
-        sets.setMinValue(0);
-        sets.setMaxValue(10);
 
-        sets.setValue(aasanTime.getSet());
+        Timings timings;
 
-        Timings timings = aasanTime.getTimings();
+        // hide sets in case of break
+        if (position == 7)
+        {
+            mSetLinearLayout.setVisibility(View.GONE);
+
+            timings = new Timings("00:00:00");
+            try
+            {
+                timings.addSeconds(Long.valueOf(aasanTime.getBreakTime()));
+            } catch (NumberFormatException e)
+            {
+                e.printStackTrace();
+                return;
+            }
+        }
+        else
+        {
+            mSetLinearLayout.setVisibility(View.VISIBLE);
+
+            sets.setMinValue(0);
+            sets.setMaxValue(10);
+            sets.setValue(aasanTime.getSet());
+
+            timings = aasanTime.getTimings();
+        }
 
         final NumberPicker minutes = (NumberPicker) dialogView.findViewById(R.id.minute_np);
         minutes.setMinValue(0);
         minutes.setMaxValue(15);
         minutes.setValue((int) timings.getMinutes());
-
-        Log.d("LOG", "ho riha");
 
         Timber.d("Minutes %d, s %d", (int) timings.getMinutes(), (int) timings.getSeconds());
 
@@ -313,9 +347,19 @@ public class SetupActivity extends BaseActivity implements AdapterView.OnItemCli
                         int selectedSets = sets.getValue();
 
                         String time = String.format(Locale.getDefault(), "%02d:%02d:%02d", 0, selectedMinutes, selectedSeconds);
-                        aasanTime.setSet(selectedSets);
-                        aasanTime.setTime(time);
-                        adapter.notifyDataSetChanged();
+
+                        if(position == 7)
+                        {
+                            Timings breakTimings = new Timings(time);
+                            adapter.setBreakTime(breakTimings.getTotalTimeInSeconds());
+                        }
+                        else
+                        {
+                            aasanTime.setSet(selectedSets);
+                            aasanTime.setTime(time);
+                            adapter.notifyDataSetChanged();
+                        }
+
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

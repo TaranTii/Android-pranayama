@@ -69,9 +69,9 @@ public class BreakActivity extends BaseBoundActivity {
         // get current aasan information from aasan list
         AasanTime aasanTime = aasanInformation.getAasanTimes().get(currentAasanIndex);
 
-        mTimerTextView.setText(String.format(Locale.getDefault(), "%02d:%02d", 10, 0));
+        mTimerTextView.setText(aasanTime.getTimings().getBreakTimeString());
 
-        long timer = 10 * 1000;
+        long timer = aasanTime.getBreakTime() * 1000;
 
         startAnimation(timer);
 

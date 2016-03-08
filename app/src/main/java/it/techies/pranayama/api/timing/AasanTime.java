@@ -25,7 +25,12 @@ public class AasanTime implements Parcelable {
 
     @SerializedName("break_time")
     @Expose
-    private String breakTime;
+    private Long breakTime;
+
+    public AasanTime(Long breakTime)
+    {
+        this.breakTime = breakTime;
+    }
 
     public AasanTime(String name, String time, Integer set)
     {
@@ -69,12 +74,12 @@ public class AasanTime implements Parcelable {
         this.set = set;
     }
 
-    public String getBreakTime()
+    public Long getBreakTime()
     {
         return breakTime;
     }
 
-    public void setBreakTime(String breakTime)
+    public void setBreakTime(Long breakTime)
     {
         this.breakTime = breakTime;
     }
@@ -86,7 +91,7 @@ public class AasanTime implements Parcelable {
         name = in.readString();
         time = in.readString();
         set = in.readByte() == 0x00 ? null : in.readInt();
-        breakTime = in.readString();
+        breakTime = in.readLong();
     }
 
     @Override
@@ -109,7 +114,7 @@ public class AasanTime implements Parcelable {
             dest.writeByte((byte) (0x01));
             dest.writeInt(set);
         }
-        dest.writeString(breakTime);
+        dest.writeLong(breakTime);
     }
 
     @SuppressWarnings("unused")
