@@ -78,6 +78,9 @@ public class HistoryActivity extends BaseActivity {
     @BindDrawable(R.drawable.ic_aasan_active_24dp)
     Drawable mIcAasanActive;
 
+    @BindDrawable(R.drawable.ic_aasan_deactive_24dp)
+    Drawable mIcAasanDeActive;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -259,11 +262,19 @@ public class HistoryActivity extends BaseActivity {
                 {
                     mAgnisarKriya.setCompoundDrawablesWithIntrinsicBounds(mIcAasanActive, null, null, null);
                 }
+                else
+                {
+                    mAgnisarKriya.setCompoundDrawablesWithIntrinsicBounds(mIcAasanDeActive, null, null, null);
+                }
                 break;
             case AasanNames.Anulom_Vilom:
                 if (isCompleted == 1)
                 {
                     mAnulomVilom.setCompoundDrawablesWithIntrinsicBounds(mIcAasanActive, null, null, null);
+                }
+                else
+                {
+                    mAnulomVilom.setCompoundDrawablesWithIntrinsicBounds(mIcAasanDeActive, null, null, null);
                 }
                 break;
             case AasanNames.Kapalbhati:
@@ -271,11 +282,19 @@ public class HistoryActivity extends BaseActivity {
                 {
                     mKapalBhati.setCompoundDrawablesWithIntrinsicBounds(mIcAasanActive, null, null, null);
                 }
+                else
+                {
+                    mKapalBhati.setCompoundDrawablesWithIntrinsicBounds(mIcAasanDeActive, null, null, null);
+                }
                 break;
             case AasanNames.Bharmari:
                 if (isCompleted == 1)
                 {
                     mBharamri.setCompoundDrawablesWithIntrinsicBounds(mIcAasanActive, null, null, null);
+                }
+                else
+                {
+                    mBharamri.setCompoundDrawablesWithIntrinsicBounds(mIcAasanDeActive, null, null, null);
                 }
                 break;
             case AasanNames.Bhastrika:
@@ -283,17 +302,29 @@ public class HistoryActivity extends BaseActivity {
                 {
                     mBhastrika.setCompoundDrawablesWithIntrinsicBounds(mIcAasanActive, null, null, null);
                 }
+                else
+                {
+                    mBhastrika.setCompoundDrawablesWithIntrinsicBounds(mIcAasanDeActive, null, null, null);
+                }
                 break;
             case AasanNames.Bahi:
                 if (isCompleted == 1)
                 {
                     mBahaya.setCompoundDrawablesWithIntrinsicBounds(mIcAasanActive, null, null, null);
                 }
+                else
+                {
+                    mBahaya.setCompoundDrawablesWithIntrinsicBounds(mIcAasanDeActive, null, null, null);
+                }
                 break;
             case AasanNames.Udgeeth:
                 if (isCompleted == 1)
                 {
                     mUdgeeth.setCompoundDrawablesWithIntrinsicBounds(mIcAasanActive, null, null, null);
+                }
+                else
+                {
+                    mUdgeeth.setCompoundDrawablesWithIntrinsicBounds(mIcAasanDeActive, null, null, null);
                 }
                 break;
         }

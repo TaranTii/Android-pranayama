@@ -113,36 +113,42 @@ public class ChangePasswordActivity extends BaseActivity {
         mConfirmNewPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        String currentPassword = mCurrentPasswordView.getText().toString();
-        String newPassword = mNewPasswordView.getText().toString();
-        String confirmNewPassword = mConfirmNewPasswordView.getText().toString();
+        String currentPassword = mCurrentPasswordView.getText().toString().trim();
+        String newPassword = mNewPasswordView.getText().toString().trim();
+        String confirmNewPassword = mConfirmNewPasswordView.getText().toString().trim();
 
         boolean cancel = false;
         View focusView = null;
 
-        // Check for a current password
-        if (TextUtils.isEmpty(currentPassword))
+        // confirm password password matches new password
+        if (!TextUtils.equals(newPassword, confirmNewPassword))
         {
-            mCurrentPasswordView.setError(getString(R.string.error_field_required));
-            focusView = mCurrentPasswordView;
+            mConfirmNewPasswordView.setError(getString(R.string.error_confirm_password));
+            focusView = mConfirmNewPasswordView;
             cancel = true;
         }
-        else if (TextUtils.isEmpty(currentPassword))
-        {
-            mNewPasswordView.setError(getString(R.string.error_field_required));
-            focusView = mNewPasswordView;
-            cancel = true;
-        }
-        else if (TextUtils.isEmpty(confirmNewPassword))
+
+        // confirm password should not be empty
+        if (TextUtils.isEmpty(confirmNewPassword))
         {
             mConfirmNewPasswordView.setError(getString(R.string.error_field_required));
             focusView = mConfirmNewPasswordView;
             cancel = true;
         }
-        else if (!TextUtils.equals(newPassword, confirmNewPassword))
+
+        // confirm password should not be empty
+        if (TextUtils.isEmpty(newPassword))
         {
-            mConfirmNewPasswordView.setError(getString(R.string.error_confirm_password));
-            focusView = mConfirmNewPasswordView;
+            mNewPasswordView.setError(getString(R.string.error_field_required));
+            focusView = mNewPasswordView;
+            cancel = true;
+        }
+
+        // current password should not be empty
+        if (TextUtils.isEmpty(currentPassword))
+        {
+            mCurrentPasswordView.setError(getString(R.string.error_field_required));
+            focusView = mCurrentPasswordView;
             cancel = true;
         }
 
@@ -155,7 +161,6 @@ public class ChangePasswordActivity extends BaseActivity {
         else
         {
             sendChangePasswordRequest(currentPassword, newPassword);
-
         }
     }
 
@@ -179,8 +184,7 @@ public class ChangePasswordActivity extends BaseActivity {
 
                 if (response.isSuccess())
                 {
-                    SuccessResponse successResponse = response.body();
-                    showToast(successResponse.getMessage());
+                    showToast(getString(R.string.password_changed_success_message));
                     finish();
                 }
                 else

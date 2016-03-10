@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.techies.pranayama.BuildConfig;
 import it.techies.pranayama.api.history.Aasan;
 import it.techies.pranayama.api.history.HistoryRequest;
 import it.techies.pranayama.api.login.ChangePasswordRequest;
@@ -37,7 +38,16 @@ public class ApiClient {
 
     public static ApiInterface getApiClient(final String email, final String token)
     {
-        final String API_BASE_URL = "http://pranayama-seobudd-com-j76980zityhl.runscope.net/api/v1/";
+        String API_BASE_URL;
+
+        if (BuildConfig.DEBUG)
+        {
+            API_BASE_URL = "http://pranayama-seobudd-com-j76980zityhl.runscope.net/api/v1/";
+        }
+        else
+        {
+            API_BASE_URL = "http://pranayama-seobudd-com-nmpui1qimgnd.runscope.net/api/v1/";
+        }
 
         OkHttpClient client = new OkHttpClient();
         client.interceptors().add(new Interceptor() {

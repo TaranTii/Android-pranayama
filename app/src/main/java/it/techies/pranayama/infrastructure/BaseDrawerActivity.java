@@ -17,6 +17,7 @@ import it.techies.pranayama.R;
 import it.techies.pranayama.activities.ChangePasswordActivity;
 import it.techies.pranayama.activities.HistoryActivity;
 import it.techies.pranayama.activities.ProfileActivity;
+import it.techies.pranayama.activities.SettingsActivity;
 import it.techies.pranayama.activities.SetupActivity;
 
 /**
@@ -123,7 +124,7 @@ public class BaseDrawerActivity extends BaseBoundActivity implements Drawer.OnDr
                     startActivity(new Intent(this, ChangePasswordActivity.class));
                     break;
                 case 5:
-                    showToast("Settings...");
+                    startActivity(new Intent(this, SettingsActivity.class));
                     break;
                 case 6:
                     openSetupScheduleActivity();

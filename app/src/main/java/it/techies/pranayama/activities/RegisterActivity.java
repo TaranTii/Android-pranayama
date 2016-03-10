@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.util.Patterns;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -135,10 +136,10 @@ public class RegisterActivity extends BaseActivity {
         mConfirmPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        String fullName = mFullNameView.getText().toString();
-        String email = mEmailView.getText().toString();
-        String password = mPasswordView.getText().toString();
-        String confirmPassword = mConfirmPasswordView.getText().toString();
+        String fullName = mFullNameView.getText().toString().trim();
+        String email = mEmailView.getText().toString().trim();
+        String password = mPasswordView.getText().toString().trim();
+        String confirmPassword = mConfirmPasswordView.getText().toString().trim();
 
         boolean cancel = false;
         View focusView = null;
@@ -338,6 +339,7 @@ public class RegisterActivity extends BaseActivity {
                                 {
                                     dialog.dismiss();
                                     Intent intent = new Intent(mContext, LoginActivity.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                     startActivity(intent);
                                 }
                             })
@@ -436,7 +438,7 @@ public class RegisterActivity extends BaseActivity {
 
     private boolean isEmailValid(String email)
     {
-        return email.contains("@");
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
     private boolean isPasswordValid(String password)

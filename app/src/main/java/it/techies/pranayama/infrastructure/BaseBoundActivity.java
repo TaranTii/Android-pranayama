@@ -5,12 +5,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.media.AudioManager;
+import android.os.Bundle;
 import android.os.IBinder;
+import android.support.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
 
 import it.techies.pranayama.R;
 import it.techies.pranayama.services.PrayanamaService;
+import me.alexrs.prefs.lib.Prefs;
 import timber.log.Timber;
 
 /**
@@ -20,15 +24,26 @@ public class BaseBoundActivity extends BaseActivity {
 
     protected PrayanamaService mService;
     protected boolean mBound = false;
+    protected Menu mMenu;
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    }
 
     @Override
     protected void onStart()
     {
         super.onStart();
 
-        // Bind to LocalService
-        Intent intent = new Intent(this, PrayanamaService.class);
-        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        if (Prefs.with(this).getBoolean(getString(R.string.pref_key_music), true))
+        {
+            // Bind to LocalService
+            Intent intent = new Intent(this, PrayanamaService.class);
+            bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        }
     }
 
     @Override
@@ -41,6 +56,30 @@ public class BaseBoundActivity extends BaseActivity {
         {
             unbindService(mConnection);
             mBound = false;
+        }
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        checkMuteMenuButton();
+    }
+
+    private void checkMuteMenuButton()
+    {
+        if (mMenu != null)
+        {
+            MenuItem menuItem = mMenu.findItem(R.id.action_mute);
+
+            if (Prefs.with(this).getBoolean(getString(R.string.pref_key_music), true))
+            {
+                menuItem.setVisible(true);
+            }
+            else
+            {
+                menuItem.setVisible(false);
+            }
         }
     }
 
@@ -69,14 +108,12 @@ public class BaseBoundActivity extends BaseActivity {
         }
     };
 
-    protected Menu mMenu;
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
         getMenuInflater().inflate(R.menu.menu_mute, menu);
         mMenu = menu;
+        checkMuteMenuButton();
 
         AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 

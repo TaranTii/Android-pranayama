@@ -84,7 +84,6 @@
 				android:name="android.support.PARENT_ACTIVITY"
 				android:value=".activities.LauncherActivity"/>
 		</activity>
-
 		<activity
 			android:name=".activities.ChangePasswordActivity"
 			android:label="@string/title_activity_change_password"
@@ -93,7 +92,6 @@
 				android:name="android.support.PARENT_ACTIVITY"
 				android:value=".activities.LauncherActivity"/>
 		</activity>
-
 		<activity
 			android:name=".activities.HistoryActivity"
 			android:label="@string/title_activity_history"
@@ -103,7 +101,6 @@
 				android:name="android.support.PARENT_ACTIVITY"
 				android:value="it.techies.pranayama.activities.LauncherActivity"/>
 		</activity>
-
 		<activity
 			android:name=".activities.SetupActivity"
 			android:label="@string/title_activity_setup"
@@ -113,7 +110,6 @@
 				android:name="android.support.PARENT_ACTIVITY"
 				android:value="it.techies.pranayama.activities.LauncherActivity"/>
 		</activity>
-
 		<activity
 			android:name="com.soundcloud.android.crop.CropImageActivity"
 			android:screenOrientation="portrait"/>
@@ -133,6 +129,9 @@
 			android:theme="@style/AppTheme.NoActionBar">
 		</activity>
 
+		<activity android:name=".activities.SettingsActivity"
+		          android:label="@string/title_activity_settings">
+		</activity>
 	</application>
 
 </manifest>

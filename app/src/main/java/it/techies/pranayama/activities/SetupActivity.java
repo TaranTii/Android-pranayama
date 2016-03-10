@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,24 +11,21 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.NumberPicker;
 
-import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import it.techies.pranayama.R;
 import it.techies.pranayama.adapters.AasanListAdapter;
-import it.techies.pranayama.api.AasanNames;
 import it.techies.pranayama.api.EmptyResponse;
 import it.techies.pranayama.api.timing.AasanTime;
 import it.techies.pranayama.api.timing.Timings;
 import it.techies.pranayama.infrastructure.BaseActivity;
 import it.techies.pranayama.infrastructure.OnResetTokenSuccessCallBack;
-import it.techies.pranayama.utils.Utils;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
@@ -102,8 +98,7 @@ public class SetupActivity extends BaseActivity implements AdapterView.OnItemCli
     private void updateTimings()
     {
         mDidUserMadeChanges = false;
-        List<AasanTime> aasanTimeList = adapter.getAasanList();
-        setPranayamaTiming(aasanTimeList);
+        setPranayamaTiming(adapter.getAasanList());
     }
 
     @Override
@@ -169,10 +164,13 @@ public class SetupActivity extends BaseActivity implements AdapterView.OnItemCli
 
     private void setPranayamaTiming(final List<AasanTime> aasanTimeList)
     {
-        if(aasanTimeList.size() == 8)
+        if (aasanTimeList.size() != 8)
         {
-            aasanTimeList.remove(7);
+            return;
         }
+
+        final AasanTime temp = aasanTimeList.get(7);
+        aasanTimeList.remove(7);
 
         showLoadingDialog("Updating...");
         Call<EmptyResponse> call = mApiClient.setPranayamaTiming(aasanTimeList);
@@ -182,6 +180,7 @@ public class SetupActivity extends BaseActivity implements AdapterView.OnItemCli
             {
                 if (response.isSuccess())
                 {
+                    aasanTimeList.add(temp);
                     hideLoadingDialog();
                     mDidUserSavedChanges = true;
                     showToast("Updated...");
@@ -204,6 +203,7 @@ public class SetupActivity extends BaseActivity implements AdapterView.OnItemCli
                     }
                     else
                     {
+                        aasanTimeList.add(temp);
                         hideLoadingDialog();
                     }
                 }
@@ -212,6 +212,7 @@ public class SetupActivity extends BaseActivity implements AdapterView.OnItemCli
             @Override
             public void onFailure(Throwable t)
             {
+                aasanTimeList.add(temp);
                 hideLoadingDialog();
                 onRetrofitFailure(t);
             }
@@ -234,6 +235,12 @@ public class SetupActivity extends BaseActivity implements AdapterView.OnItemCli
                     List<AasanTime> aasanTimes = response.body();
 
                     Timber.d("aasan times size %d ", aasanTimes.size());
+
+                    if (aasanTimes.size() != 7)
+                    {
+                        showToast("Server returned invalid list of Aasans");
+                        finish();
+                    }
 
                     Timber.d("Break time - %s", aasanTimes.get(0).getBreakTime());
 
@@ -303,7 +310,7 @@ public class SetupActivity extends BaseActivity implements AdapterView.OnItemCli
             timings = new Timings("00:00:00");
             try
             {
-                timings.addSeconds(Long.valueOf(aasanTime.getBreakTime()));
+                timings.addSeconds(aasanTime.getBreakTime());
             } catch (NumberFormatException e)
             {
                 e.printStackTrace();
@@ -314,7 +321,7 @@ public class SetupActivity extends BaseActivity implements AdapterView.OnItemCli
         {
             mSetLinearLayout.setVisibility(View.VISIBLE);
 
-            sets.setMinValue(0);
+            sets.setMinValue(1);
             sets.setMaxValue(10);
             sets.setValue(aasanTime.getSet());
 
@@ -348,7 +355,7 @@ public class SetupActivity extends BaseActivity implements AdapterView.OnItemCli
 
                         String time = String.format(Locale.getDefault(), "%02d:%02d:%02d", 0, selectedMinutes, selectedSeconds);
 
-                        if(position == 7)
+                        if (position == 7)
                         {
                             Timings breakTimings = new Timings(time);
                             adapter.setBreakTime(breakTimings.getTotalTimeInSeconds());
@@ -362,7 +369,7 @@ public class SetupActivity extends BaseActivity implements AdapterView.OnItemCli
 
                     }
                 })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which)
                     {

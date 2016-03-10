@@ -174,7 +174,7 @@ public class ForgotPasswordActivity extends BaseActivity {
         mEmailView.setError(null);
 
         // Store values at the time of the login attempt.
-        String email = mEmailView.getText().toString();
+        String email = mEmailView.getText().toString().trim();
 
         boolean cancel = false;
         View focusView = null;

@@ -73,6 +73,9 @@ public class LauncherActivity extends BaseDrawerActivity {
     @BindDrawable(R.drawable.ic_aasan_active_48dp)
     Drawable mIcAasanActive;
 
+    @BindDrawable(R.drawable.ic_aasan_deactive_48dp)
+    Drawable mIcAasanDeActive;
+
     private ArrayList<AasanTime> aasanTimes;
 
     public static final String AASAN_LIST_KEY = "AASAN_LIST_KEY";
@@ -144,7 +147,8 @@ public class LauncherActivity extends BaseDrawerActivity {
             Intent intent = new Intent(this, AasanActivity.class);
 
             int currentAasanIndex = 0;
-            AasanInformation aasanInformation = new AasanInformation(currentAasanIndex, aasanTimes);
+            int currentSetIndex = 1;
+            AasanInformation aasanInformation = new AasanInformation(currentAasanIndex, currentSetIndex, aasanTimes);
             DailyRoutine dailyRoutine = new DailyRoutine();
 
             intent.putExtra(AASAN_LIST_KEY, aasanInformation);
@@ -342,11 +346,19 @@ public class LauncherActivity extends BaseDrawerActivity {
                 {
                     mAgnisarKriya.setCompoundDrawablesWithIntrinsicBounds(null, mIcAasanActive, null, null);
                 }
+                else
+                {
+                    mAgnisarKriya.setCompoundDrawablesWithIntrinsicBounds(null, mIcAasanDeActive, null, null);
+                }
                 break;
             case AasanNames.Anulom_Vilom:
                 if (isCompleted == 1)
                 {
                     mAnulomVilom.setCompoundDrawablesWithIntrinsicBounds(null, mIcAasanActive, null, null);
+                }
+                else
+                {
+                    mAnulomVilom.setCompoundDrawablesWithIntrinsicBounds(null, mIcAasanDeActive, null, null);
                 }
                 break;
             case AasanNames.Kapalbhati:
@@ -354,11 +366,19 @@ public class LauncherActivity extends BaseDrawerActivity {
                 {
                     mKapalBhati.setCompoundDrawablesWithIntrinsicBounds(null, mIcAasanActive, null, null);
                 }
+                else
+                {
+                    mKapalBhati.setCompoundDrawablesWithIntrinsicBounds(null, mIcAasanDeActive, null, null);
+                }
                 break;
             case AasanNames.Bharmari:
                 if (isCompleted == 1)
                 {
                     mBharamri.setCompoundDrawablesWithIntrinsicBounds(null, mIcAasanActive, null, null);
+                }
+                else
+                {
+                    mBharamri.setCompoundDrawablesWithIntrinsicBounds(null, mIcAasanDeActive, null, null);
                 }
                 break;
             case AasanNames.Bhastrika:
@@ -366,17 +386,29 @@ public class LauncherActivity extends BaseDrawerActivity {
                 {
                     mBhastrika.setCompoundDrawablesWithIntrinsicBounds(null, mIcAasanActive, null, null);
                 }
+                else
+                {
+                    mBhastrika.setCompoundDrawablesWithIntrinsicBounds(null, mIcAasanDeActive, null, null);
+                }
                 break;
             case AasanNames.Bahi:
                 if (isCompleted == 1)
                 {
                     mBahaya.setCompoundDrawablesWithIntrinsicBounds(null, mIcAasanActive, null, null);
                 }
+                else
+                {
+                    mBahaya.setCompoundDrawablesWithIntrinsicBounds(null, mIcAasanDeActive, null, null);
+                }
                 break;
             case AasanNames.Udgeeth:
                 if (isCompleted == 1)
                 {
                     mUdgeeth.setCompoundDrawablesWithIntrinsicBounds(null, mIcAasanActive, null, null);
+                }
+                else
+                {
+                    mUdgeeth.setCompoundDrawablesWithIntrinsicBounds(null, mIcAasanDeActive, null, null);
                 }
                 break;
         }

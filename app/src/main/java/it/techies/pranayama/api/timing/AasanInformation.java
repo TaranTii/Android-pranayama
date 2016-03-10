@@ -10,43 +10,15 @@ import java.util.ArrayList;
  */
 public class AasanInformation implements Parcelable {
 
-    public AasanInformation(int currentAasanIndex, ArrayList<AasanTime> aasanTimes)
-    {
-        this.currentAasanIndex = currentAasanIndex;
-        this.aasanTimes = aasanTimes;
-    }
-
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<AasanInformation> CREATOR = new Parcelable.Creator<AasanInformation>() {
-        @Override
-        public AasanInformation createFromParcel(Parcel in)
-        {
-            return new AasanInformation(in);
-        }
-
-        @Override
-        public AasanInformation[] newArray(int size)
-        {
-            return new AasanInformation[size];
-        }
-    };
-
     private int currentAasanIndex;
-
+    private int currentSetIndex;
     private ArrayList<AasanTime> aasanTimes;
 
-    protected AasanInformation(Parcel in)
+    public AasanInformation(int currentAasanIndex, int currentSetIndex, ArrayList<AasanTime> aasanTimes)
     {
-        currentAasanIndex = in.readInt();
-        if (in.readByte() == 0x01)
-        {
-            aasanTimes = new ArrayList<AasanTime>();
-            in.readList(aasanTimes, AasanTime.class.getClassLoader());
-        }
-        else
-        {
-            aasanTimes = null;
-        }
+        this.currentAasanIndex = currentAasanIndex;
+        this.currentSetIndex = currentSetIndex;
+        this.aasanTimes = aasanTimes;
     }
 
     public int getCurrentAasanIndex()
@@ -59,6 +31,16 @@ public class AasanInformation implements Parcelable {
         this.currentAasanIndex = currentAasanIndex;
     }
 
+    public int getCurrentSetIndex()
+    {
+        return currentSetIndex;
+    }
+
+    public void setCurrentSetIndex(int currentSetIndex)
+    {
+        this.currentSetIndex = currentSetIndex;
+    }
+
     public ArrayList<AasanTime> getAasanTimes()
     {
         return aasanTimes;
@@ -69,24 +51,48 @@ public class AasanInformation implements Parcelable {
         this.aasanTimes = aasanTimes;
     }
 
+    // ******************************* Parcelable ********************************************* //
+
+    protected AasanInformation(Parcel in) {
+        currentAasanIndex = in.readInt();
+        currentSetIndex = in.readInt();
+        if (in.readByte() == 0x01) {
+            aasanTimes = new ArrayList<AasanTime>();
+            in.readList(aasanTimes, AasanTime.class.getClassLoader());
+        } else {
+            aasanTimes = null;
+        }
+    }
+
     @Override
-    public int describeContents()
-    {
+    public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags)
-    {
+    public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(currentAasanIndex);
-        if (aasanTimes == null)
-        {
+        dest.writeInt(currentSetIndex);
+        if (aasanTimes == null) {
             dest.writeByte((byte) (0x00));
-        }
-        else
-        {
+        } else {
             dest.writeByte((byte) (0x01));
             dest.writeList(aasanTimes);
         }
     }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<AasanInformation> CREATOR = new Parcelable.Creator<AasanInformation>() {
+        @Override
+        public AasanInformation createFromParcel(Parcel in) {
+            return new AasanInformation(in);
+        }
+
+        @Override
+        public AasanInformation[] newArray(int size) {
+            return new AasanInformation[size];
+        }
+    };
+
+    // ******************************* Parcelable ********************************************* //
 }

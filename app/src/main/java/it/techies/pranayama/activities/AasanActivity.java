@@ -144,14 +144,34 @@ public class AasanActivity extends BaseBoundActivity {
             mCountDownTimer.cancel();
         }
 
+        // get current aasan index
+        mCurrentAasanIndex = mAasanInformation.getCurrentAasanIndex();
+
+        AasanTime currentAasan = mAasanInformation.getAasanTimes().get(mCurrentAasanIndex);
+        int totalSets = currentAasan.getSet();
+
+        boolean isLastAasan = (mCurrentAasanIndex + 1 == mAasanInformation.getAasanTimes().size());
+        boolean isLastSet = (mAasanInformation.getCurrentSetIndex() == totalSets);
+
         // check if this aasan is the last one
-        if (mCurrentAasanIndex == mAasanInformation.getAasanTimes().size() - 1)
+        if (isLastAasan)
         {
             showFinalScreen();
         }
         else
         {
-            startBreak();
+            // if the current aasan set is not last, then mark it as last one, because we want to
+            // skip the entire aasan if user taps on skip button.
+            if (!isLastSet)
+            {
+                mAasanInformation.setCurrentSetIndex(totalSets);
+            }
+
+            Intent intent = new Intent(this, BreakActivity.class);
+            intent.putExtra(LauncherActivity.DAILY_ROUTINE_KEY, mDailyRoutine);
+            intent.putExtra(LauncherActivity.AASAN_LIST_KEY, mAasanInformation);
+            startActivity(intent);
+            finish();
         }
     }
 
@@ -205,8 +225,6 @@ public class AasanActivity extends BaseBoundActivity {
         setContentView(R.layout.activity_aasan);
         ButterKnife.bind(this);
 
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
         mSkipButton.hide();
         mStopButton.hide();
 
@@ -225,14 +243,15 @@ public class AasanActivity extends BaseBoundActivity {
         // get current aasan index
         mCurrentAasanIndex = mAasanInformation.getCurrentAasanIndex();
 
+        // read number of sets in pranayama
+        currentSet = mAasanInformation.getCurrentSetIndex();
+
         // get current aasan information from aasan list
         final AasanTime aasanTime = mAasanInformation.getAasanTimes().get(mCurrentAasanIndex);
 
+
         // update the title bar with the name of current aasan
         ab.setTitle(aasanTime.getName());
-
-        // read number of sets in pranayama
-        currentSet = 1;
 
         // total sets in current aasan
         totalSets = aasanTime.getSet();
@@ -255,9 +274,7 @@ public class AasanActivity extends BaseBoundActivity {
         // update timer
         animator = ObjectAnimator.ofFloat(mActivePinImageView, "rotation", 0f, 360f);
         animator.setDuration(timer);
-        animator.setRepeatCount(totalSets);
         animator.setInterpolator(new LinearInterpolator());
-        animator.setRepeatMode(ObjectAnimator.INFINITE);
         animator.start();
     }
 
@@ -343,14 +360,7 @@ public class AasanActivity extends BaseBoundActivity {
                 // mark the aasan completed even if one set is done
                 setIsCompleted();
 
-                if (currentSet < totalSets)
-                {
-                    startNextSet();
-                }
-                else
-                {
-                    startBreak();
-                }
+                startBreak();
             }
 
         };
@@ -386,23 +396,6 @@ public class AasanActivity extends BaseBoundActivity {
         mCountDownTimer.cancel();
     }
 
-    /**
-     * Start the next set of aasan.
-     */
-    private void startNextSet()
-    {
-        // update current set
-        currentSet++;
-
-        // update the current set counter on screen
-        mSetTextView.setText(String.format("%d of %d", currentSet, totalSets));
-
-        // restart the counter
-        timerSeconds = mSingleSetDuration;
-        mCountDownTimer.cancel();
-        mCountDownTimer.start();
-    }
-
     @Override
     protected void onDestroy()
     {
@@ -428,8 +421,14 @@ public class AasanActivity extends BaseBoundActivity {
         // get current aasan index
         mCurrentAasanIndex = mAasanInformation.getCurrentAasanIndex();
 
+        AasanTime currentAasan = mAasanInformation.getAasanTimes().get(mCurrentAasanIndex);
+        int totalSets = currentAasan.getSet();
+
+        boolean isLastAasan = (mCurrentAasanIndex + 1 == mAasanInformation.getAasanTimes().size());
+        boolean isLastSet = (mAasanInformation.getCurrentSetIndex() == totalSets);
+
         // check if this aasan is the last one
-        if (mCurrentAasanIndex + 1 == mAasanInformation.getAasanTimes().size())
+        if (isLastAasan && isLastSet)
         {
             showFinalScreen();
         }

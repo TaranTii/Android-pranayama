@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -30,10 +29,10 @@ public class BreakActivity extends BaseBoundActivity {
     TextView mTimerTextView;
 
     // current aasan index
-    private Integer currentAasanIndex;
+    private Integer mCurrentAasanIndex;
 
     // aasan information
-    private AasanInformation aasanInformation;
+    private AasanInformation mAasanInformation;
 
     private CountDownTimer mCountDownTimer;
 
@@ -61,13 +60,13 @@ public class BreakActivity extends BaseBoundActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        aasanInformation = getIntent().getParcelableExtra(LauncherActivity.AASAN_LIST_KEY);
+        mAasanInformation = getIntent().getParcelableExtra(LauncherActivity.AASAN_LIST_KEY);
 
         // get current aasan index
-        currentAasanIndex = aasanInformation.getCurrentAasanIndex();
+        mCurrentAasanIndex = mAasanInformation.getCurrentAasanIndex();
 
         // get current aasan information from aasan list
-        AasanTime aasanTime = aasanInformation.getAasanTimes().get(currentAasanIndex);
+        AasanTime aasanTime = mAasanInformation.getAasanTimes().get(mCurrentAasanIndex);
 
         mTimerTextView.setText(aasanTime.getTimings().getBreakTimeString());
 
@@ -163,13 +162,31 @@ public class BreakActivity extends BaseBoundActivity {
         }
 
         // get current aasan index
-        currentAasanIndex = aasanInformation.getCurrentAasanIndex();
+        mCurrentAasanIndex = mAasanInformation.getCurrentAasanIndex();
 
-        // update current aasan index
-        aasanInformation.setCurrentAasanIndex(currentAasanIndex + 1);
+        final AasanTime currentAasan = mAasanInformation.getAasanTimes().get(mCurrentAasanIndex);
+        final int totalSets = currentAasan.getSet();
+        final boolean isLastSet = (mAasanInformation.getCurrentSetIndex() == totalSets);
+
+        if (isLastSet)
+        {
+            // start the next aasan
+            mAasanInformation.setCurrentAasanIndex(mCurrentAasanIndex + 1);
+            // start the first set of next aasan
+            mAasanInformation.setCurrentSetIndex(1);
+        }
+        else
+        {
+            // start the next aasan
+            int nextSet = mAasanInformation.getCurrentSetIndex() + 1;
+            if (nextSet <= totalSets)
+            {
+                mAasanInformation.setCurrentSetIndex(nextSet);
+            }
+        }
 
         Intent intent = new Intent(this, AasanActivity.class);
-        intent.putExtra(LauncherActivity.AASAN_LIST_KEY, aasanInformation);
+        intent.putExtra(LauncherActivity.AASAN_LIST_KEY, mAasanInformation);
         intent.putExtra(LauncherActivity.DAILY_ROUTINE_KEY, getIntent().getParcelableExtra(LauncherActivity.DAILY_ROUTINE_KEY));
         startActivity(intent);
         finish();

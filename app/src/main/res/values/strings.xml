@@ -88,5 +88,8 @@
 	<string name="dialog_message_discard_changes">Discard changes?</string>
 	<string name="dialog_action_discard">Discard</string>
 	<string name="action_login">Login</string>
+	<string name="pref_key_music">PREF_MUSIC</string>
+	<string name="pref_key_push_notification">PREF_PUSH_NOTIFICATION</string>
+	<string name="password_changed_success_message">Password is changed successfully.</string>
 
 </resources>
