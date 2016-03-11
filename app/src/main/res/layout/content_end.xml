@@ -37,15 +37,29 @@
 				android:textAppearance="@style/TextAppearance.AppCompat.Headline"
 				android:textColor="@color/textColorSubHead"/>
 
-			<ImageView
-				android:layout_width="wrap_content"
+			<de.hdodenhof.circleimageview.CircleImageView
+				android:id="@+id/share_iv"
+				android:layout_width="@dimen/profile_photo_width"
+				android:layout_height="@dimen/profile_photo_height"
+				android:layout_gravity="center_horizontal"
+				android:layout_marginTop="16dp"
+				android:maxHeight="@dimen/profile_photo_width"
+				android:maxWidth="@dimen/profile_photo_height"
+				android:src="@drawable/ic_aasan"
+				app:civ_border_color="@color/colorPrimary"
+				app:civ_border_width="2dp"/>
+
+			<Button
+				android:id="@+id/share_btn"
+				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="16dp"
-				android:src="@drawable/ic_aasan"/>
+				android:backgroundTint="@android:color/white"
+				android:text="@string/share"/>
 
 			<Button
 				android:id="@+id/home_btn"
-				android:layout_width="wrap_content"
+				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="16dp"
 				android:backgroundTint="@android:color/white"

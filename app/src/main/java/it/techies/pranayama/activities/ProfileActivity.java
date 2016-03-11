@@ -60,7 +60,7 @@ import timber.log.Timber;
 
 public class ProfileActivity extends BaseActivity implements DatePickerDialog.OnDateSetListener {
 
-    private static final int REQUEST_IMAGE_CAPTURE = 1;
+    public static final int REQUEST_IMAGE_CAPTURE = 1;
 
     @Bind(R.id.profile_photo_iv)
     CircleImageView mUserProfileImageView;
@@ -687,7 +687,7 @@ public class ProfileActivity extends BaseActivity implements DatePickerDialog.On
 
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK)
         {
-            Timber.d("REQUEST_IMAGE_CAPTURE");
+            Timber.d("REQUEST_CODE_IMAGE_CAPTURE");
 
             Crop.of(mCurrentPhotoUri, mCurrentPhotoUri).asSquare().start(this);
 

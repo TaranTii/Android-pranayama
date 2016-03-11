@@ -92,5 +92,6 @@
 	<string name="pref_key_push_notification">PREF_PUSH_NOTIFICATION</string>
 	<string name="password_changed_success_message">Password is changed successfully.</string>
 	<string name="error_invalid_date">Invalid date of birth</string>
+	<string name="share">Share</string>
 
 </resources>
