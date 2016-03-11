@@ -96,18 +96,20 @@
 						android:layout_height="wrap_content"
 						android:src="@drawable/inner"/>
 
-					<TextView
-						android:id="@+id/timer_tv"
+					<RelativeLayout
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:layout_alignBottom="@+id/active_pin_iv"
-						android:layout_alignEnd="@+id/active_pin_iv"
-						android:layout_alignStart="@+id/active_pin_iv"
-						android:layout_alignTop="@+id/active_pin_iv"
-						android:gravity="center_horizontal|center_vertical"
-						android:textAppearance="@style/Base.TextAppearance.AppCompat.Display1"
-						android:textColor="@color/textColorSubHead"
-						tools:text="00:00"/>
+						android:layout_centerInParent="true">
+
+						<TextView
+							android:id="@+id/timer_tv"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:textAppearance="@style/Base.TextAppearance.AppCompat.Display1"
+							android:textColor="@color/textColorSubHead"
+							tools:text="00:00"/>
+
+					</RelativeLayout>
 
 				</RelativeLayout>
 

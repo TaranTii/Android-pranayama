@@ -2,6 +2,7 @@ package it.techies.pranayama.activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -32,6 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -55,7 +58,7 @@ import retrofit.Response;
 import retrofit.Retrofit;
 import timber.log.Timber;
 
-public class ProfileActivity extends BaseActivity {
+public class ProfileActivity extends BaseActivity implements DatePickerDialog.OnDateSetListener {
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
 
@@ -130,6 +133,21 @@ public class ProfileActivity extends BaseActivity {
         loadUserProfile();
     }
 
+    @OnClick(R.id.date_of_birth)
+    public void onDateOfBirthClick(View v)
+    {
+        // Use the current date as the default date in the picker
+        final Calendar c = Calendar.getInstance();
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH);
+        int day = c.get(Calendar.DAY_OF_MONTH);
+
+        // Create a new instance of DatePickerDialog
+        DatePickerDialog dialog = new DatePickerDialog(this, this, year, month, day);
+
+        dialog.show();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -145,6 +163,19 @@ public class ProfileActivity extends BaseActivity {
         getTimezoneList();
 
         loadUserProfile();
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth)
+    {
+        String date = String.format(
+                Locale.getDefault(),
+                "%04d-%02d-%02d",
+                year,
+                monthOfYear + 1,
+                dayOfMonth);
+
+        mDateOfBirthView.setText(date);
     }
 
     public String loadJSONFromAsset(String filename)
@@ -296,6 +327,13 @@ public class ProfileActivity extends BaseActivity {
             cancel = true;
         }
 
+        if (TextUtils.isEmpty(mSelectedCountryCode))
+        {
+            mCountryView.setError(getString(R.string.error_field_required));
+            focusView = mCountryView;
+            cancel = true;
+        }
+
         if (TextUtils.isEmpty(phone))
         {
             mPhoneNumberView.setError(getString(R.string.error_field_required));
@@ -334,6 +372,12 @@ public class ProfileActivity extends BaseActivity {
         if (TextUtils.isEmpty(dob))
         {
             mDateOfBirthView.setError(getString(R.string.error_field_required));
+            focusView = mDateOfBirthView;
+            cancel = true;
+        }
+        else if (!Utils.isDateOfBirthValid(dob))
+        {
+            mDateOfBirthView.setError(getString(R.string.error_invalid_date));
             focusView = mDateOfBirthView;
             cancel = true;
         }

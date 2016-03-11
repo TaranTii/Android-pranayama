@@ -96,6 +96,7 @@
 				android:layout_height="wrap_content"
 				android:hint="@string/hint_state"
 				android:inputType="textPostalAddress"
+				android:digits="abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 				android:maxLines="1"
 				android:singleLine="true"
 				app:met_floatingLabel="none"
