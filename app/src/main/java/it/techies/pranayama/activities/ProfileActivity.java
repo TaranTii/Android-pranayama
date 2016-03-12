@@ -80,14 +80,14 @@ public class ProfileActivity extends BaseActivity implements DatePickerDialog.On
     @Bind(R.id.state)
     MaterialEditText mStateView;
 
-    @Bind(R.id.country)
-    MaterialSpinner mCountryView;
-
     @Bind(R.id.phone_number)
     MaterialEditText mPhoneNumberView;
 
+    @Bind(R.id.country)
+    MaterialSpinner mCountrySpinner;
+
     @Bind(R.id.timezone)
-    MaterialSpinner mTimezoneView;
+    MaterialSpinner mTimezoneSpinner;
 
     @Bind(R.id.loading_ll)
     View mLoadingView;
@@ -210,14 +210,16 @@ public class ProfileActivity extends BaseActivity implements DatePickerDialog.On
             try
             {
                 countries = gson.fromJson(countriesJson, countiesListType);
-                ArrayAdapter<Country> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, countries);
-                mCountryView.setAdapter(adapter);
-                mCountryView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                ArrayAdapter<Country> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, countries);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                mCountrySpinner.setAdapter(adapter);
+                mCountrySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
                     {
                         if (position == -1)
                         {
+                            mSelectedCountryCode = "";
                             return;
                         }
 
@@ -254,14 +256,16 @@ public class ProfileActivity extends BaseActivity implements DatePickerDialog.On
             try
             {
                 timezoneList = gson.fromJson(timezoneJson, timezoneListType);
-                ArrayAdapter<Timezone> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, timezoneList);
-                mTimezoneView.setAdapter(adapter);
-                mTimezoneView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                ArrayAdapter<Timezone> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, timezoneList);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                mTimezoneSpinner.setAdapter(adapter);
+                mTimezoneSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
                     {
                         if (position == -1)
                         {
+                            mSelectedTimezoneCode = "";
                             return;
                         }
 
@@ -322,29 +326,30 @@ public class ProfileActivity extends BaseActivity implements DatePickerDialog.On
 
         if (TextUtils.isEmpty(mSelectedTimezoneCode))
         {
-            mTimezoneView.setError(getString(R.string.error_field_required));
-            focusView = mTimezoneView;
-            cancel = true;
+            new AlertDialog.Builder(this)
+                    .setTitle("Error")
+                    .setMessage("Please select a timezone.")
+                    .setPositiveButton(android.R.string.ok, null)
+                    .show();
+
+            return;
         }
 
         if (TextUtils.isEmpty(mSelectedCountryCode))
         {
-            mCountryView.setError(getString(R.string.error_field_required));
-            focusView = mCountryView;
-            cancel = true;
+            new AlertDialog.Builder(this)
+                    .setTitle("Error")
+                    .setMessage("Please select a country.")
+                    .setPositiveButton(android.R.string.ok, null)
+                    .show();
+
+            return;
         }
 
         if (TextUtils.isEmpty(phone))
         {
             mPhoneNumberView.setError(getString(R.string.error_field_required));
             focusView = mPhoneNumberView;
-            cancel = true;
-        }
-
-        if (TextUtils.isEmpty(mSelectedCountryCode))
-        {
-            mCountryView.setError(getString(R.string.error_field_required));
-            focusView = mCountryView;
             cancel = true;
         }
 
@@ -400,10 +405,10 @@ public class ProfileActivity extends BaseActivity implements DatePickerDialog.On
                 String address = mAddressView.getText().toString();
                 String city = mCityView.getText().toString();
                 String state = mStateView.getText().toString();
-                String country = mCountryView.getText().toString();
+                String country = mCountrySpinner.getText().toString();
                 String dob = mDateOfBirthView.getText().toString();
                 String phone = mPhoneNumberView.getText().toString();
-                String timezone = mTimezoneView.getText().toString();
+                String timezone = mTimezoneSpinner.getText().toString();
             */
 
             userProfile.setFullname(fullName);
@@ -474,7 +479,7 @@ public class ProfileActivity extends BaseActivity implements DatePickerDialog.On
 
                             if (country.getCode().equals(String.valueOf(userProfile.getCountryId()).trim()))
                             {
-                                mCountryView.setSelection(position + 1);
+                                mCountrySpinner.setSelection(position + 1);
                                 break;
                             }
                         }
@@ -492,7 +497,7 @@ public class ProfileActivity extends BaseActivity implements DatePickerDialog.On
 
                     if (userProfile.getTimezone() != null)
                     {
-                        // mTimezoneView.setText(userProfile.getTimezone().trim());
+                        // mTimezoneSpinner.setText(userProfile.getTimezone().trim());
 
                         for (int position = 0; position < timezoneList.size(); position++)
                         {
@@ -500,7 +505,7 @@ public class ProfileActivity extends BaseActivity implements DatePickerDialog.On
 
                             if (timezone.getValue().equals(String.valueOf(userProfile.getTimezone()).trim()))
                             {
-                                mTimezoneView.setSelection(position + 1);
+                                mTimezoneSpinner.setSelection(position + 1);
                                 break;
                             }
                         }

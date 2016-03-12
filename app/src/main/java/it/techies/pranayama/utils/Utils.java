@@ -1,14 +1,8 @@
 package it.techies.pranayama.utils;
 
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.util.Base64;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -18,30 +12,17 @@ import com.squareup.okhttp.ResponseBody;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 import java.util.Calendar;
 import java.util.List;
 
-import it.techies.pranayama.activities.LoginActivity;
-import it.techies.pranayama.api.ApiClient;
 import it.techies.pranayama.api.errors.ErrorArray;
 import it.techies.pranayama.api.errors.ErrorObject;
-import it.techies.pranayama.api.token.ResetTokenCallBack;
-import it.techies.pranayama.api.token.ResetTokenRequest;
-import it.techies.pranayama.api.token.ResetTokenResponse;
-import it.techies.pranayama.api.user.UserProfile;
-import it.techies.pranayama.services.PrayanamaService;
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.Response;
-import retrofit.Retrofit;
-import timber.log.Timber;
 
 /**
  * Created by jdtechies on 30/11/2015.
  */
 public class Utils {
+
     /**
      * Function to convert bitmap to string
      *

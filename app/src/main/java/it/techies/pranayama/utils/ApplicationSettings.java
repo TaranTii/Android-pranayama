@@ -3,12 +3,12 @@ package it.techies.pranayama.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.text.TextUtils;
 
 /**
  * Created by jdtechies on 30/11/2015.
  */
 public class ApplicationSettings {
+
     // push notification registration flags
     public static final String SENT_TOKEN_TO_SERVER = "sent_token_to_server";
 

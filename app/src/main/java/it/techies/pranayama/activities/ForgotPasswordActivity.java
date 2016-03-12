@@ -59,6 +59,7 @@ public class ForgotPasswordActivity extends BaseActivity {
                 Timber.d("Forgot password success");
                 SuccessResponse SuccessResponse = response.body();
                 showToast(SuccessResponse.getMessage());
+                finish();
             }
             else
             {
