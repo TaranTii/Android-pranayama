@@ -160,6 +160,8 @@ public class AasanActivity extends BaseBoundActivity {
         }
         else
         {
+            playBellMusic();
+
             // if the current aasan set is not last, then mark it as last one, because we want to
             // skip the entire aasan if user taps on skip button.
             if (!isLastSet)
@@ -172,6 +174,19 @@ public class AasanActivity extends BaseBoundActivity {
             intent.putExtra(LauncherActivity.AASAN_LIST_KEY, mAasanInformation);
             startActivity(intent);
             finish();
+        }
+    }
+
+    protected void playBellMusic()
+    {
+        if (mBound)
+        {
+            mService.playMeditationBellMusic();
+            Timber.d("play bell music...");
+        }
+        else
+        {
+            Timber.d("service not bound yet");
         }
     }
 
@@ -408,15 +423,7 @@ public class AasanActivity extends BaseBoundActivity {
      */
     private void startBreak()
     {
-        if (mBound)
-        {
-            mService.playMeditationBellMusic();
-            Timber.d("play bell music...");
-        }
-        else
-        {
-            Timber.d("service not bound yet");
-        }
+        playBellMusic();
 
         // get current aasan index
         mCurrentAasanIndex = mAasanInformation.getCurrentAasanIndex();
