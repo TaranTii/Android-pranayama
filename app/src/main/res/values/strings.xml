@@ -19,7 +19,7 @@
 
 	<!--asana names-->
 	<string name="aasan_bhastrika">Bhastrika</string>
-	<string name="aasan_kapal_bhati">Kapal Bhati</string>
+	<string name="aasan_kapal_bhati">Kapalbhati</string>
 	<string name="aasan_bahaya">Bahaya</string>
 	<string name="aasan_agnisar_kriya">Agnisar Kriya</string>
 	<string name="aasan_anulom_vilom">Anulom Vilom</string>
@@ -89,9 +89,10 @@
 	<string name="dialog_action_discard">Discard</string>
 	<string name="action_login">Login</string>
 	<string name="pref_key_music">PREF_MUSIC</string>
-	<string name="pref_key_push_notification">PREF_PUSH_NOTIFICATION</string>
-	<string name="password_changed_success_message">Password is changed successfully.</string>
+	<string name="pref_key_push_notification" translatable="false">PREF_PUSH_NOTIFICATION</string>
+	<string name="password_changed_success_message">Password changed successfully.</string>
 	<string name="error_invalid_date">Invalid date of birth</string>
 	<string name="share">Share</string>
+	<string name="label_setup_schedule">Let\'s setup schedule</string>
 
 </resources>

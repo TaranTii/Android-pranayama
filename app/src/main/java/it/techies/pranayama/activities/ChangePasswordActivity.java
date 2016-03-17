@@ -221,6 +221,7 @@ public class ChangePasswordActivity extends BaseActivity {
                                         focusView = mNewPasswordView;
                                         mNewPasswordView.setError(error.getMessage());
                                         break;
+
                                     case ApiFields.FIELD_CURRENT_PASSWORD:
                                         focusView = mCurrentPasswordView;
                                         mCurrentPasswordView.setError(error.getMessage());

@@ -8,11 +8,18 @@ import com.google.gson.annotations.SerializedName;
  */
 public class UserProfile {
 
+    public static final String FIELD_FULL_NAME = "fullname";
+    public static final String FIELD_DATE_OF_BIRTH = "dob";
+    public static final String FIELD_ADDRESS = "address1";
+    public static final String FIELD_CITY = "city";
+    public static final String FIELD_STATE = "state";
+    public static final String FIELD_PHONE = "phone";
+
     @SerializedName("id")
     @Expose
     private Integer id;
 
-    @SerializedName("fullname")
+    @SerializedName(FIELD_FULL_NAME)
     @Expose
     private String fullname;
 
@@ -32,7 +39,7 @@ public class UserProfile {
     @Expose
     private Integer type;
 
-    @SerializedName("address1")
+    @SerializedName(FIELD_ADDRESS)
     @Expose
     private String address1;
 
@@ -40,11 +47,11 @@ public class UserProfile {
     @Expose
     private String address2;
 
-    @SerializedName("city")
+    @SerializedName(FIELD_CITY)
     @Expose
     private String city;
 
-    @SerializedName("state")
+    @SerializedName(FIELD_STATE)
     @Expose
     private String state;
 
@@ -52,7 +59,7 @@ public class UserProfile {
     @Expose
     private Integer countryId;
 
-    @SerializedName("phone")
+    @SerializedName(FIELD_PHONE)
     @Expose
     private String phone;
 
@@ -72,7 +79,7 @@ public class UserProfile {
     @Expose
     private String timezone;
 
-    @SerializedName("dob")
+    @SerializedName(FIELD_DATE_OF_BIRTH)
     @Expose
     private String dob;
 

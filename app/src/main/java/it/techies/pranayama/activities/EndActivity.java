@@ -37,6 +37,7 @@ import it.techies.pranayama.api.DailyRoutine;
 import it.techies.pranayama.api.EmptyResponse;
 import it.techies.pranayama.infrastructure.BaseActivity;
 import it.techies.pranayama.infrastructure.OnResetTokenSuccessCallBack;
+import me.alexrs.prefs.lib.Prefs;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
@@ -134,6 +135,8 @@ public class EndActivity extends BaseActivity {
             {
                 if (response.isSuccess())
                 {
+                    // save history in prefs
+                    Prefs.with(EndActivity.this).save(LoginActivity.USER_HISTORY, 1);
                     Timber.d("isSuccess()");
                 }
                 else

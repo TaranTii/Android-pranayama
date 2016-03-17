@@ -1,19 +1,14 @@
 package it.techies.pranayama.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.support.v4.view.LayoutInflaterCompat;
-import android.view.View;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.TextView;
 
 import com.facebook.appevents.AppEventsLogger;
-import com.mikepenz.google_material_typeface_library.GoogleMaterial;
-import com.mikepenz.iconics.context.IconicsContextWrapper;
-import com.mikepenz.iconics.context.IconicsLayoutInflater;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +26,7 @@ import it.techies.pranayama.api.timing.AasanInformation;
 import it.techies.pranayama.api.timing.AasanTime;
 import it.techies.pranayama.infrastructure.BaseDrawerActivity;
 import it.techies.pranayama.infrastructure.OnResetTokenSuccessCallBack;
-import it.techies.pranayama.utils.Utils;
+import me.alexrs.prefs.lib.Prefs;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
@@ -101,7 +96,7 @@ public class LauncherActivity extends BaseDrawerActivity {
         Timber.tag(LauncherActivity.class.getSimpleName());
 
         // if user has mHistory this will be 1 otherwise 0
-        Integer mHistory = getIntent().getIntExtra(LoginActivity.USER_HISTORY, -1);
+        int mHistory = Prefs.with(this).getInt(LoginActivity.USER_HISTORY, 0);
 
         // start background music service
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
@@ -221,6 +216,9 @@ public class LauncherActivity extends BaseDrawerActivity {
                 }
                 else
                 {
+                    // get aasan timing
+                    getAasanTiming();
+
                     int statusCode = response.code();
                     Timber.d("[Err] could not get mHistory, statusCode %d", statusCode);
 
@@ -245,6 +243,9 @@ public class LauncherActivity extends BaseDrawerActivity {
             @Override
             public void onFailure(Throwable t)
             {
+                // get aasan timing
+                getAasanTiming();
+
                 Timber.e(t, "getHistory");
                 hideLoadingDialog();
                 onRetrofitFailure(t);

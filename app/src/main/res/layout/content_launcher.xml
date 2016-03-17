@@ -44,7 +44,7 @@
 				android:layout_marginTop="16dp"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="Let's setup schedule"
+				android:text="@string/label_setup_schedule"
 				android:textAppearance="@style/TextAppearance.AppCompat.Title"
 				android:textColor="@color/textColorSubHead"/>
 
@@ -61,8 +61,6 @@
 				android:id="@+id/gridLayout"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:layout_alignParentTop="true"
-				android:layout_centerHorizontal="true"
 				android:layout_marginTop="8dp">
 
 				<TextView
@@ -122,8 +120,7 @@
 				android:id="@+id/gridLayout2"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:layout_below="@+id/gridLayout"
-				android:layout_centerHorizontal="true" android:layout_marginTop="8dp">
+				android:layout_marginTop="8dp">
 
 				<TextView
 					android:id="@+id/textView5"
@@ -175,7 +172,8 @@
 			android:layout_marginTop="24dp"
 			android:textAppearance="?android:attr/textAppearanceLarge"
 			android:textColor="@color/textColorSubHead"
-			android:textSize="40sp" tools:text="00:00 mins"/>
+			android:textSize="40sp"
+			tools:text="00:00 mins"/>
 
 		<ImageButton
 			android:id="@+id/start_button"

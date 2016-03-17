@@ -50,6 +50,7 @@ import it.techies.pranayama.infrastructure.BaseActivity;
 import it.techies.pranayama.infrastructure.User;
 import it.techies.pranayama.utils.ApplicationSettings;
 import it.techies.pranayama.utils.Utils;
+import me.alexrs.prefs.lib.Prefs;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
@@ -315,7 +316,10 @@ public class LoginActivity extends BaseActivity {
 
                     Intent intent = new Intent(LoginActivity.this, LauncherActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    intent.putExtra(USER_HISTORY, loginResponse.getHistory());
+
+                    // save history in prefs
+                    Prefs.with(LoginActivity.this).save(USER_HISTORY, loginResponse.getHistory());
+
                     startActivity(intent);
                     finish();
                 }

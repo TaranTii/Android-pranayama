@@ -26,6 +26,7 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.soundcloud.android.crop.Crop;
+import com.squareup.okhttp.ResponseBody;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
@@ -45,7 +46,9 @@ import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import fr.ganfra.materialspinner.MaterialSpinner;
 import it.techies.pranayama.R;
+import it.techies.pranayama.api.ApiFields;
 import it.techies.pranayama.api.EmptyResponse;
+import it.techies.pranayama.api.errors.ErrorArray;
 import it.techies.pranayama.api.user.UserProfile;
 import it.techies.pranayama.infrastructure.BaseActivity;
 import it.techies.pranayama.infrastructure.OnResetTokenSuccessCallBack;
@@ -223,7 +226,7 @@ public class ProfileActivity extends BaseActivity implements DatePickerDialog.On
                             return;
                         }
 
-                        if (position > 0 && position < countries.size())
+                        if (position >= 0 && position < countries.size())
                         {
                             mSelectedCountryCode = countries.get(position).getCode();
                         }
@@ -263,13 +266,15 @@ public class ProfileActivity extends BaseActivity implements DatePickerDialog.On
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
                     {
+                        Timber.d("position %d", position);
+
                         if (position == -1)
                         {
                             mSelectedTimezoneCode = "";
                             return;
                         }
 
-                        if (position > 0 && position < timezoneList.size())
+                        if (position >= 0 && position < timezoneList.size())
                         {
                             mSelectedTimezoneCode = timezoneList.get(position).getValue();
                         }
@@ -859,6 +864,62 @@ public class ProfileActivity extends BaseActivity implements DatePickerDialog.On
                                 sendEditProfileRequest();
                             }
                         });
+                    }
+                    else if (statusCode == 422)
+                    {
+                        hideLoadingDialog();
+                        ResponseBody mErrorBody = response.errorBody();
+
+                        try
+                        {
+                            List<ErrorArray> errors = Utils.getErrorList(mErrorBody);
+                            for (ErrorArray error : errors)
+                            {
+                                String field = error.getField();
+                                View focusView = null;
+
+                                switch (field)
+                                {
+                                    case UserProfile.FIELD_FULL_NAME:
+                                        focusView = mFullNameView;
+                                        mFullNameView.setError(error.getMessage());
+                                        break;
+
+                                    case UserProfile.FIELD_DATE_OF_BIRTH:
+                                        focusView = mDateOfBirthView;
+                                        mDateOfBirthView.setError(error.getMessage());
+                                        break;
+
+                                    case UserProfile.FIELD_ADDRESS:
+                                        focusView = mAddressView;
+                                        mAddressView.setError(error.getMessage());
+                                        break;
+
+                                    case UserProfile.FIELD_CITY:
+                                        focusView = mCityView;
+                                        mCityView.setError(error.getMessage());
+                                        break;
+
+                                    case UserProfile.FIELD_STATE:
+                                        focusView = mStateView;
+                                        mStateView.setError(error.getMessage());
+                                        break;
+
+                                    case UserProfile.FIELD_PHONE:
+                                        focusView = mPhoneNumberView;
+                                        mPhoneNumberView.setError(error.getMessage());
+                                        break;
+                                }
+
+                                if (focusView != null)
+                                {
+                                    focusView.requestFocus();
+                                }
+                            }
+                        } catch (IOException e)
+                        {
+                            Timber.e(e, "[Err] cannot read errors from response body");
+                        }
                     }
                     else
                     {

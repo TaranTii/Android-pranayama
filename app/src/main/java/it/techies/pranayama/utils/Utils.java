@@ -104,7 +104,7 @@ public class Utils {
         Calendar cal = Calendar.getInstance();
 
         // year should be greater than 0 and less than current year
-        if (year < 1 || year > cal.get(Calendar.YEAR))
+        if (year < 1 || year >= cal.get(Calendar.YEAR))
         {
             return false;
         }

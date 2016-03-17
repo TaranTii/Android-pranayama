@@ -109,7 +109,7 @@
 				android:layout_height="wrap_content"
 				android:hint="@string/hint_phone_number"
 				android:inputType="phone"
-				android:maxLines="2"
+				android:digits="0123456789"
 				android:singleLine="true"
 				app:met_floatingLabel="none"
 				app:met_iconLeft="@drawable/ic_phone_black_24dp"
