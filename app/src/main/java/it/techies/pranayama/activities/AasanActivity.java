@@ -282,6 +282,46 @@ public class AasanActivity extends BaseBoundActivity {
         Timings timings = aasanTime.getTimings();
         mSingleSetDuration = timings.getSingleSetDuration();
         createTimer(mSingleSetDuration);
+
+        setupBenefitTextView(aasanTime);
+    }
+
+    private void setupBenefitTextView(AasanTime aasanTime)
+    {
+        String benefits = "N/A";
+
+        switch (aasanTime.getName())
+        {
+            case AasanNames.Bhastrika:
+                benefits = getString(R.string.benefit_bhastrika);
+                break;
+
+            case AasanNames.Kapalbhati:
+                benefits = getString(R.string.benefit_kapalbhati);
+                break;
+
+            case AasanNames.Bahi:
+                benefits = getString(R.string.benefit_bahaya);
+                break;
+
+            case AasanNames.Agnisar_Kriya:
+                benefits = getString(R.string.benefit_agnisar_kriya);
+                break;
+
+            case AasanNames.Anulom_Vilom:
+                benefits = getString(R.string.benefit_anulom_vilom);
+                break;
+
+            case AasanNames.Bharmari:
+                benefits = getString(R.string.benefit_bharamri);
+                break;
+
+            case AasanNames.Udgeeth:
+                benefits = getString(R.string.benefit_udgeeth);
+                break;
+        }
+
+        mBenefitsTextView.setText(benefits);
     }
 
     private void startAnimation(long timer)

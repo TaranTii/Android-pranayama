@@ -19,12 +19,20 @@
 
 	<!--asana names-->
 	<string name="aasan_bhastrika">Bhastrika</string>
-	<string name="aasan_kapal_bhati">Kapalbhati</string>
+	<string name="aasan_kapal_bhati">Kapal bhati</string>
 	<string name="aasan_bahaya">Bahaya</string>
 	<string name="aasan_agnisar_kriya">Agnisar Kriya</string>
 	<string name="aasan_anulom_vilom">Anulom Vilom</string>
 	<string name="aasan_bharamri">Bharamri</string>
 	<string name="aasan_udgeeth">Udgeeth</string>
+
+	<string name="benefit_bhastrika">The ‘bellows breath’ is the fundamental breathing exercise that elevates the Prana (force of life) within you. Right from invigorating the mind and aiding in sleeping, to enhancing metabolism and helping in weight loss, the pose does all this and much more.</string>
+	<string name="benefit_kapalbhati">One of the more popular forms of pranayama, this breathing exercise helps tackle multiple ailments and get over them naturally. The name comes from "Kapal" means forehead and "bhati" means shining, which denotes that the practitioner sees a glow on his/her face by doing this exercise regularly.</string>
+	<string name="benefit_bahaya">This breathing exercise regulates the inhaling and exhaling process of breathing. By breathing out, you are expelling root causes of multiple ailments. With help of mulabandha, uddayana bandha and jalandhara bandha, the practitioner can help keep breath out of body and thus do this exercise in the correct manner.</string>
+	<string name="benefit_agnisar_kriya">Lend robust vitality to your inner body by getting to know the right way to do this exercise with this app. This type of pranayama is beneficial in eliminating stomach disorders, digestions issues, constipation and appetite loss. It provides a holistic benefit to the body – from muscles and nerves, to internal organs.</string>
+	<string name="benefit_anulom_vilom">This is an alternative form of breathing through nostrils. Adapting this form of breathing is bound to provide benefit in many different ways – it helps prevent the spread of chronic illnesses such as diabetes and high blood pressure. This app shows you how to carry out this essential breathing pose in the right way.</string>
+	<string name="benefit_bharamri">Coined from the Sanskrit word Bharmar (humming bee), the humming sound that forms the core of this breathing technique, helps to relax the brain immediately by sending a signal to the hypothalamus, which controls the pituitary gland – the king of all glands across the body.</string>
+	<string name="benefit_udgeeth">The most fundamental (and arguably the most popular) forms of breathing exercise under Yoga. This entails sitting in the yogic pose and chanting ‘Om!’ in a long breath. Though very simple, the app shows how it can be done for best benefit of your mind and body.</string>
 
 	<string name="title_activity_main">Pranayama</string>
 	<string name="title_activity_login">Sign in</string>
@@ -94,5 +102,6 @@
 	<string name="error_invalid_date">Invalid date of birth</string>
 	<string name="share">Share</string>
 	<string name="label_setup_schedule">Let\'s setup schedule</string>
+	<string name="benefits">Benefits</string>
 
 </resources>
