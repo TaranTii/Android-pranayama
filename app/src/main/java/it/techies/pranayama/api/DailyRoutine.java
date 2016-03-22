@@ -7,11 +7,9 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
-import java.util.TimerTask;
 
 import it.techies.pranayama.api.timing.Timings;
 
@@ -40,9 +38,9 @@ public class DailyRoutine implements Parcelable {
     @Expose
     private String udgeeth = "0";
 
-    @SerializedName("Bahi")
+    @SerializedName("Bahaya")
     @Expose
-    private String bahi = "0";
+    private String bahaya = "0";
 
     @SerializedName("Agnisar Kriya")
     @Expose
@@ -115,14 +113,14 @@ public class DailyRoutine implements Parcelable {
         this.udgeeth = udgeeth;
     }
 
-    public String getBahi()
+    public String getBahaya()
     {
-        return bahi;
+        return bahaya;
     }
 
-    public void setBahi(String bahi)
+    public void setBahaya(String bahaya)
     {
-        this.bahi = bahi;
+        this.bahaya = bahaya;
     }
 
     public String getAgnisarKriya()
@@ -205,7 +203,7 @@ public class DailyRoutine implements Parcelable {
         time = in.readString();
         bharmari = in.readString();
         udgeeth = in.readString();
-        bahi = in.readString();
+        bahaya = in.readString();
         agnisarKriya = in.readString();
         date = in.readString();
         gmt = in.readString();
@@ -227,7 +225,7 @@ public class DailyRoutine implements Parcelable {
         dest.writeString(time);
         dest.writeString(bharmari);
         dest.writeString(udgeeth);
-        dest.writeString(bahi);
+        dest.writeString(bahaya);
         dest.writeString(agnisarKriya);
         dest.writeString(date);
         dest.writeString(gmt);
@@ -261,7 +259,7 @@ public class DailyRoutine implements Parcelable {
                 ", time='" + time + '\'' +
                 ", bharmari='" + bharmari + '\'' +
                 ", udgeeth='" + udgeeth + '\'' +
-                ", bahi='" + bahi + '\'' +
+                ", bahaya='" + bahaya + '\'' +
                 ", agnisarKriya='" + agnisarKriya + '\'' +
                 ", date='" + date + '\'' +
                 ", gmt='" + gmt + '\'' +

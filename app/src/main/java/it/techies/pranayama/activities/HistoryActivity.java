@@ -307,7 +307,7 @@ public class HistoryActivity extends BaseActivity {
                     mBhastrika.setCompoundDrawablesWithIntrinsicBounds(mIcAasanDeActive, null, null, null);
                 }
                 break;
-            case AasanNames.Bahi:
+            case AasanNames.Bahaya:
                 if (isCompleted == 1)
                 {
                     mBahaya.setCompoundDrawablesWithIntrinsicBounds(mIcAasanActive, null, null, null);

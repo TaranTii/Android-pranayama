@@ -36,6 +36,7 @@ import it.techies.pranayama.R;
 import it.techies.pranayama.api.DailyRoutine;
 import it.techies.pranayama.api.EmptyResponse;
 import it.techies.pranayama.infrastructure.BaseActivity;
+import it.techies.pranayama.infrastructure.BaseBoundActivity;
 import it.techies.pranayama.infrastructure.OnResetTokenSuccessCallBack;
 import me.alexrs.prefs.lib.Prefs;
 import retrofit.Call;
@@ -44,7 +45,7 @@ import retrofit.Response;
 import retrofit.Retrofit;
 import timber.log.Timber;
 
-public class EndActivity extends BaseActivity {
+public class EndActivity extends BaseBoundActivity {
 
     public static final int REQUEST_CODE_IMAGE_CAPTURE = 1;
     private static final int REQUEST_CODE_WRITE_EXTERNAL_STORAGE = 2;

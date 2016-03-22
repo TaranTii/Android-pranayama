@@ -10,6 +10,6 @@ public abstract class AasanNames
     public static final String Kapalbhati = "Kapalbhati";
     public static final String Bharmari = "Bharmari";
     public static final String Bhastrika = "Bhastrika";
-    public static final String Bahi = "Bahi";
+    public static final String Bahaya = "Bahaya";
     public static final String Udgeeth = "Udgeeth";
 }

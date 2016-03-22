@@ -9,7 +9,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
-import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -160,8 +159,6 @@ public class AasanActivity extends BaseBoundActivity {
         }
         else
         {
-            playBellMusic();
-
             // if the current aasan set is not last, then mark it as last one, because we want to
             // skip the entire aasan if user taps on skip button.
             if (!isLastSet)
@@ -169,12 +166,41 @@ public class AasanActivity extends BaseBoundActivity {
                 mAasanInformation.setCurrentSetIndex(totalSets);
             }
 
-            Intent intent = new Intent(this, BreakActivity.class);
-            intent.putExtra(LauncherActivity.DAILY_ROUTINE_KEY, mDailyRoutine);
-            intent.putExtra(LauncherActivity.AASAN_LIST_KEY, mAasanInformation);
-            startActivity(intent);
-            finish();
+            startNextAasan();
         }
+    }
+
+    private void startNextAasan()
+    {
+        // get current aasan index
+        int currentAasanIndex = mAasanInformation.getCurrentAasanIndex();
+
+        final AasanTime currentAasan = mAasanInformation.getAasanTimes().get(currentAasanIndex);
+        final int totalSets = currentAasan.getSet();
+        final boolean isLastSet = (mAasanInformation.getCurrentSetIndex() == totalSets);
+
+        if (isLastSet)
+        {
+            // start the next aasan
+            mAasanInformation.setCurrentAasanIndex(currentAasanIndex + 1);
+            // start the first set of next aasan
+            mAasanInformation.setCurrentSetIndex(1);
+        }
+        else
+        {
+            // start the next aasan
+            int nextSet = mAasanInformation.getCurrentSetIndex() + 1;
+            if (nextSet <= totalSets)
+            {
+                mAasanInformation.setCurrentSetIndex(nextSet);
+            }
+        }
+
+        Intent intent = new Intent(this, AasanActivity.class);
+        intent.putExtra(LauncherActivity.AASAN_LIST_KEY, mAasanInformation);
+        intent.putExtra(LauncherActivity.DAILY_ROUTINE_KEY, getIntent().getParcelableExtra(LauncherActivity.DAILY_ROUTINE_KEY));
+        startActivity(intent);
+        finish();
     }
 
     protected void playBellMusic()
@@ -300,7 +326,7 @@ public class AasanActivity extends BaseBoundActivity {
                 benefits = getString(R.string.benefit_kapalbhati);
                 break;
 
-            case AasanNames.Bahi:
+            case AasanNames.Bahaya:
                 benefits = getString(R.string.benefit_bahaya);
                 break;
 
@@ -508,8 +534,8 @@ public class AasanActivity extends BaseBoundActivity {
             case AasanNames.Kapalbhati:
                 mDailyRoutine.setKapalbhati("1");
                 break;
-            case AasanNames.Bahi:
-                mDailyRoutine.setBahi("1");
+            case AasanNames.Bahaya:
+                mDailyRoutine.setBahaya("1");
                 break;
             case AasanNames.Agnisar_Kriya:
                 mDailyRoutine.setAgnisarKriya("1");

@@ -392,7 +392,7 @@ public class LauncherActivity extends BaseDrawerActivity {
                     mBhastrika.setCompoundDrawablesWithIntrinsicBounds(null, mIcAasanDeActive, null, null);
                 }
                 break;
-            case AasanNames.Bahi:
+            case AasanNames.Bahaya:
                 if (isCompleted == 1)
                 {
                     mBahaya.setCompoundDrawablesWithIntrinsicBounds(null, mIcAasanActive, null, null);

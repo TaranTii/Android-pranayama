@@ -172,7 +172,7 @@ public class PrayanamaService extends Service implements MediaPlayer.OnCompletio
         }
         else
         {
-            playYogaMusic();
+            stopSelf();
         }
     }
 
