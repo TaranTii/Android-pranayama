@@ -197,6 +197,8 @@ public class RegisterActivity extends BaseActivity {
         else
         {
             RegisterRequest request = new RegisterRequest(email, password, fullName, mUserGender, "email");
+
+            showLoadingDialog("Please wait...");
             sendRegisterRequest(request);
         }
     }

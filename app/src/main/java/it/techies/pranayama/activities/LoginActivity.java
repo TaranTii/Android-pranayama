@@ -191,16 +191,7 @@ public class LoginActivity extends BaseActivity {
                     {
                         String id = object.getString("id");
                         String email = object.getString("email");
-
-                        /*
-                        Timber.d("Name - %s", object.getString("name"));
-                        Timber.d("ID - %s", object.getString("id"));
-                        Timber.d("Email - %s", object.getString("email"));
-                        Timber.d("Gender - %s", object.getString("gender"));
-                        */
-
                         sendLoginWithFacebookRequest(id, email);
-
                     } catch (JSONException e)
                     {
                         e.printStackTrace();
@@ -380,7 +371,7 @@ public class LoginActivity extends BaseActivity {
 
                                 switch (field)
                                 {
-                                    case ApiFields.FIELD_EMAIL:
+                                    case "email":
                                         focusView = mEmailView;
                                         mEmailView.setError(error.getMessage());
                                         break;
