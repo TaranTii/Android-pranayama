@@ -340,7 +340,6 @@ public class SetupActivity extends BaseActivity implements AdapterView.OnItemCli
         seconds.setMaxValue(59);
         seconds.setValue((int) timings.getSeconds());
 
-
         new AlertDialog.Builder(this)
                 .setView(dialogView)
                 .setPositiveButton("Set", new DialogInterface.OnClickListener() {
@@ -352,6 +351,12 @@ public class SetupActivity extends BaseActivity implements AdapterView.OnItemCli
                         int selectedMinutes = minutes.getValue();
                         int selectedSeconds = seconds.getValue();
                         int selectedSets = sets.getValue();
+
+                        if (selectedMinutes == 0 && selectedSeconds < 15)
+                        {
+                            showMinimumTimeDialog();
+                            return;
+                        }
 
                         String time = String.format(Locale.getDefault(), "%02d:%02d:%02d", 0, selectedMinutes, selectedSeconds);
 
@@ -376,6 +381,16 @@ public class SetupActivity extends BaseActivity implements AdapterView.OnItemCli
 
                     }
                 })
+                .show();
+    }
+
+    private void showMinimumTimeDialog()
+    {
+        new AlertDialog.Builder(this)
+                .setTitle("Error")
+                .setMessage("Aasan/Break time should be more than 14 seconds")
+                .setPositiveButton(android.R.string.ok, null)
+                .create()
                 .show();
     }
 }

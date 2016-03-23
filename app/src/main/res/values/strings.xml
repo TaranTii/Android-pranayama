@@ -103,5 +103,7 @@
 	<string name="share">Share</string>
 	<string name="label_setup_schedule">Let\'s setup schedule</string>
 	<string name="benefits">Benefits</string>
+	<string name="sign_up_with_facebook">Sign up with Facebook</string>
+	<string name="login_with_facebook">Login with Facebook</string>
 
 </resources>

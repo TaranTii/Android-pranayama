@@ -88,6 +88,12 @@ public class DailyRoutine implements Parcelable {
         return currentTime.toString();
     }
 
+    public String getSharingTime()
+    {
+        Timings currentTime = new Timings(time);
+        return currentTime.getBreakTimeString();
+    }
+
     public void setTime(String time)
     {
         this.time = time;

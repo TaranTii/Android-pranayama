@@ -216,9 +216,6 @@ public class LauncherActivity extends BaseDrawerActivity {
                 }
                 else
                 {
-                    // get aasan timing
-                    getAasanTiming();
-
                     int statusCode = response.code();
                     Timber.d("[Err] could not get mHistory, statusCode %d", statusCode);
 
@@ -233,6 +230,11 @@ public class LauncherActivity extends BaseDrawerActivity {
                             }
                         });
                     }
+                    else if(statusCode == 422)
+                    {
+                        // get aasan timing
+                        getAasanTiming();
+                    }
                     else
                     {
                         hideLoadingDialog();
@@ -243,9 +245,6 @@ public class LauncherActivity extends BaseDrawerActivity {
             @Override
             public void onFailure(Throwable t)
             {
-                // get aasan timing
-                getAasanTiming();
-
                 Timber.e(t, "getHistory");
                 hideLoadingDialog();
                 onRetrofitFailure(t);

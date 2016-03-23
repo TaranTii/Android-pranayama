@@ -144,15 +144,13 @@
 					android:text="@string/action_sign_up"
 					android:textColor="@color/colorButtonText"/>
 
-				<com.facebook.login.widget.LoginButton
-					android:id="@+id/login_button"
+				<Button
+					style="?android:textAppearanceButton"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:layout_gravity="center_horizontal"
 					android:layout_marginTop="16dp"
-					android:paddingBottom="10dp"
-					android:paddingTop="10dp"
-					android:visibility="gone"/>
+					android:onClick="onFacebookSignupButtonClick"
+					android:text="@string/sign_up_with_facebook"/>
 
 			</LinearLayout>
 

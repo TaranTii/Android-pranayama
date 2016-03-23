@@ -12,7 +12,6 @@ import android.util.Patterns;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.facebook.AccessToken;
@@ -24,7 +23,6 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.okhttp.ResponseBody;
 
@@ -34,6 +32,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -48,7 +47,6 @@ import it.techies.pranayama.api.login.LoginRequest;
 import it.techies.pranayama.api.login.LoginResponse;
 import it.techies.pranayama.infrastructure.BaseActivity;
 import it.techies.pranayama.infrastructure.User;
-import it.techies.pranayama.utils.ApplicationSettings;
 import it.techies.pranayama.utils.Utils;
 import me.alexrs.prefs.lib.Prefs;
 import retrofit.Call;
@@ -136,77 +134,85 @@ public class LoginActivity extends BaseActivity {
         }
     }
 
+    public void onFacebookLoginButtonClick(View v)
+    {
+        ArrayList<String> permissions = new ArrayList<>();
+        permissions.add("email");
+        LoginManager loginManager = LoginManager.getInstance();
+        loginManager.logInWithReadPermissions(this, permissions);
+    }
+
     /**
      * Initialize the facebook login button.
      */
     private void initFacebookLogin()
     {
         callbackManager = CallbackManager.Factory.create();
+        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult)
+            {
+                Timber.d("onSuccess");
+                getUsersFacebookProfile(loginResult);
+            }
 
-        LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
-        loginButton.setReadPermissions("email");
+            @Override
+            public void onCancel()
+            {
+                Timber.d("onCancel");
+            }
 
-        LoginManager.getInstance().registerCallback(
-                callbackManager,
-                new FacebookCallback<LoginResult>() {
-                    @Override
-                    public void onSuccess(LoginResult loginResult)
+            @Override
+            public void onError(FacebookException exception)
+            {
+                Timber.d("onError");
+            }
+        });
+    }
+
+    protected void getUsersFacebookProfile(LoginResult loginResult)
+    {
+        showLoadingDialog("Signing in...");
+
+        AccessToken accessToken = loginResult.getAccessToken();
+        GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
+            @Override
+            public void onCompleted(JSONObject object, GraphResponse response)
+            {
+                FacebookRequestError error = response.getError();
+
+                if (error != null)
+                {
+                    Timber.d(error.getErrorMessage());
+                }
+                else
+                {
+                    try
                     {
-                        Timber.d("onSuccess");
-                        AccessToken accessToken = loginResult.getAccessToken();
-                        GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
-                            @Override
-                            public void onCompleted(JSONObject object, GraphResponse response)
-                            {
-                                FacebookRequestError error = response.getError();
+                        String id = object.getString("id");
+                        String email = object.getString("email");
 
-                                if (error != null)
-                                {
-                                    Timber.d(error.getErrorMessage());
-                                }
-                                else
-                                {
-                                    try
-                                    {
-                                        String id = object.getString("id");
-                                        String email = object.getString("email");
+                        /*
+                        Timber.d("Name - %s", object.getString("name"));
+                        Timber.d("ID - %s", object.getString("id"));
+                        Timber.d("Email - %s", object.getString("email"));
+                        Timber.d("Gender - %s", object.getString("gender"));
+                        */
 
-                                        /*
-                                        Timber.d("Name - %s", object.getString("name"));
-                                        Timber.d("ID - %s", object.getString("id"));
-                                        Timber.d("Email - %s", object.getString("email"));
-                                        Timber.d("Gender - %s", object.getString("gender"));
-                                        */
+                        sendLoginWithFacebookRequest(id, email);
 
-                                        loginWithFacebook(id, email);
-
-                                    } catch (JSONException e)
-                                    {
-                                        e.printStackTrace();
-                                    }
-
-                                }
-                            }
-                        });
-
-                        Bundle parameters = new Bundle();
-                        parameters.putString("fields", "id, name, email, gender, birthday");
-                        request.setParameters(parameters);
-                        request.executeAsync();
-                    }
-
-                    @Override
-                    public void onCancel()
+                    } catch (JSONException e)
                     {
-                        Timber.d("onCancel");
+                        e.printStackTrace();
                     }
+                }
+            }
+        });
 
-                    @Override
-                    public void onError(FacebookException exception)
-                    {
-                        Timber.d("onError");
-                    }
-                });
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "id, name, email, gender, birthday");
+        request.setParameters(parameters);
+        request.executeAsync();
     }
 
     @Override
@@ -222,7 +228,7 @@ public class LoginActivity extends BaseActivity {
      * @param id    Facebook user id
      * @param email Facebook email
      */
-    private void loginWithFacebook(String id, String email)
+    private void sendLoginWithFacebookRequest(String id, String email)
     {
         LoginRequest request = new LoginRequest();
 
@@ -283,14 +289,13 @@ public class LoginActivity extends BaseActivity {
         }
         else
         {
+            showLoadingDialog("Signing in...");
             sendLoginRequest(new LoginRequest(email, password, "email"));
         }
     }
 
-    private void sendLoginRequest(LoginRequest request)
+    private void sendLoginRequest(final LoginRequest request)
     {
-        showLoadingDialog("Signing in");
-
         ApiClient.ApiInterface client = ApiClient.getApiClient(null, null);
         Call<LoginResponse> call = client.login(request);
         call.enqueue(new Callback<LoginResponse>() {
@@ -309,7 +314,7 @@ public class LoginActivity extends BaseActivity {
 
                     User user = new User();
                     user.setUserId(loginResponse.getResourceId());
-                    user.setEmail(mEmailView.getText().toString());
+                    user.setEmail(request.getEmail());
                     mAuth.setUser(user);
                     mAuth.update(LoginActivity.this);
                     mAuth.setToken(LoginActivity.this, loginResponse.getToken());

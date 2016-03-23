@@ -35,6 +35,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import it.techies.pranayama.R;
 import it.techies.pranayama.api.DailyRoutine;
 import it.techies.pranayama.api.EmptyResponse;
+import it.techies.pranayama.api.timing.Timings;
 import it.techies.pranayama.infrastructure.BaseActivity;
 import it.techies.pranayama.infrastructure.BaseBoundActivity;
 import it.techies.pranayama.infrastructure.OnResetTokenSuccessCallBack;
@@ -50,6 +51,7 @@ public class EndActivity extends BaseBoundActivity {
     public static final int REQUEST_CODE_IMAGE_CAPTURE = 1;
     private static final int REQUEST_CODE_WRITE_EXTERNAL_STORAGE = 2;
 
+    private DailyRoutine mDailyRoutine;
     private Uri mCurrentPhotoUri;
     private Bitmap mShareImage;
 
@@ -90,8 +92,14 @@ public class EndActivity extends BaseBoundActivity {
             share.setType("text/plain");
         }
 
-        share.putExtra(Intent.EXTRA_TEXT, "Shared from prayanama app");
+        share.putExtra(Intent.EXTRA_TEXT, getSharingText());
         startActivity(Intent.createChooser(share, "Share..."));
+    }
+
+    public String getSharingText()
+    {
+        String time = mDailyRoutine.getSharingTime();
+        return "I did Pranayama for " + time + " - via Pranayama app";
     }
 
     @OnClick(R.id.share_iv)
@@ -124,10 +132,10 @@ public class EndActivity extends BaseBoundActivity {
 
     private void sendDailyRouting()
     {
-        DailyRoutine dailyRoutine = getIntent().getParcelableExtra(LauncherActivity.DAILY_ROUTINE_KEY);
+        mDailyRoutine = getIntent().getParcelableExtra(LauncherActivity.DAILY_ROUTINE_KEY);
 
         List<DailyRoutine> dailyRoutineList = new ArrayList<>();
-        dailyRoutineList.add(dailyRoutine);
+        dailyRoutineList.add(mDailyRoutine);
 
         Call<EmptyResponse> call = mApiClient.setDailyRoutine(dailyRoutineList);
         call.enqueue(new Callback<EmptyResponse>() {

@@ -25,6 +25,7 @@ public class BaseBoundActivity extends BaseActivity {
     protected PrayanamaService mService;
     protected boolean mBound = false;
     protected Menu mMenu;
+    protected boolean isBreakActivity = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -38,7 +39,7 @@ public class BaseBoundActivity extends BaseActivity {
     {
         super.onStart();
 
-        if (Prefs.with(this).getBoolean(getString(R.string.pref_key_music), true))
+        if (Prefs.with(this).getBoolean(getString(R.string.pref_key_music), true) && !isBreakActivity)
         {
             // Bind to LocalService
             Intent intent = new Intent(this, PrayanamaService.class);

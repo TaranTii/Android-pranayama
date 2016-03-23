@@ -33,6 +33,12 @@ public class RegisterRequest
     @Expose
     private String gender;
 
+    @SerializedName("fb_id")
+    @Expose
+    private String facebookId;
+
+    public RegisterRequest() {}
+
     public RegisterRequest(String email, String password, String fullname, String gender,
                            String signupVia)
     {
@@ -41,6 +47,16 @@ public class RegisterRequest
         this.fullname = fullname;
         this.gender = gender;
         this.signupVia = signupVia;
+    }
+
+    public String getFacebookId()
+    {
+        return facebookId;
+    }
+
+    public void setFacebookId(String facebookId)
+    {
+        this.facebookId = facebookId;
     }
 
     public String getEmail()

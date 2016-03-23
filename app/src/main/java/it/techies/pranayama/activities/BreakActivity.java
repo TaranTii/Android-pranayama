@@ -98,6 +98,13 @@ public class BreakActivity extends BaseBoundActivity {
         mCountDownTimer.start();
     }
 
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        isBreakActivity = true;
+    }
+
     private void startAnimation(long timer)
     {
         // update timer

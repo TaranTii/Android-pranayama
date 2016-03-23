@@ -32,6 +32,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -115,7 +116,6 @@ public class RegisterActivity extends BaseActivity {
 
         initFacebookSignup();
     }
-
 
     /**
      * Attempts to register the account specified by the login form. If there are form errors
@@ -201,66 +201,27 @@ public class RegisterActivity extends BaseActivity {
         }
     }
 
+    public void onFacebookSignupButtonClick(View v)
+    {
+        ArrayList<String> permissions = new ArrayList<>();
+        permissions.add("email");
+        LoginManager loginManager = LoginManager.getInstance();
+        loginManager.logInWithReadPermissions(this, permissions);
+    }
+
     /**
      * Initialize the facebook login button.
      */
     private void initFacebookSignup()
     {
         callbackManager = CallbackManager.Factory.create();
-
-        LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
-        loginButton.setReadPermissions("email");
-
         LoginManager.getInstance()
                 .registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(LoginResult loginResult)
                     {
                         Timber.d("onSuccess");
-                        AccessToken accessToken = loginResult.getAccessToken();
-                        GraphRequest request = GraphRequest
-                                .newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
-                                    @Override
-                                    public void onCompleted(JSONObject object,
-                                                            GraphResponse response)
-                                    {
-                                        FacebookRequestError error = response.getError();
-
-                                        if (error != null)
-                                        {
-                                            Timber.d(error.getErrorMessage());
-                                        }
-                                        else
-                                        {
-                                            try
-                                            {
-                                                String id = object.getString("id");
-                                                String email = object.getString("email");
-                                                String gender = object.getString("gender");
-                                                String name = object.getString("name");
-
-                                                /*Timber.d("Name - %s", object.getString("name"));
-                                                Timber.d("ID - %s", object.getString("id"));
-                                                Timber.d("Email - %s", object.getString("email"));
-                                                Timber.d("Gender - %s", object.getString("gender"));
-                                                */
-
-                                                signUpWithFacebook(id, email, name, gender);
-
-                                            } catch (JSONException e)
-                                            {
-                                                e.printStackTrace();
-                                            }
-
-                                        }
-                                    }
-                                });
-
-                        Bundle parameters = new Bundle();
-                        parameters.putString("fields", "id, name, email, gender, birthday");
-                        request.setParameters(parameters);
-                        request.executeAsync();
-
+                        getUsersFacebookProfile(loginResult);
                     }
 
                     @Override
@@ -277,6 +238,55 @@ public class RegisterActivity extends BaseActivity {
                         Timber.d("onError");
                     }
                 });
+    }
+
+    protected void getUsersFacebookProfile(LoginResult loginResult)
+    {
+        showLoadingDialog("Please wait...");
+
+        AccessToken accessToken = loginResult.getAccessToken();
+        GraphRequest request = GraphRequest
+                .newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
+                    @Override
+                    public void onCompleted(JSONObject object,
+                                            GraphResponse response)
+                    {
+                        FacebookRequestError error = response.getError();
+
+                        if (error != null)
+                        {
+                            Timber.d(error.getErrorMessage());
+                        }
+                        else
+                        {
+                            try
+                            {
+                                String id = object.getString("id");
+                                String email = object.getString("email");
+                                String gender = object.getString("gender");
+                                String name = object.getString("name");
+
+                                /*Timber.d("Name - %s", object.getString("name"));
+                                Timber.d("ID - %s", object.getString("id"));
+                                Timber.d("Email - %s", object.getString("email"));
+                                Timber.d("Gender - %s", object.getString("gender"));
+                                */
+
+                                signUpWithFacebook(id, email, name, gender);
+
+                            } catch (JSONException e)
+                            {
+                                e.printStackTrace();
+                            }
+
+                        }
+                    }
+                });
+
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "id, name, email, gender, birthday");
+        request.setParameters(parameters);
+        request.executeAsync();
     }
 
     @Override
@@ -309,13 +319,19 @@ public class RegisterActivity extends BaseActivity {
             female.setChecked(true);
         }
 
-        RegisterRequest request = new RegisterRequest(email, id, name, mUserGender, "fb");
+        // email, id, name, mUserGender, "fb"
+        RegisterRequest request = new RegisterRequest();
+        request.setEmail(email);
+        request.setFacebookId(id);
+        request.setFullname(name);
+        request.setGender(mUserGender);
+        request.setSignupVia("fb");
+
         sendRegisterRequest(request);
     }
 
     private void sendRegisterRequest(RegisterRequest request)
     {
-        showLoadingDialog("Please wait...");
         ApiClient.ApiInterface client = ApiClient.getApiClient(null, null);
         mAuthTask = client.signup(request);
         mAuthTask.enqueue(new Callback<EmptyResponse>() {

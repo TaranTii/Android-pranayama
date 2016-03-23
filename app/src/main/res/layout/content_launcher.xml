@@ -163,17 +163,18 @@
 
 			</GridLayout>
 
-		</LinearLayout>
+			<TextView
+				android:id="@+id/time_tv"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center"
+				android:layout_marginTop="24dp"
+				android:textAppearance="?android:attr/textAppearanceLarge"
+				android:textColor="@color/textColorSubHead"
+				android:textSize="40sp"
+				tools:text="00:00 mins"/>
 
-		<TextView
-			android:id="@+id/time_tv"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_marginTop="24dp"
-			android:textAppearance="?android:attr/textAppearanceLarge"
-			android:textColor="@color/textColorSubHead"
-			android:textSize="40sp"
-			tools:text="00:00 mins"/>
+		</LinearLayout>
 
 		<ImageButton
 			android:id="@+id/start_button"
