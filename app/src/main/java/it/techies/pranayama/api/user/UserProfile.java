@@ -15,10 +15,6 @@ public class UserProfile {
     public static final String FIELD_STATE = "state";
     public static final String FIELD_PHONE = "phone";
 
-    @SerializedName("id")
-    @Expose
-    private Integer id;
-
     @SerializedName(FIELD_FULL_NAME)
     @Expose
     private String fullname;
@@ -34,10 +30,6 @@ public class UserProfile {
     @SerializedName("updated_at")
     @Expose
     private Integer updatedAt;
-
-    @SerializedName("type")
-    @Expose
-    private Integer type;
 
     @SerializedName(FIELD_ADDRESS)
     @Expose
@@ -57,7 +49,7 @@ public class UserProfile {
 
     @SerializedName("country_id")
     @Expose
-    private Integer countryId;
+    private String countryId;
 
     @SerializedName(FIELD_PHONE)
     @Expose
@@ -67,14 +59,6 @@ public class UserProfile {
     @Expose
     private String image;
 
-    @SerializedName("tw_id")
-    @Expose
-    private String twId;
-
-    @SerializedName("fb_id")
-    @Expose
-    private String fbId;
-
     @SerializedName("timezone")
     @Expose
     private String timezone;
@@ -82,16 +66,6 @@ public class UserProfile {
     @SerializedName(FIELD_DATE_OF_BIRTH)
     @Expose
     private String dob;
-
-    public Integer getId()
-    {
-        return id;
-    }
-
-    public void setId(Integer id)
-    {
-        this.id = id;
-    }
 
     public String getFullname()
     {
@@ -131,16 +105,6 @@ public class UserProfile {
     public void setUpdatedAt(Integer updatedAt)
     {
         this.updatedAt = updatedAt;
-    }
-
-    public Integer getType()
-    {
-        return type;
-    }
-
-    public void setType(Integer type)
-    {
-        this.type = type;
     }
 
     public String getAddress1()
@@ -183,12 +147,12 @@ public class UserProfile {
         this.state = state;
     }
 
-    public Integer getCountryId()
+    public String getCountryId()
     {
         return countryId;
     }
 
-    public void setCountryId(Integer countryId)
+    public void setCountryId(String countryId)
     {
         this.countryId = countryId;
     }
@@ -211,26 +175,6 @@ public class UserProfile {
     public void setImage(String image)
     {
         this.image = image;
-    }
-
-    public String getTwId()
-    {
-        return twId;
-    }
-
-    public void setTwId(String twId)
-    {
-        this.twId = twId;
-    }
-
-    public String getFbId()
-    {
-        return fbId;
-    }
-
-    public void setFbId(String fbId)
-    {
-        this.fbId = fbId;
     }
 
     public String getTimezone()

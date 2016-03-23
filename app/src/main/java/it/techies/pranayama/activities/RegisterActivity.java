@@ -257,6 +257,7 @@ public class RegisterActivity extends BaseActivity {
 
                         if (error != null)
                         {
+                            hideLoadingDialog();
                             Timber.d(error.getErrorMessage());
                         }
                         else
@@ -267,17 +268,10 @@ public class RegisterActivity extends BaseActivity {
                                 String email = object.getString("email");
                                 String gender = object.getString("gender");
                                 String name = object.getString("name");
-
-                                /*Timber.d("Name - %s", object.getString("name"));
-                                Timber.d("ID - %s", object.getString("id"));
-                                Timber.d("Email - %s", object.getString("email"));
-                                Timber.d("Gender - %s", object.getString("gender"));
-                                */
-
                                 signUpWithFacebook(id, email, name, gender);
-
                             } catch (JSONException e)
                             {
+                                hideLoadingDialog();
                                 e.printStackTrace();
                             }
 
@@ -312,13 +306,19 @@ public class RegisterActivity extends BaseActivity {
         {
             mUserGender = "m";
             RadioButton male = (RadioButton) findViewById(R.id.male);
-            male.setChecked(true);
+            if (male != null)
+            {
+                male.setChecked(true);
+            }
         }
         else if ("female".equals(gender))
         {
             mUserGender = "f";
             RadioButton female = (RadioButton) findViewById(R.id.female);
-            female.setChecked(true);
+            if (female != null)
+            {
+                female.setChecked(true);
+            }
         }
 
         // email, id, name, mUserGender, "fb"
@@ -420,6 +420,7 @@ public class RegisterActivity extends BaseActivity {
             public void onFailure(Throwable t)
             {
                 Timber.e(t, "mLoginResponseCallback");
+                hideLoadingDialog();
                 showToast("Please check your internet connection.");
                 mAuthTask = null;
             }

@@ -183,6 +183,7 @@ public class LoginActivity extends BaseActivity {
 
                 if (error != null)
                 {
+                    hideLoadingDialog();
                     Timber.d(error.getErrorMessage());
                 }
                 else
@@ -194,6 +195,7 @@ public class LoginActivity extends BaseActivity {
                         sendLoginWithFacebookRequest(id, email);
                     } catch (JSONException e)
                     {
+                        hideLoadingDialog();
                         e.printStackTrace();
                     }
                 }

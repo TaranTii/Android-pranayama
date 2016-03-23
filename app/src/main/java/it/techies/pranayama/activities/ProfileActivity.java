@@ -322,12 +322,13 @@ public class ProfileActivity extends BaseActivity implements DatePickerDialog.On
         String address = mAddressView.getText().toString().trim();
         String city = mCityView.getText().toString().trim();
         String state = mStateView.getText().toString().trim();
-
         String dob = mDateOfBirthView.getText().toString().trim();
         String phone = mPhoneNumberView.getText().toString().trim();
 
         View focusView = null;
         boolean cancel = false;
+
+        /**
 
         if (TextUtils.isEmpty(mSelectedTimezoneCode))
         {
@@ -392,6 +393,8 @@ public class ProfileActivity extends BaseActivity implements DatePickerDialog.On
             cancel = true;
         }
 
+         */
+
         if (TextUtils.isEmpty(fullName))
         {
             mFullNameView.setError(getString(R.string.error_field_required));
@@ -405,22 +408,11 @@ public class ProfileActivity extends BaseActivity implements DatePickerDialog.On
         }
         else
         {
-            /*
-                String fullName = mFullNameView.getText().toString();
-                String address = mAddressView.getText().toString();
-                String city = mCityView.getText().toString();
-                String state = mStateView.getText().toString();
-                String country = mCountrySpinner.getText().toString();
-                String dob = mDateOfBirthView.getText().toString();
-                String phone = mPhoneNumberView.getText().toString();
-                String timezone = mTimezoneSpinner.getText().toString();
-            */
-
             userProfile.setFullname(fullName);
             userProfile.setAddress1(address);
             userProfile.setCity(city);
             userProfile.setState(state);
-            userProfile.setCountryId(Integer.valueOf(mSelectedCountryCode));
+            userProfile.setCountryId(mSelectedCountryCode);
             userProfile.setDob(dob);
             userProfile.setPhone(phone);
             userProfile.setTimezone(mSelectedTimezoneCode);
