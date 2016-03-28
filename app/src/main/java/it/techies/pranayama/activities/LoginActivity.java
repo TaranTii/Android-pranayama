@@ -353,9 +353,9 @@ public class LoginActivity extends BaseActivity {
 
                                 if ("Invalid fb_id.".equals(error.getMessage()) && "fb_id".equals(error.getField()))
                                 {
-                                    showAlert(error.getMessage());
+                                    showAlert(getString(R.string.error_account_does_not_exist));
                                     LoginManager.getInstance().logOut();
-                                    return;
+                                    break;
                                 }
 
                                 if ("Please define valid email.".equals(error.getMessage()))
@@ -377,6 +377,7 @@ public class LoginActivity extends BaseActivity {
                                         focusView = mEmailView;
                                         mEmailView.setError(error.getMessage());
                                         break;
+
                                     case "login":
                                         focusView = mPasswordView;
                                         mPasswordView.setError(error.getMessage());

@@ -50,7 +50,10 @@ public class ApiClient {
             // API_BASE_URL = "http://pranayama-seobudd-com-nmpui1qimgnd.runscope.net/api/v1/";
 
             // gurdeep
-            API_BASE_URL = "http://pranayama-seobudd-com-z5z6aw6f22su.runscope.net/api/v1/";
+            // API_BASE_URL = "http://pranayama-seobudd-com-z5z6aw6f22su.runscope.net/api/v1/";
+
+            // live
+            API_BASE_URL = "http://pranayama.seobudd.com/api/v1/";
         }
 
         OkHttpClient client = new OkHttpClient();

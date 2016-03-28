@@ -129,11 +129,6 @@
 			android:name="io.fabric.ApiKey"
 			android:value="7fee093304fbce6b8d990928143ed324a07e81fe"/>
 
-		<service
-			android:name=".services.ApiService"
-			android:exported="false">
-		</service>
-
 		<activity
 			android:name=".activities.LauncherActivity"
 			android:label="@string/app_name"
