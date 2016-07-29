@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "145277062883",
+    "firebase_url": "https://pranayama-59f5c.firebaseio.com",
+    "project_id": "pranayama-59f5c",
+    "storage_bucket": "pranayama-59f5c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:145277062883:android:6f81f4052121d1dc",
+        "android_client_info": {
+          "package_name": "it.techies.pranayama"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "145277062883-jl2ibu9p14td5apb1kc8idejje219r6t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "it.techies.pranayama",
+            "certificate_hash": "0381E37FC7582EC211A7430B2AA31AD6F790A045"
+          }
+        },
+        {
+          "client_id": "145277062883-bq1oufsv1crgbvujs7ac0fkcp3ovd1e8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBGl13eqR6ADzrntvNzVaLPkPqovADoLHE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "145277062883-bq1oufsv1crgbvujs7ac0fkcp3ovd1e8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

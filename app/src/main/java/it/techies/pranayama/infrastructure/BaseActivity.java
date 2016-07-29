@@ -10,6 +10,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.firebase.ui.auth.AuthUI;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.squareup.otto.Bus;
 
 import java.net.SocketTimeoutException;
@@ -17,11 +20,10 @@ import java.net.UnknownHostException;
 
 import it.techies.pranayama.MyApplication;
 import it.techies.pranayama.R;
-import it.techies.pranayama.activities.LoginActivity;
 import it.techies.pranayama.api.ApiClient;
-import it.techies.pranayama.api.EmptyResponse;
 import it.techies.pranayama.api.token.ResetTokenRequest;
 import it.techies.pranayama.api.token.ResetTokenResponse;
+import it.techies.pranayama.modules.splash.SplashActivity;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
@@ -31,25 +33,16 @@ import timber.log.Timber;
 /**
  * Created by jagdeep on 28/01/16.
  */
-public abstract class BaseActivity extends AppCompatActivity implements Auth.TokenChangeListener {
+public abstract class BaseActivity extends AppCompatActivity {
 
     protected MyApplication mApplication;
-    protected Bus mBus;
-    protected ApiClient.ApiInterface mApiClient;
-    protected Auth mAuth;
     protected ProgressDialog mDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
         mApplication = (MyApplication) getApplication();
-        mAuth = mApplication.getAuth();
-        mBus = mApplication.getBus();
-        mBus.register(this);
-        mApiClient = ApiClient.getApiClient(mAuth.getUser().getEmail(), mAuth.getToken());
-        mAuth.setTokenChangeListener(this);
     }
 
     @Override
@@ -74,7 +67,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Auth.Tok
     protected void onDestroy()
     {
         super.onDestroy();
-        mBus.unregister(this);
     }
 
     /**
@@ -114,113 +106,13 @@ public abstract class BaseActivity extends AppCompatActivity implements Auth.Tok
     }
 
     /**
-     * Handle retrofit failure error.
-     *
-     * @param t Exception to handle
-     */
-    protected void onRetrofitFailure(Throwable t)
-    {
-        if (t == null)
-        {
-            showToast("Unknown error");
-            return;
-        }
-
-        if (t instanceof SocketTimeoutException)
-        {
-            showToast("Socket Timeout Exception");
-        }
-        else if (t instanceof UnknownHostException)
-        {
-            showToast("Unknown Host Exception");
-        }
-        else
-        {
-            if (t.getMessage() != null)
-            {
-                showToast(t.getMessage());
-            }
-            else
-            {
-                showToast("Please check your internet connection");
-            }
-        }
-    }
-
-    /**
-     * Sends API request to Reset Token
-     */
-    protected void resetToken(final OnResetTokenSuccessCallBack callBack)
-    {
-        ResetTokenRequest resetTokenRequest = new ResetTokenRequest();
-        resetTokenRequest.setEmail(mAuth.getUser().getEmail());
-        resetTokenRequest.setToken(mAuth.getToken());
-
-        Call<ResetTokenResponse> call = mApiClient.resetToken(resetTokenRequest);
-        call.enqueue(new Callback<ResetTokenResponse>() {
-            @Override
-            public void onResponse(Response<ResetTokenResponse> response, Retrofit retrofit)
-            {
-                if (response.isSuccess())
-                {
-                    if (response.body() != null)
-                    {
-                        Timber.d("resetToken : onSuccess()");
-                        onTokenChanged(response.body().getToken());
-                        callBack.onSuccess(response.body().getToken());
-                    }
-                    else
-                    {
-                        logoutUser();
-                        showToast("You're logged out because of security reasons");
-                    }
-                }
-                else
-                {
-                    logoutUser();
-                    showToast("You're logged out because of security reasons");
-                }
-            }
-
-            @Override
-            public void onFailure(Throwable t)
-            {
-                logoutUser();
-                Timber.e(t, "resetToken()");
-                showToast("You're logged out because of security reasons");
-            }
-        });
-    }
-
-    /**
      * Logout the user and starts the Launcher activity.
      */
     protected void logoutUser()
     {
-        Call<EmptyResponse> call = mApiClient.doSignOut(mAuth.getUser().getUserId());
-        call.enqueue(new Callback<EmptyResponse>() {
-            @Override
-            public void onResponse(Response<EmptyResponse> response, Retrofit retrofit)
-            {
-                if (response.isSuccess())
-                {
-                    Timber.d("logoutUser() - isSuccess");
-                }
-                else
-                {
-                    Timber.d("logoutUser() - failed");
-                }
-            }
+        AuthUI.getInstance().signOut(this);
 
-            @Override
-            public void onFailure(Throwable t)
-            {
-                Timber.d("logoutUser() - onFailure");
-            }
-        });
-
-        mAuth.logout(this);
-        Intent intent = new Intent(this, LoginActivity.class);
+        Intent intent = new Intent(this, SplashActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
@@ -241,21 +133,10 @@ public abstract class BaseActivity extends AppCompatActivity implements Auth.Tok
                 .show();
     }
 
-    @Override
-    public void onTokenChanged(@Nullable String token)
+    protected String getUid()
     {
-        Timber.d("onTokenChanged %s", token);
-
-        mApplication.setAuth(mAuth);
-
-        if (token == null || mAuth.getUser() == null || mAuth.getUser().getEmail() == null)
-        {
-            mApiClient = ApiClient.getApiClient(null, null);
-        }
-        else
-        {
-            mApiClient = ApiClient.getApiClient(mAuth.getUser().getEmail(), token);
-        }
+        return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
+
 }
 

@@ -42,7 +42,7 @@ public class ApiClient {
 
         if (BuildConfig.DEBUG)
         {
-            API_BASE_URL = "http://pranayama-seobudd-com-j76980zityhl.runscope.net/api/v1/";
+            API_BASE_URL = "http://pranayama-seobudd-com-zea5ujo7re0f.runscope.net/api/v1/";
         }
         else
         {

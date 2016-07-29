@@ -14,6 +14,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -237,7 +238,8 @@ public class RegisterActivity extends BaseActivity {
                     public void onError(FacebookException exception)
                     {
                         // App code
-                        Timber.d("onError");
+                        Toast.makeText(RegisterActivity.this, "Unable to sign up via Facebook.", Toast.LENGTH_SHORT).show();
+                        Timber.e(exception, "onError");
                     }
                 });
     }
@@ -271,6 +273,7 @@ public class RegisterActivity extends BaseActivity {
                                 signUpWithFacebook(id, email, name, gender);
                             } catch (JSONException e)
                             {
+                                Toast.makeText(RegisterActivity.this, "Unable to sign up via Facebook.", Toast.LENGTH_SHORT).show();
                                 hideLoadingDialog();
                                 e.printStackTrace();
                             }

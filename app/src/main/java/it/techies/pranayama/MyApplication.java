@@ -2,11 +2,8 @@ package it.techies.pranayama;
 
 import android.app.Application;
 
-import com.crashlytics.android.Crashlytics;
-import com.facebook.FacebookSdk;
 import com.squareup.otto.Bus;
 
-import io.fabric.sdk.android.Fabric;
 import it.techies.pranayama.infrastructure.AndroidBus;
 import it.techies.pranayama.infrastructure.Auth;
 import it.techies.pranayama.infrastructure.ReleaseTree;
@@ -23,11 +20,8 @@ public class MyApplication extends Application {
     @Override
     public void onCreate()
     {
-        FacebookSdk.sdkInitialize(getApplicationContext());
         // MultiDex.install(this);
         super.onCreate();
-
-        initializeFabric();
 
         initializeTimber();
 
@@ -74,19 +68,6 @@ public class MyApplication extends Application {
         else
         {
             Timber.plant(new ReleaseTree());
-        }
-    }
-
-    private void initializeFabric()
-    {
-        if (!Fabric.isInitialized())
-        {
-            new Fabric.Builder(this)
-                    .kits(new Crashlytics())
-                    .debuggable(true)
-                    .build();
-
-            Fabric.with(this, new Crashlytics());
         }
     }
 }

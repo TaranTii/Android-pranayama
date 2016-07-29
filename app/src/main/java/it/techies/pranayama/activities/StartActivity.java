@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import it.techies.pranayama.R;
 import it.techies.pranayama.infrastructure.BaseActivity;
+import it.techies.pranayama.modules.launcher.LauncherActivity;
 
 public class StartActivity extends BaseActivity {
 

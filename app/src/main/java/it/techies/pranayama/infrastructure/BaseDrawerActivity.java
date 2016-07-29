@@ -18,7 +18,7 @@ import it.techies.pranayama.activities.ChangePasswordActivity;
 import it.techies.pranayama.activities.HistoryActivity;
 import it.techies.pranayama.activities.ProfileActivity;
 import it.techies.pranayama.activities.SettingsActivity;
-import it.techies.pranayama.activities.SetupActivity;
+import it.techies.pranayama.modules.setup.SetupActivity;
 
 /**
  * Created by jagdeep on 23/02/16.
@@ -127,7 +127,7 @@ public class BaseDrawerActivity extends BaseBoundActivity implements Drawer.OnDr
                     startActivity(new Intent(this, SettingsActivity.class));
                     break;
                 case 6:
-                    openSetupScheduleActivity();
+                    startActivity(new Intent(this, SetupActivity.class));
                     break;
                 case 8:
                     logoutUser();
@@ -137,10 +137,5 @@ public class BaseDrawerActivity extends BaseBoundActivity implements Drawer.OnDr
             result.closeDrawer();
         }
         return false;
-    }
-
-    protected void openSetupScheduleActivity()
-    {
-        startActivityForResult(new Intent(this, SetupActivity.class), REQUEST_CODE_SETUP);
     }
 }

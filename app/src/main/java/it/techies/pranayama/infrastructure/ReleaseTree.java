@@ -2,8 +2,6 @@ package it.techies.pranayama.infrastructure;
 
 import android.util.Log;
 
-import com.crashlytics.android.Crashlytics;
-
 import timber.log.Timber;
 
 /**
@@ -31,17 +29,17 @@ public class ReleaseTree extends Timber.Tree {
         if (isLoggable(priority))
         {
 
-            Crashlytics.log(priority, tag, message);
+            // Crashlytics.log(priority, tag, message);
 
             if (t != null)
             {
                 if (priority == Log.ERROR)
                 {
-                    Crashlytics.logException(t);
+                    // Crashlytics.logException(t);
                 }
                 else if (priority == Log.INFO)
                 {
-                    Crashlytics.log(message);
+                    // Crashlytics.log(message);
                 }
             }
 

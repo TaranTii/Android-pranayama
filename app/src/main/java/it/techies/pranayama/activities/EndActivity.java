@@ -14,7 +14,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.soundcloud.android.crop.Crop;
 import com.squareup.picasso.Picasso;
@@ -35,10 +34,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import it.techies.pranayama.R;
 import it.techies.pranayama.api.DailyRoutine;
 import it.techies.pranayama.api.EmptyResponse;
-import it.techies.pranayama.api.timing.Timings;
-import it.techies.pranayama.infrastructure.BaseActivity;
 import it.techies.pranayama.infrastructure.BaseBoundActivity;
 import it.techies.pranayama.infrastructure.OnResetTokenSuccessCallBack;
+import it.techies.pranayama.modules.launcher.LauncherActivity;
 import me.alexrs.prefs.lib.Prefs;
 import retrofit.Call;
 import retrofit.Callback;
@@ -132,8 +130,6 @@ public class EndActivity extends BaseBoundActivity {
 
     private void sendDailyRouting()
     {
-        mDailyRoutine = getIntent().getParcelableExtra(LauncherActivity.DAILY_ROUTINE_KEY);
-
         List<DailyRoutine> dailyRoutineList = new ArrayList<>();
         dailyRoutineList.add(mDailyRoutine);
 

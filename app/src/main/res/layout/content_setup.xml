@@ -6,11 +6,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="it.techies.pranayama.activities.SetupActivity"
+    tools:context=".modules.setup.SetupActivity"
     tools:showIn="@layout/activity_setup">
 
-    <ListView
-        android:id="@+id/aasan_timing_lv"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/aasan_timing_rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

@@ -23,6 +23,7 @@ import it.techies.pranayama.api.timing.AasanInformation;
 import it.techies.pranayama.api.timing.AasanTime;
 import it.techies.pranayama.api.timing.Timings;
 import it.techies.pranayama.infrastructure.BaseBoundActivity;
+import it.techies.pranayama.modules.launcher.LauncherActivity;
 import timber.log.Timber;
 
 public class AasanActivity extends BaseBoundActivity {
@@ -77,7 +78,7 @@ public class AasanActivity extends BaseBoundActivity {
     private int currentSet = 1;
 
     /**
-     * Total number of sets in current aasan.
+     * Total number of mSets in current aasan.
      */
     private int totalSets;
 
@@ -197,8 +198,6 @@ public class AasanActivity extends BaseBoundActivity {
         }
 
         Intent intent = new Intent(this, AasanActivity.class);
-        intent.putExtra(LauncherActivity.AASAN_LIST_KEY, mAasanInformation);
-        intent.putExtra(LauncherActivity.DAILY_ROUTINE_KEY, getIntent().getParcelableExtra(LauncherActivity.DAILY_ROUTINE_KEY));
         startActivity(intent);
         finish();
     }
@@ -276,15 +275,15 @@ public class AasanActivity extends BaseBoundActivity {
         Timber.tag(AasanActivity.class.getSimpleName());
 
         // get aasan's information
-        mAasanInformation = getIntent().getParcelableExtra(LauncherActivity.AASAN_LIST_KEY);
+        // mAasanInformation = getIntent().getParcelableExtra(LauncherActivity.AASAN_LIST_KEY);
 
         // get daily routine information
-        mDailyRoutine = getIntent().getParcelableExtra(LauncherActivity.DAILY_ROUTINE_KEY);
+        // mDailyRoutine = getIntent().getParcelableExtra(LauncherActivity.DAILY_ROUTINE_KEY);
 
         // get current aasan index
         mCurrentAasanIndex = mAasanInformation.getCurrentAasanIndex();
 
-        // read number of sets in pranayama
+        // read number of mSets in pranayama
         currentSet = mAasanInformation.getCurrentSetIndex();
 
         // get current aasan information from aasan list
@@ -294,7 +293,7 @@ public class AasanActivity extends BaseBoundActivity {
         // update the title bar with the name of current aasan
         ab.setTitle(aasanTime.getName());
 
-        // total sets in current aasan
+        // total mSets in current aasan
         totalSets = aasanTime.getSet();
 
         // update the current aasan and total aasan on screen
@@ -508,8 +507,6 @@ public class AasanActivity extends BaseBoundActivity {
         else
         {
             Intent intent = new Intent(this, BreakActivity.class);
-            intent.putExtra(LauncherActivity.DAILY_ROUTINE_KEY, mDailyRoutine);
-            intent.putExtra(LauncherActivity.AASAN_LIST_KEY, mAasanInformation);
             startActivity(intent);
             finish();
         }
@@ -559,7 +556,6 @@ public class AasanActivity extends BaseBoundActivity {
     {
         // open the final screen
         Intent intent = new Intent(this, EndActivity.class);
-        intent.putExtra(LauncherActivity.DAILY_ROUTINE_KEY, mDailyRoutine);
         startActivity(intent);
         finish();
     }

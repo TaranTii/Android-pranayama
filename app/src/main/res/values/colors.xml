@@ -17,4 +17,27 @@
 	<color name="textColorLabel">#20d0e7</color>
 	<color name="textColorSubHead">#ffffff</color>
 	<color name="textColorHint">#cdcdcd</color>
+
+
+	<color name="material_green_50">#E8F5E9</color>
+	<color name="material_green_500">#4CAF50</color>
+	<color name="material_green_700">#388E3C</color>
+	<color name="material_green_a200">#69F0AE</color>
+	<color name="material_lime_a700">#AEEA00</color>
+	<color name="material_purple_a700">#AA00FF</color>
+
+    <!--firebase-->
+    <color name="authui_colorAccent">#76bd05</color>
+    <color name="authui_colorActivated">#00b3ca</color>
+    <color name="authui_colorPrimary">#20d0e7</color>
+    <color name="authui_colorPrimaryDark">#00b3ca</color>
+    <color name="bodyTextColor">#c0000000</color>
+    <color name="buttonColor">@color/authui_colorPrimary</color>
+    <color name="buttonColorPressed">@color/authui_colorActivated</color>
+    <color name="buttonTextColor">#FFFFFF</color>
+    <color name="errorColor">#DD2C00</color>
+    <color name="headingColor">#ffffff</color>
+    <color name="inputLabelColor">#cdcdcd</color>
+    <color name="linkColor">#4285F4</color>
+    <color name="shadowColor">#eeeeee</color>
 </resources>

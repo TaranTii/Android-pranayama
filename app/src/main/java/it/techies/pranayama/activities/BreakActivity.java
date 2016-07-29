@@ -21,6 +21,7 @@ import it.techies.pranayama.R;
 import it.techies.pranayama.api.timing.AasanInformation;
 import it.techies.pranayama.api.timing.AasanTime;
 import it.techies.pranayama.infrastructure.BaseBoundActivity;
+import it.techies.pranayama.modules.launcher.LauncherActivity;
 import timber.log.Timber;
 
 public class BreakActivity extends BaseBoundActivity {
@@ -59,8 +60,6 @@ public class BreakActivity extends BaseBoundActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        mAasanInformation = getIntent().getParcelableExtra(LauncherActivity.AASAN_LIST_KEY);
 
         // get current aasan index
         mCurrentAasanIndex = mAasanInformation.getCurrentAasanIndex();
@@ -193,8 +192,6 @@ public class BreakActivity extends BaseBoundActivity {
         }
 
         Intent intent = new Intent(this, AasanActivity.class);
-        intent.putExtra(LauncherActivity.AASAN_LIST_KEY, mAasanInformation);
-        intent.putExtra(LauncherActivity.DAILY_ROUTINE_KEY, getIntent().getParcelableExtra(LauncherActivity.DAILY_ROUTINE_KEY));
         startActivity(intent);
         finish();
     }
