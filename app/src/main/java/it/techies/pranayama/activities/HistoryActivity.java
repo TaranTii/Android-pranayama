@@ -11,9 +11,7 @@ import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import butterknife.Bind;
@@ -22,16 +20,12 @@ import butterknife.ButterKnife;
 import it.techies.pranayama.R;
 import it.techies.pranayama.api.AasanNames;
 import it.techies.pranayama.api.history.Aasan;
-import it.techies.pranayama.api.history.HistoryRequest;
 import it.techies.pranayama.infrastructure.BaseActivity;
-import it.techies.pranayama.infrastructure.OnResetTokenSuccessCallBack;
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.Response;
-import retrofit.Retrofit;
-import timber.log.Timber;
+import it.techies.pranayama.utils.Utils;
 
 public class HistoryActivity extends BaseActivity {
+
+    private static final String TAG = "HistoryActivity";
 
     @Bind(R.id.calendarView)
     MaterialCalendarView mCalendarView;
@@ -88,8 +82,6 @@ public class HistoryActivity extends BaseActivity {
         setContentView(R.layout.activity_history);
         ButterKnife.bind(this);
 
-        Timber.tag(HistoryActivity.class.getSimpleName());
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -99,27 +91,14 @@ public class HistoryActivity extends BaseActivity {
             public void onDateSelected(MaterialCalendarView widget, CalendarDay date,
                                        boolean selected)
             {
-
-                int day = date.getCalendar().get(Calendar.DAY_OF_MONTH);
-                int month = date.getCalendar().get(Calendar.MONTH) + 1;
-                int year = date.getCalendar().get(Calendar.YEAR);
-
-                String mDate = String.format("%d-%02d-%02d", year, month, day);
-
-                Timber.d("Date: %s", mDate);
-                getHistory(mDate);
+                getHistory(Utils.getDateFromCalender(date.getCalendar()));
             }
         });
 
         mCalendarView.setCurrentDate(new Date());
         mCalendarView.setDateSelected(new Date(), true);
 
-        int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
-        int month = Calendar.getInstance().get(Calendar.MONTH) + 1;
-        int year = Calendar.getInstance().get(Calendar.YEAR);
-
-        String mDate = String.format("%d-%02d-%02d", year, month, day);
-        getHistory(mDate);
+        getHistory(Utils.getCurrentDate());
     }
 
     public void showProgress(boolean state)
@@ -137,72 +116,72 @@ public class HistoryActivity extends BaseActivity {
         showProgress(true);
         showHistory(false);
 
-        Call<List<Aasan>> call = mApiClient.getHistory(new HistoryRequest(date));
-
-        call.enqueue(new Callback<List<Aasan>>() {
-            @Override
-            public void onResponse(Response<List<Aasan>> response, Retrofit retrofit)
-            {
-                if (response.isSuccess())
-                {
-                    List<Aasan> aasans = response.body();
-
-                    for (Aasan aasan : aasans)
-                    {
-                        if (aasan.getName() != null)
-                        {
-                            // this is an aasan
-                            Timber.d("Name: %s, isCompleted: %d", aasan.getName(), aasan.getIsCompleted());
-                            readAasan(aasan);
-                        }
-                        else
-                        {
-                            // this is meta
-                            readMeta(aasan);
-                        }
-                    }
-
-                    // show history
-                    showProgress(false);
-                    showHistory(true);
-                }
-                else
-                {
-                    int statusCode = response.code();
-                    Timber.d("[Err] could not get history, statusCode %d", statusCode);
-
-                    if (statusCode == 401)
-                    {
-                        resetToken(new OnResetTokenSuccessCallBack() {
-                            @Override
-                            public void onSuccess(String token)
-                            {
-                                mAuth.setToken(HistoryActivity.this, token);
-                                getHistory(date);
-                            }
-                        });
-                    }
-                    else if (statusCode == 422)
-                    {
-                        showToast("History was not found for selected date");
-
-                        // hide progress and history
-                        showProgress(false);
-                        showHistory(false);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Throwable t)
-            {
-                Timber.e(t, "getHistory");
-                onRetrofitFailure(t);
-
-                showProgress(false);
-                showHistory(false);
-            }
-        });
+//        Call<List<Aasan>> call = mApiClient.getHistory(new HistoryRequest(date));
+//
+//        call.enqueue(new Callback<List<Aasan>>() {
+//            @Override
+//            public void onResponse(Response<List<Aasan>> response, Retrofit retrofit)
+//            {
+//                if (response.isSuccess())
+//                {
+//                    List<Aasan> aasans = response.body();
+//
+//                    for (Aasan aasan : aasans)
+//                    {
+//                        if (aasan.getName() != null)
+//                        {
+//                            // this is an aasan
+//                            Timber.d("Name: %s, isCompleted: %d", aasan.getName(), aasan.getIsCompleted());
+//                            readAasan(aasan);
+//                        }
+//                        else
+//                        {
+//                            // this is meta
+//                            readMeta(aasan);
+//                        }
+//                    }
+//
+//                    // show history
+//                    showProgress(false);
+//                    showHistory(true);
+//                }
+//                else
+//                {
+//                    int statusCode = response.code();
+//                    Timber.d("[Err] could not get history, statusCode %d", statusCode);
+//
+//                    if (statusCode == 401)
+//                    {
+//                        resetToken(new OnResetTokenSuccessCallBack() {
+//                            @Override
+//                            public void onSuccess(String token)
+//                            {
+//                                mAuth.setToken(HistoryActivity.this, token);
+//                                getHistory(date);
+//                            }
+//                        });
+//                    }
+//                    else if (statusCode == 422)
+//                    {
+//                        showToast("History was not found for selected date");
+//
+//                        // hide progress and history
+//                        showProgress(false);
+//                        showHistory(false);
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Throwable t)
+//            {
+//                Timber.e(t, "getHistory");
+//                onRetrofitFailure(t);
+//
+//                showProgress(false);
+//                showHistory(false);
+//            }
+//        });
     }
 
     /**
@@ -212,25 +191,12 @@ public class HistoryActivity extends BaseActivity {
      */
     private void readMeta(Aasan aasan)
     {
-        // "date": "2015-09-03",
-        // "gmt": "IST",
-        // "time": "00:00:00",
-        // "time_zone": "Asia/Kolkata"
-
         String time = aasan.getTime();
         String[] times = time.split(":");
 
         if (times.length == 3)
         {
             mTimeTextView.setText(String.format("%s:%s mins", times[1], times[2]));
-
-//            if (times[0].equals("00"))
-//            {
-//            }
-//            else
-//            {
-//                mTimeTextView.setText(String.format("%s mins", time));
-//            }
         }
 
         CalendarDay mCalender = mCalendarView.getSelectedDate();

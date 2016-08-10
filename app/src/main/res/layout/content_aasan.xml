@@ -4,200 +4,200 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                tools:context="it.techies.pranayama.activities.AasanActivity"
+                tools:context=".modules.aasans.AasanActivity"
                 tools:showIn="@layout/activity_aasan">
 
-	<ImageView
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:scaleType="fitXY"
-		android:src="@drawable/background"/>
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/background"/>
 
-	<ScrollView
-		android:layout_width="match_parent"
-		android:layout_height="match_parent">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-		<LinearLayout
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:gravity="center"
-			android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
 
-			<LinearLayout
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:orientation="vertical"
-				android:paddingBottom="@dimen/activity_vertical_margin"
-				android:paddingLeft="@dimen/activity_horizontal_margin"
-				android:paddingRight="@dimen/activity_horizontal_margin"
-				android:paddingTop="@dimen/activity_vertical_margin"
-				android:visibility="visible">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                android:visibility="visible">
 
-				<RelativeLayout
-					android:id="@+id/info_rl"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content">
+                <RelativeLayout
+                    android:id="@+id/info_rl"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
 
-					<TextView
-						android:id="@+id/set_label_tv"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:layout_alignParentStart="true"
-						android:layout_alignParentTop="true"
-						android:text="@string/label_set"
-						android:textColor="@color/textColorLabel"/>
+                    <TextView
+                        android:id="@+id/set_label_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:text="@string/label_set"
+                        android:textColor="@color/textColorLabel"/>
 
-					<TextView
-						android:id="@+id/set_tv"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:layout_alignParentStart="true"
-						android:layout_below="@+id/set_label_tv"
-						android:textAppearance="?android:attr/textAppearanceLarge"
-						android:textColor="@color/textColorSubHead"
-						tools:text="1 of 1"/>
+                    <TextView
+                        android:id="@+id/set_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@+id/set_label_tv"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:textColor="@color/textColorSubHead"
+                        tools:text="1 of 1"/>
 
-					<TextView
-						android:id="@+id/break_time_label_tv"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:layout_alignParentEnd="true"
-						android:layout_alignParentTop="true"
-						android:text="@string/label_break_time"
-						android:textColor="@color/textColorLabel"/>
+                    <TextView
+                        android:id="@+id/break_time_label_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentTop="true"
+                        android:text="@string/label_break_time"
+                        android:textColor="@color/textColorLabel"/>
 
-					<TextView
-						android:id="@+id/break_time_tv"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:layout_alignEnd="@+id/break_time_label_tv"
-						android:layout_below="@+id/break_time_label_tv"
-						android:text="1:00 min"
-						android:textAppearance="?android:attr/textAppearanceLarge"
-						android:textColor="@color/textColorSubHead"/>
+                    <TextView
+                        android:id="@+id/break_time_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignEnd="@+id/break_time_label_tv"
+                        android:layout_below="@+id/break_time_label_tv"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:textColor="@color/textColorSubHead"
+                        tools:text="1:00 min"/>
 
-				</RelativeLayout>
+                </RelativeLayout>
 
-				<RelativeLayout
-					android:id="@+id/timer_rl"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_gravity="center_horizontal"
-					android:layout_marginTop="32dp">
+                <RelativeLayout
+                    android:id="@+id/timer_rl"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="32dp">
 
-					<ImageView
-						android:id="@+id/all_pin_iv"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:src="@drawable/outer"/>
+                    <ImageView
+                        android:id="@+id/all_pin_iv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/outer"/>
 
-					<ImageView
-						android:id="@+id/active_pin_iv"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:src="@drawable/inner"/>
+                    <ImageView
+                        android:id="@+id/active_pin_iv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/inner"/>
 
-					<RelativeLayout
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:layout_centerInParent="true">
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true">
 
-						<TextView
-							android:id="@+id/timer_tv"
-							android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							android:textAppearance="@style/Base.TextAppearance.AppCompat.Display1"
-							android:textColor="@color/textColorSubHead"
-							tools:text="00:00"/>
+                        <TextView
+                            android:id="@+id/timer_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Display1"
+                            android:textColor="@color/textColorSubHead"
+                            tools:text="00:00"/>
 
-					</RelativeLayout>
+                    </RelativeLayout>
 
-				</RelativeLayout>
+                </RelativeLayout>
 
-				<LinearLayout
-					android:id="@+id/action_btn_ll"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_gravity="center_horizontal"
-					android:orientation="horizontal">
+                <LinearLayout
+                    android:id="@+id/action_btn_ll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:orientation="horizontal">
 
-					<android.support.design.widget.FloatingActionButton
-						android:id="@+id/stop_btn"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:layout_margin="8dp"
-						android:src="@drawable/ic_stop_white_24dp"
-						app:backgroundTint="@color/colorButtonRed"
-						app:rippleColor="@color/colorButtonRedDark"/>
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/stop_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:src="@drawable/ic_stop_white_24dp"
+                        app:backgroundTint="@color/colorButtonRed"
+                        app:rippleColor="@color/colorButtonRedDark"/>
 
-					<android.support.design.widget.FloatingActionButton
-						android:id="@+id/toggle_btn"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:layout_margin="8dp"
-						android:src="@drawable/ic_pause_white_24dp"
-						app:backgroundTint="@color/colorButtonCyan"
-						app:rippleColor="@color/colorButtonCyanDark"/>
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/toggle_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:src="@drawable/ic_pause_white_24dp"
+                        app:backgroundTint="@color/colorButtonCyan"
+                        app:rippleColor="@color/colorButtonCyanDark"/>
 
-					<android.support.design.widget.FloatingActionButton
-						android:id="@+id/skip_btn"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:layout_margin="8dp"
-						android:src="@drawable/ic_skip_next_white_24dp"
-						app:backgroundTint="@color/colorButtonRed"
-						app:rippleColor="@color/colorButtonRedDark"/>
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/skip_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:src="@drawable/ic_skip_next_white_24dp"
+                        app:backgroundTint="@color/colorButtonRed"
+                        app:rippleColor="@color/colorButtonRedDark"/>
 
-				</LinearLayout>
+                </LinearLayout>
 
-			</LinearLayout>
+            </LinearLayout>
 
-			<RelativeLayout
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-				<ImageView
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:scaleType="fitXY"
-					android:src="@drawable/ic_benefit_bar"/>
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_benefit_bar"/>
 
-				<TextView
-					android:id="@+id/benefits_label_tv"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_centerHorizontal="true"
-					android:layout_marginTop="24dp"
-					android:text="@string/benefits"
-					android:textAppearance="?android:attr/textAppearanceLarge"
-					android:textColor="@android:color/black"
-					android:visibility="visible"/>
+                <TextView
+                    android:id="@+id/benefits_label_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="24dp"
+                    android:text="@string/benefits"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="@android:color/black"
+                    android:visibility="visible"/>
 
-				<RelativeLayout
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:layout_below="@+id/benefits_label_tv"
-					android:layout_marginTop="8dp"
-					android:background="@android:color/white">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/benefits_label_tv"
+                    android:layout_marginTop="8dp"
+                    android:background="@android:color/white">
 
-					<TextView
-						android:id="@+id/benefits_tv"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:layout_centerHorizontal="true"
-						android:padding="8dp"
-						android:text="@string/benefit_agnisar_kriya"
-						android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-						android:textColor="@android:color/black"
-						android:visibility="visible"/>
+                    <TextView
+                        android:id="@+id/benefits_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:padding="8dp"
+                        android:text="@string/benefit_agnisar_kriya"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        android:textColor="@android:color/black"
+                        android:visibility="visible"/>
 
-				</RelativeLayout>
+                </RelativeLayout>
 
-			</RelativeLayout>
+            </RelativeLayout>
 
-		</LinearLayout>
+        </LinearLayout>
 
-	</ScrollView>
+    </ScrollView>
 
 </RelativeLayout>
 

@@ -9,23 +9,15 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
 import butterknife.Bind;
 import butterknife.BindDrawable;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import it.techies.pranayama.R;
-import it.techies.pranayama.activities.AasanActivity;
-import it.techies.pranayama.modules.setup.SetupActivity;
 import it.techies.pranayama.infrastructure.BaseDrawerActivity;
-import timber.log.Timber;
+import it.techies.pranayama.modules.aasans.BaseAasanActivity;
+import it.techies.pranayama.modules.aasans.Bhastrika;
+import it.techies.pranayama.modules.setup.SetupActivity;
 
 public class LauncherActivity extends BaseDrawerActivity implements LauncherView {
 
@@ -65,7 +57,6 @@ public class LauncherActivity extends BaseDrawerActivity implements LauncherView
     @BindDrawable(R.drawable.ic_aasan_deactive_48dp)
     Drawable mIcAasanDeActive;
 
-    private FirebaseUser mFirebaseUser;
     private LauncherPresenter mPresenter;
 
     @Override
@@ -80,16 +71,13 @@ public class LauncherActivity extends BaseDrawerActivity implements LauncherView
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
         setupDrawer(toolbar, savedInstanceState);
 
-        Timber.tag(LauncherActivity.class.getSimpleName());
-
-        mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (mFirebaseUser == null)
+        if (getUser() == null)
         {
             logoutUser();
         }
         else
         {
-            mPresenter = new LauncherPresenterImpl(this, mFirebaseUser);
+            mPresenter = new LauncherPresenterImpl(this, getUser());
         }
     }
 
@@ -125,7 +113,7 @@ public class LauncherActivity extends BaseDrawerActivity implements LauncherView
     @OnClick(R.id.start_button)
     public void start(View v)
     {
-        Intent intent = new Intent(this, AasanActivity.class);
+        Intent intent = new Intent(this, Bhastrika.class);
         startActivity(intent);
         finish();
     }

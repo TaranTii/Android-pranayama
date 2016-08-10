@@ -1,4 +1,4 @@
-package it.techies.pranayama.activities;
+package it.techies.pranayama.modules.aasans;
 
 import android.animation.ObjectAnimator;
 import android.content.DialogInterface;
@@ -9,6 +9,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,16 +18,18 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import it.techies.pranayama.R;
+import it.techies.pranayama.activities.BreakActivity;
+import it.techies.pranayama.activities.EndActivity;
 import it.techies.pranayama.api.AasanNames;
 import it.techies.pranayama.api.DailyRoutine;
 import it.techies.pranayama.api.timing.AasanInformation;
 import it.techies.pranayama.api.timing.AasanTime;
-import it.techies.pranayama.api.timing.Timings;
 import it.techies.pranayama.infrastructure.BaseBoundActivity;
 import it.techies.pranayama.modules.launcher.LauncherActivity;
-import timber.log.Timber;
 
 public class AasanActivity extends BaseBoundActivity {
+
+    private static final String TAG = "AasanActivity";
 
     @Bind(R.id.timer_tv)
     TextView mTimerTextView;
@@ -97,8 +100,6 @@ public class AasanActivity extends BaseBoundActivity {
     @OnClick(R.id.stop_btn)
     public void stopButtonClick(FloatingActionButton button)
     {
-        Timber.d("stop button click");
-
         showStopAasanDialog();
     }
 
@@ -137,8 +138,6 @@ public class AasanActivity extends BaseBoundActivity {
     @OnClick(R.id.skip_btn)
     public void skipButtonClick(FloatingActionButton button)
     {
-        Timber.d("skip button click");
-
         if (mCountDownTimer != null)
         {
             mCountDownTimer.cancel();
@@ -207,18 +206,18 @@ public class AasanActivity extends BaseBoundActivity {
         if (mBound)
         {
             mService.playMeditationBellMusic();
-            Timber.d("play bell music...");
+            Log.d(TAG, "playBellMusic: play bell music...");
         }
         else
         {
-            Timber.d("service not bound yet");
+            Log.d(TAG, "playBellMusic: service not bound yet");
         }
     }
 
     @OnClick(R.id.toggle_btn)
     public void toggleButtonClick(FloatingActionButton button)
     {
-        Timber.d("Toggle button is checked %s", button.getTag());
+        Log.d(TAG, "toggleButtonClick: Toggle button is checked :" + button.getTag());
 
         if (button.getTag() == null)
         {
@@ -271,44 +270,7 @@ public class AasanActivity extends BaseBoundActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar ab = getSupportActionBar();
-
-        Timber.tag(AasanActivity.class.getSimpleName());
-
-        // get aasan's information
-        // mAasanInformation = getIntent().getParcelableExtra(LauncherActivity.AASAN_LIST_KEY);
-
-        // get daily routine information
-        // mDailyRoutine = getIntent().getParcelableExtra(LauncherActivity.DAILY_ROUTINE_KEY);
-
-        // get current aasan index
-        mCurrentAasanIndex = mAasanInformation.getCurrentAasanIndex();
-
-        // read number of mSets in pranayama
-        currentSet = mAasanInformation.getCurrentSetIndex();
-
-        // get current aasan information from aasan list
-        final AasanTime aasanTime = mAasanInformation.getAasanTimes().get(mCurrentAasanIndex);
-
-
-        // update the title bar with the name of current aasan
-        ab.setTitle(aasanTime.getName());
-
-        // total mSets in current aasan
-        totalSets = aasanTime.getSet();
-
-        // update the current aasan and total aasan on screen
-        mSetTextView.setText(String.format("%d of %d", currentSet, totalSets));
-
-        // show break time on view
-        Timings breakTimings = new Timings("00:00:00");
-        breakTimings.addSeconds(aasanTime.getBreakTime());
-        mBreakTimeTextView.setText(breakTimings.getBreakTimeString());
-
-        Timings timings = aasanTime.getTimings();
-        mSingleSetDuration = timings.getSingleSetDuration();
-        createTimer(mSingleSetDuration);
-
-        setupBenefitTextView(aasanTime);
+        // ab.setTitle("Aasan name");
     }
 
     private void setupBenefitTextView(AasanTime aasanTime)
@@ -432,7 +394,7 @@ public class AasanActivity extends BaseBoundActivity {
             @Override
             public void onFinish()
             {
-                Timber.d("aasan timer finished...");
+                Log.d(TAG, "onFinish() called with: " + "");
 
                 // update the timer text
                 mTimerTextView.setText(String.format("%02d:%02d", 0, 0));

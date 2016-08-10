@@ -3,7 +3,7 @@ package it.techies.pranayama.modules.splash;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -19,12 +19,15 @@ import com.google.firebase.database.ValueEventListener;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import it.techies.pranayama.R;
+import it.techies.pranayama.infrastructure.BaseActivity;
 import it.techies.pranayama.models.FirebaseAasan;
 import it.techies.pranayama.models.FirebaseSchedule;
 import it.techies.pranayama.modules.launcher.LauncherActivity;
-import timber.log.Timber;
+import it.techies.pranayama.utils.FireRef;
 
-public class SplashActivity extends AppCompatActivity {
+public class SplashActivity extends BaseActivity {
+
+    private static final String TAG = "SplashActivity";
 
     private static final int RC_SIGN_IN = 9001;
 
@@ -52,8 +55,8 @@ public class SplashActivity extends AppCompatActivity {
         mDialog.setMessage("Please wait...");
 
         // firebase database refs
-        mAasanRef = FirebaseDatabase.getInstance().getReference("aasans");
-        mUsersRef = FirebaseDatabase.getInstance().getReference("users");
+        mAasanRef = FirebaseDatabase.getInstance().getReference(FireRef.REF_AASANS);
+        mUsersRef = FirebaseDatabase.getInstance().getReference(FireRef.REF_USERS);
     }
 
     @Override
@@ -92,7 +95,8 @@ public class SplashActivity extends AppCompatActivity {
 
     private void updateUserData()
     {
-        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final FirebaseUser user = getUser();
+
         if (user != null)
         {
             DatabaseReference userRef = mUsersRef.child(user.getUid());
@@ -103,7 +107,7 @@ public class SplashActivity extends AppCompatActivity {
                 {
                     if (!dataSnapshot.exists())
                     {
-                        Timber.d("updateUserData: new_user");
+                        Log.d(TAG, "updateUserData: onDataChange: new_user");
 
                         writeUserToDatabase(user);
                         writeUserPrefs(user);
@@ -113,7 +117,7 @@ public class SplashActivity extends AppCompatActivity {
                     }
                     else
                     {
-                        Timber.d("updateUserData: existing_user");
+                        Log.d(TAG, "updateUserData: onDataChange: existing_user");
 
                         mDialog.dismiss();
                         navigateToLauncherActivity();
@@ -123,8 +127,8 @@ public class SplashActivity extends AppCompatActivity {
                 @Override
                 public void onCancelled(DatabaseError databaseError)
                 {
+                    Log.d(TAG, "onCancelled() called with: " + "databaseError = [" + databaseError + "]");
                     mDialog.dismiss();
-                    Timber.e(databaseError.toException(), "updateUserData: onCancelled");
                 }
             });
         }
@@ -142,43 +146,44 @@ public class SplashActivity extends AppCompatActivity {
     {
         final String uid = user.getUid();
 
-        mAasanRef.orderByChild("order").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot)
-            {
-                for (DataSnapshot data : dataSnapshot.getChildren())
-                {
-                    FirebaseAasan aasan = data.getValue(FirebaseAasan.class);
+        mAasanRef.orderByChild("order")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot)
+                    {
+                        for (DataSnapshot data : dataSnapshot.getChildren())
+                        {
+                            FirebaseAasan aasan = data.getValue(FirebaseAasan.class);
 
-                    String aasanKey = data.getKey();
-                    String aasanName = aasan.name;
-                    Integer aasanOrder = aasan.order;
+                            String aasanKey = data.getKey();
+                            String aasanName = aasan.name;
+                            Integer aasanOrder = aasan.order;
 
-                    // save aasan schedule under users uid
-                    FirebaseSchedule pref = new FirebaseSchedule(
-                            aasanKey,
-                            uid,
-                            aasanName,
-                            aasanOrder,
-                            // duration
-                            60,
-                            // number of sets
-                            1);
+                            // save aasan schedule under users uid
+                            FirebaseSchedule pref = new FirebaseSchedule(
+                                    aasanKey,
+                                    uid,
+                                    aasanName,
+                                    aasanOrder,
+                                    // duration
+                                    60,
+                                    // number of sets
+                                    1);
 
-                    pref.save();
-                }
+                            pref.save();
+                        }
 
-                // save default break duration
-                FirebaseSchedule breakSchedule = new FirebaseSchedule(uid, 60);
-                breakSchedule.save();
-            }
+                        // save default break duration
+                        FirebaseSchedule breakSchedule = new FirebaseSchedule(uid, 60);
+                        breakSchedule.save();
+                    }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError)
-            {
-                Timber.d("onCancelled: %s", databaseError.getDetails());
-            }
-        });
+                    @Override
+                    public void onCancelled(DatabaseError databaseError)
+                    {
+                        Log.d(TAG, "onCancelled() called with: " + "databaseError = [" + databaseError + "]");
+                    }
+                });
     }
 
     @OnClick(R.id.get_started_btn)

@@ -13,22 +13,10 @@ import android.widget.Toast;
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.squareup.otto.Bus;
-
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 
 import it.techies.pranayama.MyApplication;
 import it.techies.pranayama.R;
-import it.techies.pranayama.api.ApiClient;
-import it.techies.pranayama.api.token.ResetTokenRequest;
-import it.techies.pranayama.api.token.ResetTokenResponse;
 import it.techies.pranayama.modules.splash.SplashActivity;
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.Response;
-import retrofit.Retrofit;
-import timber.log.Timber;
 
 /**
  * Created by jagdeep on 28/01/16.
@@ -136,6 +124,11 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected String getUid()
     {
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
+    }
+
+    protected FirebaseUser getUser()
+    {
+        return FirebaseAuth.getInstance().getCurrentUser();
     }
 
 }

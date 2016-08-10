@@ -14,28 +14,29 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import it.techies.pranayama.api.errors.ErrorArray;
 import it.techies.pranayama.api.errors.ErrorObject;
 
 /**
- * Created by jdtechies on 30/11/2015.
+ * Created by jagdeep on 30/11/2015.
  */
 public class Utils {
 
     /**
-     * Function to convert bitmap to string
+     * Converts bitmap to Base64 string.
      *
-     * @param pic
+     * @param bitmap
      * @return String
      */
-    public static String bitmapToString(Bitmap pic)
+    public static String bitmapToString(Bitmap bitmap)
     {
-        if (pic != null)
+        if (bitmap != null)
         {
             //convert bitmap to byte array
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            pic.compress(Bitmap.CompressFormat.JPEG, 30, byteArrayOutputStream);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 30, byteArrayOutputStream);
             byte[] byteArray = byteArrayOutputStream.toByteArray();
 
             // byte array encode to base64
@@ -47,36 +48,24 @@ public class Utils {
         }
     }
 
-    /**
-     * Parses the error response object
-     *
-     * @param errorBody
-     * @return
-     * @throws JsonSyntaxException
-     */
-    public static ErrorObject getErrorObject(
-            ResponseBody errorBody) throws JsonSyntaxException, IOException
+    public static String getCurrentDate()
     {
-        Gson gson = new Gson();
-        return gson.fromJson(errorBody.string(), ErrorObject.class);
+        Calendar calendar = Calendar.getInstance();
+        return getDateFromCalender(calendar);
     }
 
-    /**
-     * Parses the error response array
-     *
-     * @param errorBody
-     * @return
-     * @throws JsonSyntaxException
-     */
-    public static List<ErrorArray> getErrorList(
-            ResponseBody errorBody) throws JsonSyntaxException, IOException
+    public static String getDateFromCalender(Calendar calendar)
     {
-        Gson gson = new Gson();
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int month = calendar.get(Calendar.MONTH) + 1;
+        int year = calendar.get(Calendar.YEAR);
 
-        Type listType = new TypeToken<List<ErrorArray>>() {
-        }.getType();
-
-        return gson.fromJson(errorBody.string(), listType);
+        return String.format(
+                Locale.getDefault(),
+                "%d-%02d-%02d",
+                year,
+                month,
+                day);
     }
 
     public static boolean isDateOfBirthValid(@NonNull String dateOfBirth)

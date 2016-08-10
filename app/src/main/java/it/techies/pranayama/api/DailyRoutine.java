@@ -54,7 +54,7 @@ public class DailyRoutine implements Parcelable {
     @Expose
     private String gmt;
 
-    @SerializedName("Bhastrika")
+    @SerializedName("BaseAasanActivity")
     @Expose
     private String bhastrika = "0";
 

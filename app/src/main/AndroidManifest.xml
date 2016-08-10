@@ -29,24 +29,13 @@
             tools:replace="theme"/>
 
         <activity
-            android:name=".activities.RegisterActivity"
-            android:label="@string/title_activity_register"
-            android:parentActivityName=".activities.LoginActivity">
-        </activity>
-
-        <activity
-            android:name=".activities.ForgotPasswordActivity"
-            android:label="@string/title_activity_forgot_password">
-        </activity>
-
-        <activity
             android:name=".activities.BreakActivity"
             android:label="@string/title_activity_break"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
         <activity
-            android:name=".activities.AasanActivity"
+            android:name=".modules.aasans.Bhastrika"
             android:label="@string/title_activity_aasan"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>

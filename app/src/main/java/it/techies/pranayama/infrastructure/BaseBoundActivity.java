@@ -8,6 +8,7 @@ import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
@@ -15,12 +16,13 @@ import android.view.WindowManager;
 import it.techies.pranayama.R;
 import it.techies.pranayama.services.PrayanamaService;
 import me.alexrs.prefs.lib.Prefs;
-import timber.log.Timber;
 
 /**
  * Created by jagdeep on 15/02/16.
  */
 public class BaseBoundActivity extends BaseActivity {
+
+    private static final String TAG = "BaseBoundActivity";
 
     protected PrayanamaService mService;
     protected boolean mBound = false;
@@ -93,7 +95,7 @@ public class BaseBoundActivity extends BaseActivity {
         public void onServiceConnected(ComponentName className,
                                        IBinder service)
         {
-            Timber.d("onServiceConnected()");
+            Log.d(TAG, "onServiceConnected() called with: " + "className = [" + className + "], service = [" + service + "]");
 
             // We've bound to LocalService, cast the IBinder and get LocalService instance
             PrayanamaService.LocalBinder binder = (PrayanamaService.LocalBinder) service;
@@ -104,7 +106,7 @@ public class BaseBoundActivity extends BaseActivity {
         @Override
         public void onServiceDisconnected(ComponentName arg0)
         {
-            Timber.d("onServiceDisconnected()");
+            Log.d(TAG, "onServiceDisconnected() called with: " + "arg0 = [" + arg0 + "]");
             mBound = false;
         }
     };

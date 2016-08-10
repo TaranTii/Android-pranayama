@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
@@ -21,10 +22,12 @@ import it.techies.pranayama.R;
 import it.techies.pranayama.api.timing.AasanInformation;
 import it.techies.pranayama.api.timing.AasanTime;
 import it.techies.pranayama.infrastructure.BaseBoundActivity;
+import it.techies.pranayama.modules.aasans.AasanActivity;
 import it.techies.pranayama.modules.launcher.LauncherActivity;
-import timber.log.Timber;
 
 public class BreakActivity extends BaseBoundActivity {
+
+    private static final String TAG = "BreakActivity";
 
     @Bind(R.id.timer_tv)
     TextView mTimerTextView;
@@ -88,7 +91,7 @@ public class BreakActivity extends BaseBoundActivity {
             @Override
             public void onFinish()
             {
-                Timber.d("break timer finished...");
+                Log.d(TAG, "onFinish() called with: " + "");
                 mTimerTextView.setText(String.format(Locale.getDefault(), "%02d:%02d", 0, 0));
                 startNextAasan();
             }
@@ -160,11 +163,11 @@ public class BreakActivity extends BaseBoundActivity {
         if (mBound)
         {
             mService.playYogaMusic();
-            Timber.d("play yoga music...");
+            Log.d(TAG, "startNextAasan: play yoga music...");
         }
         else
         {
-            Timber.d("service not bound yet");
+            Log.d(TAG, "startNextAasan: service not bound yet");
         }
 
         // get current aasan index

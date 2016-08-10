@@ -29,7 +29,6 @@ import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.PUT;
 import retrofit.http.Path;
-import timber.log.Timber;
 
 /**
  * Created by jdtechies on 30/11/2015.
@@ -80,9 +79,6 @@ public class ApiClient {
                 }
 
                 com.squareup.okhttp.Response response = chain.proceed(request);
-
-                Timber.i("Response %s", response.toString());
-                Timber.i("Response code: %d", response.code());
 
                 // Customize or return the response
                 return response;

@@ -1,16 +1,18 @@
 package it.techies.pranayama.activities;
 
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import it.techies.pranayama.R;
 import it.techies.pranayama.fragments.SettingsFragment;
-import timber.log.Timber;
 
 public class SettingsActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+
+    private static final String TAG = "SettingsActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -19,8 +21,6 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
 
         // Show the Up button in the action bar.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        Timber.tag("SettingsActivity");
 
         // Display the fragment as the main content.
         getFragmentManager().beginTransaction()
@@ -63,21 +63,21 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
         if (key.equals(getString(R.string.pref_key_music)))
         {
             // stop the music
-            Timber.d("Music pref changed");
+            Log.d(TAG, "onSharedPreferenceChanged: Music pref changed");
 
             if (sharedPreferences.getBoolean(getString(R.string.pref_key_music), false))
             {
-                Timber.d("Music enabled");
+                Log.d(TAG, "onSharedPreferenceChanged: music enabled");
             }
             else
             {
-                Timber.d("Music disabled");
+                Log.d(TAG, "onSharedPreferenceChanged: music disabled");
             }
         }
         else if (key.equals(getString(R.string.pref_key_push_notification)))
         {
             // stop the push notification
-            Timber.d("Push notifications changed");
+            Log.d(TAG, "onSharedPreferenceChanged: Push notifications change");
         }
     }
 }

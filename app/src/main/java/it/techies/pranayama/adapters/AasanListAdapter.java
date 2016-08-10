@@ -15,7 +15,6 @@ import java.util.Locale;
 import it.techies.pranayama.R;
 import it.techies.pranayama.api.timing.AasanTime;
 import it.techies.pranayama.api.timing.Timings;
-import timber.log.Timber;
 
 /**
  * Created by jdtechies on 11/12/2015.

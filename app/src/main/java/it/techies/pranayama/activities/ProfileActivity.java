@@ -14,6 +14,7 @@ import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,7 +27,6 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.soundcloud.android.crop.Crop;
-import com.squareup.okhttp.ResponseBody;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
@@ -46,22 +46,15 @@ import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import fr.ganfra.materialspinner.MaterialSpinner;
 import it.techies.pranayama.R;
-import it.techies.pranayama.api.ApiFields;
-import it.techies.pranayama.api.EmptyResponse;
-import it.techies.pranayama.api.errors.ErrorArray;
 import it.techies.pranayama.api.user.UserProfile;
 import it.techies.pranayama.infrastructure.BaseActivity;
-import it.techies.pranayama.infrastructure.OnResetTokenSuccessCallBack;
 import it.techies.pranayama.utils.Country;
 import it.techies.pranayama.utils.Timezone;
 import it.techies.pranayama.utils.Utils;
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.Response;
-import retrofit.Retrofit;
-import timber.log.Timber;
 
 public class ProfileActivity extends BaseActivity implements DatePickerDialog.OnDateSetListener {
+
+    private static final String TAG = "ProfileActivity";
 
     public static final int REQUEST_IMAGE_CAPTURE = 1;
 
@@ -139,7 +132,7 @@ public class ProfileActivity extends BaseActivity implements DatePickerDialog.On
     @OnClick(R.id.date_of_birth)
     public void onDateOfBirthClick(View v)
     {
-        // Use the current date as the default date in the picker
+        // Use the current date as the default date in the showSchedulePicker
         final Calendar c = Calendar.getInstance();
         int year = c.get(Calendar.YEAR);
         int month = c.get(Calendar.MONTH);
@@ -266,7 +259,7 @@ public class ProfileActivity extends BaseActivity implements DatePickerDialog.On
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
                     {
-                        Timber.d("position %d", position);
+                        Log.d(TAG, "onItemSelected() called with: " + "parent = [" + parent + "], view = [" + view + "], position = [" + position + "], id = [" + id + "]");
 
                         if (position == -1)
                         {
@@ -330,68 +323,68 @@ public class ProfileActivity extends BaseActivity implements DatePickerDialog.On
 
         /**
 
-        if (TextUtils.isEmpty(mSelectedTimezoneCode))
-        {
-            new AlertDialog.Builder(this)
-                    .setTitle("Error")
-                    .setMessage("Please select a timezone.")
-                    .setPositiveButton(android.R.string.ok, null)
-                    .show();
+         if (TextUtils.isEmpty(mSelectedTimezoneCode))
+         {
+         new AlertDialog.Builder(this)
+         .setTitle("Error")
+         .setMessage("Please select a timezone.")
+         .setPositiveButton(android.R.string.ok, null)
+         .show();
 
-            return;
-        }
+         return;
+         }
 
-        if (TextUtils.isEmpty(mSelectedCountryCode))
-        {
-            new AlertDialog.Builder(this)
-                    .setTitle("Error")
-                    .setMessage("Please select a country.")
-                    .setPositiveButton(android.R.string.ok, null)
-                    .show();
+         if (TextUtils.isEmpty(mSelectedCountryCode))
+         {
+         new AlertDialog.Builder(this)
+         .setTitle("Error")
+         .setMessage("Please select a country.")
+         .setPositiveButton(android.R.string.ok, null)
+         .show();
 
-            return;
-        }
+         return;
+         }
 
-        if (TextUtils.isEmpty(phone))
-        {
-            mPhoneNumberView.setError(getString(R.string.error_field_required));
-            focusView = mPhoneNumberView;
-            cancel = true;
-        }
+         if (TextUtils.isEmpty(phone))
+         {
+         mPhoneNumberView.setError(getString(R.string.error_field_required));
+         focusView = mPhoneNumberView;
+         cancel = true;
+         }
 
-        if (TextUtils.isEmpty(state))
-        {
-            mStateView.setError(getString(R.string.error_field_required));
-            focusView = mStateView;
-            cancel = true;
-        }
+         if (TextUtils.isEmpty(state))
+         {
+         mStateView.setError(getString(R.string.error_field_required));
+         focusView = mStateView;
+         cancel = true;
+         }
 
-        if (TextUtils.isEmpty(city))
-        {
-            mCityView.setError(getString(R.string.error_field_required));
-            focusView = mCityView;
-            cancel = true;
-        }
+         if (TextUtils.isEmpty(city))
+         {
+         mCityView.setError(getString(R.string.error_field_required));
+         focusView = mCityView;
+         cancel = true;
+         }
 
-        if (TextUtils.isEmpty(address))
-        {
-            mAddressView.setError(getString(R.string.error_field_required));
-            focusView = mAddressView;
-            cancel = true;
-        }
+         if (TextUtils.isEmpty(address))
+         {
+         mAddressView.setError(getString(R.string.error_field_required));
+         focusView = mAddressView;
+         cancel = true;
+         }
 
-        if (TextUtils.isEmpty(dob))
-        {
-            mDateOfBirthView.setError(getString(R.string.error_field_required));
-            focusView = mDateOfBirthView;
-            cancel = true;
-        }
-        else if (!Utils.isDateOfBirthValid(dob))
-        {
-            mDateOfBirthView.setError(getString(R.string.error_invalid_date));
-            focusView = mDateOfBirthView;
-            cancel = true;
-        }
+         if (TextUtils.isEmpty(dob))
+         {
+         mDateOfBirthView.setError(getString(R.string.error_field_required));
+         focusView = mDateOfBirthView;
+         cancel = true;
+         }
+         else if (!Utils.isDateOfBirthValid(dob))
+         {
+         mDateOfBirthView.setError(getString(R.string.error_invalid_date));
+         focusView = mDateOfBirthView;
+         cancel = true;
+         }
 
          */
 
@@ -431,115 +424,115 @@ public class ProfileActivity extends BaseActivity implements DatePickerDialog.On
         showProgress(true);
 
         // get user's profile
-        Call<UserProfile> call = mApiClient.getUserProfile(mAuth.getUser().getUserId());
-        call.enqueue(new Callback<UserProfile>() {
-            @Override
-            public void onResponse(Response<UserProfile> response, Retrofit retrofit)
-            {
-                showProgress(false);
-
-                if (response.isSuccess())
-                {
-                    Timber.d("onResponse success");
-                    userProfile = response.body();
-
-                    if (userProfile.getImage() != null && !TextUtils.isEmpty(userProfile.getImage()))
-                    {
-                        setUserProfilePhoto(userProfile.getImage().trim());
-                    }
-
-                    if (userProfile.getFullname() != null)
-                    {
-                        mFullNameView.setText(userProfile.getFullname().trim());
-                    }
-
-                    if (userProfile.getAddress1() != null)
-                    {
-                        mAddressView.setText(userProfile.getAddress1().trim());
-                    }
-
-                    if (userProfile.getCity() != null)
-                    {
-                        mCityView.setText(userProfile.getCity().trim());
-                    }
-
-                    if (userProfile.getState() != null)
-                    {
-                        mStateView.setText(userProfile.getState().trim());
-                    }
-
-                    if (userProfile.getCountryId() != null)
-                    {
-                        for (int position = 0; position < countries.size(); position++)
-                        {
-                            Country country = countries.get(position);
-
-                            if (country.getCode().equals(String.valueOf(userProfile.getCountryId()).trim()))
-                            {
-                                mCountrySpinner.setSelection(position + 1);
-                                break;
-                            }
-                        }
-                    }
-
-                    if (userProfile.getDob() != null)
-                    {
-                        mDateOfBirthView.setText(userProfile.getDob().trim());
-                    }
-
-                    if (userProfile.getPhone() != null)
-                    {
-                        mPhoneNumberView.setText(userProfile.getPhone().trim());
-                    }
-
-                    if (userProfile.getTimezone() != null)
-                    {
-                        // mTimezoneSpinner.setText(userProfile.getTimezone().trim());
-
-                        for (int position = 0; position < timezoneList.size(); position++)
-                        {
-                            Timezone timezone = timezoneList.get(position);
-
-                            if (timezone.getValue().equals(String.valueOf(userProfile.getTimezone()).trim()))
-                            {
-                                mTimezoneSpinner.setSelection(position + 1);
-                                break;
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    int statusCode = response.code();
-
-                    Timber.d("onResponse failure");
-
-                    if (statusCode == 401)
-                    {
-                        resetToken(new OnResetTokenSuccessCallBack() {
-                            @Override
-                            public void onSuccess(String token)
-                            {
-                                mAuth.setToken(ProfileActivity.this, token);
-                                loadUserProfile();
-                            }
-                        });
-                    }
-                    else
-                    {
-                        Timber.e("[Err] cannot get user profile, statusCode: %d", statusCode);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Throwable t)
-            {
-                onRetrofitFailure(t);
-                showProgress(false);
-                showReload(true);
-            }
-        });
+//        Call<UserProfile> call = mApiClient.getUserProfile(mAuth.getUser().getUserId());
+//        call.enqueue(new Callback<UserProfile>() {
+//            @Override
+//            public void onResponse(Response<UserProfile> response, Retrofit retrofit)
+//            {
+//                showProgress(false);
+//
+//                if (response.isSuccess())
+//                {
+//                    Timber.d("onResponse success");
+//                    userProfile = response.body();
+//
+//                    if (userProfile.getImage() != null && !TextUtils.isEmpty(userProfile.getImage()))
+//                    {
+//                        setUserProfilePhoto(userProfile.getImage().trim());
+//                    }
+//
+//                    if (userProfile.getFullname() != null)
+//                    {
+//                        mFullNameView.setText(userProfile.getFullname().trim());
+//                    }
+//
+//                    if (userProfile.getAddress1() != null)
+//                    {
+//                        mAddressView.setText(userProfile.getAddress1().trim());
+//                    }
+//
+//                    if (userProfile.getCity() != null)
+//                    {
+//                        mCityView.setText(userProfile.getCity().trim());
+//                    }
+//
+//                    if (userProfile.getState() != null)
+//                    {
+//                        mStateView.setText(userProfile.getState().trim());
+//                    }
+//
+//                    if (userProfile.getCountryId() != null)
+//                    {
+//                        for (int position = 0; position < countries.size(); position++)
+//                        {
+//                            Country country = countries.get(position);
+//
+//                            if (country.getCode().equals(String.valueOf(userProfile.getCountryId()).trim()))
+//                            {
+//                                mCountrySpinner.setSelection(position + 1);
+//                                break;
+//                            }
+//                        }
+//                    }
+//
+//                    if (userProfile.getDob() != null)
+//                    {
+//                        mDateOfBirthView.setText(userProfile.getDob().trim());
+//                    }
+//
+//                    if (userProfile.getPhone() != null)
+//                    {
+//                        mPhoneNumberView.setText(userProfile.getPhone().trim());
+//                    }
+//
+//                    if (userProfile.getTimezone() != null)
+//                    {
+//                        // mTimezoneSpinner.setText(userProfile.getTimezone().trim());
+//
+//                        for (int position = 0; position < timezoneList.size(); position++)
+//                        {
+//                            Timezone timezone = timezoneList.get(position);
+//
+//                            if (timezone.getValue().equals(String.valueOf(userProfile.getTimezone()).trim()))
+//                            {
+//                                mTimezoneSpinner.setSelection(position + 1);
+//                                break;
+//                            }
+//                        }
+//                    }
+//                }
+//                else
+//                {
+//                    int statusCode = response.code();
+//
+//                    Timber.d("onResponse failure");
+//
+//                    if (statusCode == 401)
+//                    {
+//                        resetToken(new OnResetTokenSuccessCallBack() {
+//                            @Override
+//                            public void onSuccess(String token)
+//                            {
+//                                mAuth.setToken(ProfileActivity.this, token);
+//                                loadUserProfile();
+//                            }
+//                        });
+//                    }
+//                    else
+//                    {
+//                        Timber.e("[Err] cannot get user profile, statusCode: %d", statusCode);
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Throwable t)
+//            {
+//                onRetrofitFailure(t);
+//                showProgress(false);
+//                showReload(true);
+//            }
+//        });
     }
 
     /**
@@ -616,11 +609,11 @@ public class ProfileActivity extends BaseActivity implements DatePickerDialog.On
         if (storageDir == null)
         {
             storageDir = getCacheDir();
-            Timber.d("Using getCacheDir()");
+            Log.d(TAG, "createTempFile: Using getCacheDir()");
         }
         else
         {
-            Timber.d("Using getExternalCacheDir()");
+            Log.d(TAG, "createTempFile: Using getExternalCacheDir()");
         }
 
         return File.createTempFile(
@@ -665,11 +658,11 @@ public class ProfileActivity extends BaseActivity implements DatePickerDialog.On
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        Timber.d("onActivityResult(%d, %d)", requestCode, resultCode);
+        Log.d(TAG, "onActivityResult() called with: " + "requestCode = [" + requestCode + "], resultCode = [" + resultCode + "], data = [" + data + "]");
 
         if (requestCode == Crop.REQUEST_PICK && resultCode == RESULT_OK)
         {
-            Timber.d("REQUEST_PICK");
+            Log.d(TAG, "onActivityResult: REQUEST_PICK");
 
             File tempFile;
             try
@@ -689,7 +682,7 @@ public class ProfileActivity extends BaseActivity implements DatePickerDialog.On
 
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK)
         {
-            Timber.d("REQUEST_CODE_IMAGE_CAPTURE");
+            Log.d(TAG, "onActivityResult: REQUEST_CODE_IMAGE_CAPTURE");
 
             Crop.of(mCurrentPhotoUri, mCurrentPhotoUri).asSquare().start(this);
 
@@ -698,7 +691,7 @@ public class ProfileActivity extends BaseActivity implements DatePickerDialog.On
 
         if (requestCode == Crop.REQUEST_CROP && resultCode == RESULT_OK)
         {
-            Timber.d("REQUEST_CROP");
+            Log.d(TAG, "onActivityResult: REQUEST_CROP");
 
             userProfileImage = convertUriToBitmap(mCurrentPhotoUri);
 
@@ -831,103 +824,103 @@ public class ProfileActivity extends BaseActivity implements DatePickerDialog.On
             userProfile.setImage(null);
         }
 
-        Call<EmptyResponse> call = mApiClient.updateUserProfile(userProfile, mAuth.getUser().getUserId());
-        call.enqueue(new Callback<EmptyResponse>() {
-            @Override
-            public void onResponse(Response<EmptyResponse> response, Retrofit retrofit)
-            {
-                hideLoadingDialog();
-
-                if (response.isSuccess())
-                {
-                    hideLoadingDialog();
-                    showToast("Profile updated");
-                }
-                else
-                {
-                    int statusCode = response.code();
-                    if (statusCode == 401)
-                    {
-                        resetToken(new OnResetTokenSuccessCallBack() {
-                            @Override
-                            public void onSuccess(String token)
-                            {
-                                mAuth.setToken(ProfileActivity.this, token);
-                                sendEditProfileRequest();
-                            }
-                        });
-                    }
-                    else if (statusCode == 422)
-                    {
-                        hideLoadingDialog();
-                        ResponseBody mErrorBody = response.errorBody();
-
-                        try
-                        {
-                            List<ErrorArray> errors = Utils.getErrorList(mErrorBody);
-                            for (ErrorArray error : errors)
-                            {
-                                String field = error.getField();
-                                View focusView = null;
-
-                                switch (field)
-                                {
-                                    case UserProfile.FIELD_FULL_NAME:
-                                        focusView = mFullNameView;
-                                        mFullNameView.setError(error.getMessage());
-                                        break;
-
-                                    case UserProfile.FIELD_DATE_OF_BIRTH:
-                                        focusView = mDateOfBirthView;
-                                        mDateOfBirthView.setError(error.getMessage());
-                                        break;
-
-                                    case UserProfile.FIELD_ADDRESS:
-                                        focusView = mAddressView;
-                                        mAddressView.setError(error.getMessage());
-                                        break;
-
-                                    case UserProfile.FIELD_CITY:
-                                        focusView = mCityView;
-                                        mCityView.setError(error.getMessage());
-                                        break;
-
-                                    case UserProfile.FIELD_STATE:
-                                        focusView = mStateView;
-                                        mStateView.setError(error.getMessage());
-                                        break;
-
-                                    case UserProfile.FIELD_PHONE:
-                                        focusView = mPhoneNumberView;
-                                        mPhoneNumberView.setError(error.getMessage());
-                                        break;
-                                }
-
-                                if (focusView != null)
-                                {
-                                    focusView.requestFocus();
-                                }
-                            }
-                        } catch (IOException e)
-                        {
-                            Timber.e(e, "[Err] cannot read errors from response body");
-                        }
-                    }
-                    else
-                    {
-                        hideLoadingDialog();
-                        Timber.d("[Err] unable to update user profile, statusCode: %d", statusCode);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Throwable t)
-            {
-                onRetrofitFailure(t);
-                hideLoadingDialog();
-            }
-        });
+//        Call<EmptyResponse> call = mApiClient.updateUserProfile(userProfile, mAuth.getUser().getUserId());
+//        call.enqueue(new Callback<EmptyResponse>() {
+//            @Override
+//            public void onResponse(Response<EmptyResponse> response, Retrofit retrofit)
+//            {
+//                hideLoadingDialog();
+//
+//                if (response.isSuccess())
+//                {
+//                    hideLoadingDialog();
+//                    showToast("Profile updated");
+//                }
+//                else
+//                {
+//                    int statusCode = response.code();
+//                    if (statusCode == 401)
+//                    {
+//                        resetToken(new OnResetTokenSuccessCallBack() {
+//                            @Override
+//                            public void onSuccess(String token)
+//                            {
+//                                mAuth.setToken(ProfileActivity.this, token);
+//                                sendEditProfileRequest();
+//                            }
+//                        });
+//                    }
+//                    else if (statusCode == 422)
+//                    {
+//                        hideLoadingDialog();
+//                        ResponseBody mErrorBody = response.errorBody();
+//
+//                        try
+//                        {
+//                            List<ErrorArray> errors = Utils.getErrorList(mErrorBody);
+//                            for (ErrorArray error : errors)
+//                            {
+//                                String field = error.getField();
+//                                View focusView = null;
+//
+//                                switch (field)
+//                                {
+//                                    case UserProfile.FIELD_FULL_NAME:
+//                                        focusView = mFullNameView;
+//                                        mFullNameView.setError(error.getMessage());
+//                                        break;
+//
+//                                    case UserProfile.FIELD_DATE_OF_BIRTH:
+//                                        focusView = mDateOfBirthView;
+//                                        mDateOfBirthView.setError(error.getMessage());
+//                                        break;
+//
+//                                    case UserProfile.FIELD_ADDRESS:
+//                                        focusView = mAddressView;
+//                                        mAddressView.setError(error.getMessage());
+//                                        break;
+//
+//                                    case UserProfile.FIELD_CITY:
+//                                        focusView = mCityView;
+//                                        mCityView.setError(error.getMessage());
+//                                        break;
+//
+//                                    case UserProfile.FIELD_STATE:
+//                                        focusView = mStateView;
+//                                        mStateView.setError(error.getMessage());
+//                                        break;
+//
+//                                    case UserProfile.FIELD_PHONE:
+//                                        focusView = mPhoneNumberView;
+//                                        mPhoneNumberView.setError(error.getMessage());
+//                                        break;
+//                                }
+//
+//                                if (focusView != null)
+//                                {
+//                                    focusView.requestFocus();
+//                                }
+//                            }
+//                        } catch (IOException e)
+//                        {
+//                            Timber.e(e, "[Err] cannot read errors from response body");
+//                        }
+//                    }
+//                    else
+//                    {
+//                        hideLoadingDialog();
+//                        Timber.d("[Err] unable to update user profile, statusCode: %d", statusCode);
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Throwable t)
+//            {
+//                onRetrofitFailure(t);
+//                hideLoadingDialog();
+//            }
+//        });
     }
 
 }

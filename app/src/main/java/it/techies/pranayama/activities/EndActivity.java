@@ -13,6 +13,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 
 import com.soundcloud.android.crop.Crop;
@@ -33,18 +34,12 @@ import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import it.techies.pranayama.R;
 import it.techies.pranayama.api.DailyRoutine;
-import it.techies.pranayama.api.EmptyResponse;
 import it.techies.pranayama.infrastructure.BaseBoundActivity;
-import it.techies.pranayama.infrastructure.OnResetTokenSuccessCallBack;
 import it.techies.pranayama.modules.launcher.LauncherActivity;
-import me.alexrs.prefs.lib.Prefs;
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.Response;
-import retrofit.Retrofit;
-import timber.log.Timber;
 
 public class EndActivity extends BaseBoundActivity {
+
+    private static final String TAG = "EndActivity";
 
     public static final int REQUEST_CODE_IMAGE_CAPTURE = 1;
     private static final int REQUEST_CODE_WRITE_EXTERNAL_STORAGE = 2;
@@ -133,46 +128,45 @@ public class EndActivity extends BaseBoundActivity {
         List<DailyRoutine> dailyRoutineList = new ArrayList<>();
         dailyRoutineList.add(mDailyRoutine);
 
-        Call<EmptyResponse> call = mApiClient.setDailyRoutine(dailyRoutineList);
-        call.enqueue(new Callback<EmptyResponse>() {
-            @Override
-            public void onResponse(Response<EmptyResponse> response, Retrofit retrofit)
-            {
-                if (response.isSuccess())
-                {
-                    // save history in prefs
-                    Prefs.with(EndActivity.this).save(LoginActivity.USER_HISTORY, 1);
-                    Timber.d("isSuccess()");
-                }
-                else
-                {
-                    int statusCode = response.code();
-                    if (statusCode == 403)
-                    {
-                        // reset token
-                        resetToken(new OnResetTokenSuccessCallBack() {
-                            @Override
-                            public void onSuccess(String token)
-                            {
-                                mAuth.setToken(EndActivity.this, token);
-                                sendDailyRouting();
-                            }
-                        });
-                    }
-                    else
-                    {
-                        Timber.d("Status code %d", statusCode);
-                    }
-
-                }
-            }
-
-            @Override
-            public void onFailure(Throwable t)
-            {
-                onRetrofitFailure(t);
-            }
-        });
+//        Call<EmptyResponse> call = mApiClient.setDailyRoutine(dailyRoutineList);
+//        call.enqueue(new Callback<EmptyResponse>() {
+//            @Override
+//            public void onResponse(Response<EmptyResponse> response, Retrofit retrofit)
+//            {
+//                if (response.isSuccess())
+//                {
+//                    // save history in prefs
+//                    Timber.d("isSuccess()");
+//                }
+//                else
+//                {
+//                    int statusCode = response.code();
+//                    if (statusCode == 403)
+//                    {
+//                        // reset token
+//                        resetToken(new OnResetTokenSuccessCallBack() {
+//                            @Override
+//                            public void onSuccess(String token)
+//                            {
+//                                mAuth.setToken(EndActivity.this, token);
+//                                sendDailyRouting();
+//                            }
+//                        });
+//                    }
+//                    else
+//                    {
+//                        Timber.d("Status code %d", statusCode);
+//                    }
+//
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Throwable t)
+//            {
+//                onRetrofitFailure(t);
+//            }
+//        });
     }
 
     /**
@@ -193,11 +187,11 @@ public class EndActivity extends BaseBoundActivity {
         if (storageDir == null)
         {
             storageDir = getCacheDir();
-            Timber.d("Using getCacheDir()");
+            Log.d(TAG, "createTempFile: Using getCacheDir()");
         }
         else
         {
-            Timber.d("Using getExternalCacheDir()");
+            Log.d(TAG, "createTempFile: Using getExternalCacheDir()");
         }
 
         return File.createTempFile(
@@ -272,11 +266,11 @@ public class EndActivity extends BaseBoundActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        Timber.d("onActivityResult(%d, %d)", requestCode, resultCode);
+        Log.d(TAG, "onActivityResult() called with: " + "requestCode = [" + requestCode + "], resultCode = [" + resultCode + "], data = [" + data + "]");
 
         if (requestCode == Crop.REQUEST_PICK && resultCode == RESULT_OK)
         {
-            Timber.d("REQUEST_PICK");
+            Log.d(TAG, "onActivityResult: REQUEST_PICK");
 
             File tempFile;
             try
@@ -296,7 +290,7 @@ public class EndActivity extends BaseBoundActivity {
 
         if (requestCode == REQUEST_CODE_IMAGE_CAPTURE && resultCode == RESULT_OK)
         {
-            Timber.d("REQUEST_CODE_IMAGE_CAPTURE");
+            Log.d(TAG, "onActivityResult: REQUEST_CODE_IMAGE_CAPTURE");
 
             Crop.of(mCurrentPhotoUri, mCurrentPhotoUri).asSquare().start(this);
 
@@ -305,7 +299,7 @@ public class EndActivity extends BaseBoundActivity {
 
         if (requestCode == Crop.REQUEST_CROP && resultCode == RESULT_OK)
         {
-            Timber.d("REQUEST_CROP");
+            Log.d(TAG, "onActivityResult: REQUEST_CROP");
 
             mShareImage = convertUriToBitmap(mCurrentPhotoUri);
 
@@ -401,7 +395,6 @@ public class EndActivity extends BaseBoundActivity {
                     // functionality that depends on this permission.
                     showToast("Please allow storage permission to share image");
                 }
-                return;
             }
         }
     }

@@ -1,6 +1,10 @@
 package it.techies.pranayama.modules.setup;
 
+import android.content.Context;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -29,12 +33,31 @@ public class SetupViewHolder extends RecyclerView.ViewHolder {
         mItemView = itemView;
     }
 
-    public void bindToPost(FirebaseSchedule model, View.OnClickListener starClickListener)
+    public void bindToPost(FirebaseSchedule model, View.OnClickListener itemClickListener)
     {
-        mAasanName.setText(model.name);
-        mAasanTime.setText(String.format("Time: %s", model.duration));
-        mSets.setText(String.format(Locale.getDefault(), "Sets: %d", model.sets));
+        String time = String.format(Locale.getDefault(), "Time: %02d:%02d", model.getMinutes(), model.getSeconds());
+        mAasanTime.setText(time);
 
-        mItemView.setOnClickListener(starClickListener);
+        if (model.key.equals(FirebaseSchedule.TYPE_BREAK))
+        {
+            mAasanName.setVisibility(View.GONE);
+            mSets.setText(model.name);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            {
+                mSets.setTextAppearance(R.style.AppTheme_TextAppearance_Title);
+            }
+            else
+            {
+                mSets.setTextAppearance(mSets.getContext(), R.style.AppTheme_TextAppearance_Title);
+            }
+        }
+        else
+        {
+            mAasanName.setText(model.name);
+            mSets.setText(String.format(Locale.getDefault(), "Number of sets: %d", model.numberOfSets));
+        }
+
+        mItemView.setOnClickListener(itemClickListener);
     }
 }

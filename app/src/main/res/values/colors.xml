@@ -40,4 +40,5 @@
     <color name="inputLabelColor">#cdcdcd</color>
     <color name="linkColor">#4285F4</color>
     <color name="shadowColor">#eeeeee</color>
+	<color name="pa_divider_light">#e0e0e0</color>
 </resources>
