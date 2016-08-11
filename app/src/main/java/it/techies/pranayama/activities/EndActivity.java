@@ -23,9 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import butterknife.Bind;
@@ -33,7 +31,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import it.techies.pranayama.R;
-import it.techies.pranayama.api.DailyRoutine;
 import it.techies.pranayama.infrastructure.BaseBoundActivity;
 import it.techies.pranayama.modules.launcher.LauncherActivity;
 
@@ -44,7 +41,6 @@ public class EndActivity extends BaseBoundActivity {
     public static final int REQUEST_CODE_IMAGE_CAPTURE = 1;
     private static final int REQUEST_CODE_WRITE_EXTERNAL_STORAGE = 2;
 
-    private DailyRoutine mDailyRoutine;
     private Uri mCurrentPhotoUri;
     private Bitmap mShareImage;
 
@@ -91,8 +87,7 @@ public class EndActivity extends BaseBoundActivity {
 
     public String getSharingText()
     {
-        String time = mDailyRoutine.getSharingTime();
-        return "I did Pranayama for " + time + " - via Pranayama app";
+        return "I did Pranayama for todo - via Pranayama app";
     }
 
     @OnClick(R.id.share_iv)
@@ -119,54 +114,6 @@ public class EndActivity extends BaseBoundActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        sendDailyRouting();
-    }
-
-    private void sendDailyRouting()
-    {
-        List<DailyRoutine> dailyRoutineList = new ArrayList<>();
-        dailyRoutineList.add(mDailyRoutine);
-
-//        Call<EmptyResponse> call = mApiClient.setDailyRoutine(dailyRoutineList);
-//        call.enqueue(new Callback<EmptyResponse>() {
-//            @Override
-//            public void onResponse(Response<EmptyResponse> response, Retrofit retrofit)
-//            {
-//                if (response.isSuccess())
-//                {
-//                    // save history in prefs
-//                    Timber.d("isSuccess()");
-//                }
-//                else
-//                {
-//                    int statusCode = response.code();
-//                    if (statusCode == 403)
-//                    {
-//                        // reset token
-//                        resetToken(new OnResetTokenSuccessCallBack() {
-//                            @Override
-//                            public void onSuccess(String token)
-//                            {
-//                                mAuth.setToken(EndActivity.this, token);
-//                                sendDailyRouting();
-//                            }
-//                        });
-//                    }
-//                    else
-//                    {
-//                        Timber.d("Status code %d", statusCode);
-//                    }
-//
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Throwable t)
-//            {
-//                onRetrofitFailure(t);
-//            }
-//        });
     }
 
     /**

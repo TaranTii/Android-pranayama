@@ -1,52 +1,14 @@
 package it.techies.pranayama.utils;
 
-import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
-import android.util.Base64;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.reflect.TypeToken;
-import com.squareup.okhttp.ResponseBody;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Locale;
-
-import it.techies.pranayama.api.errors.ErrorArray;
-import it.techies.pranayama.api.errors.ErrorObject;
 
 /**
  * Created by jagdeep on 30/11/2015.
  */
 public class Utils {
-
-    /**
-     * Converts bitmap to Base64 string.
-     *
-     * @param bitmap
-     * @return String
-     */
-    public static String bitmapToString(Bitmap bitmap)
-    {
-        if (bitmap != null)
-        {
-            //convert bitmap to byte array
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 30, byteArrayOutputStream);
-            byte[] byteArray = byteArrayOutputStream.toByteArray();
-
-            // byte array encode to base64
-            return Base64.encodeToString(byteArray, Base64.DEFAULT);
-        }
-        else
-        {
-            return "";
-        }
-    }
 
     public static String getCurrentDate()
     {

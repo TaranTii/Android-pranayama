@@ -26,7 +26,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import it.techies.pranayama.R;
-import it.techies.pranayama.activities.BreakActivity;
+import it.techies.pranayama.modules.aasanBreak.BreakActivity;
 import it.techies.pranayama.activities.EndActivity;
 import it.techies.pranayama.infrastructure.BaseBoundActivity;
 import it.techies.pranayama.models.FirebaseHistory;
@@ -43,6 +43,8 @@ import it.techies.pranayama.utils.Utils;
 public abstract class BaseAasanActivity extends BaseBoundActivity {
 
     private static final String TAG = "BaseAasanActivity";
+
+    public static final String KEY_CURRENT_AASAN = "key_current_aasan";
 
     @Bind(R.id.timer_tv)
     TextView mTimerTextView;
@@ -68,22 +70,27 @@ public abstract class BaseAasanActivity extends BaseBoundActivity {
     /**
      * CountDownTimer
      */
-    private CountDownTimer mCountDownTimer;
+    protected CountDownTimer mCountDownTimer;
 
     /**
      * Count down timer seconds
      */
-    private long mTimerSeconds;
+    protected long mTimerSeconds;
+
+    /**
+     * Current aasan.
+     */
+    protected CurrentAasan mCurrentAasan;
 
     /**
      * Details of current aasan schedule.
      */
-    private FirebaseSchedule mSchedule;
+    protected FirebaseSchedule mSchedule;
 
     /**
      * ObjectAnimator for timer animation.
      */
-    private ObjectAnimator mObjectAnimator;
+    protected ObjectAnimator mObjectAnimator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -103,6 +110,16 @@ public abstract class BaseAasanActivity extends BaseBoundActivity {
             actionBar.setTitle(getActionBarTitle());
         }
 
+        // read current aasan set number
+        if (getIntent().hasExtra(KEY_CURRENT_AASAN))
+        {
+            mCurrentAasan = getIntent().getParcelableExtra(KEY_CURRENT_AASAN);
+        }
+        else
+        {
+            throw new IllegalArgumentException("Needs CurrentAasan object");
+        }
+
         setupBenefitTextView();
 
         setupBreakTimeText();
@@ -120,10 +137,12 @@ public abstract class BaseAasanActivity extends BaseBoundActivity {
             {
                 mSchedule = dataSnapshot.getValue(FirebaseSchedule.class);
 
+                mCurrentAasan.setNumberOfSets(mSchedule.numberOfSets);
+
                 String setsText = String.format(
                         Locale.getDefault(),
                         "%d of %d",
-                        1,
+                        mCurrentAasan.getCurrentSet(),
                         mSchedule.numberOfSets);
 
                 // update the current aasan and total aasan on screen
@@ -138,11 +157,12 @@ public abstract class BaseAasanActivity extends BaseBoundActivity {
                 showToast(databaseError.getMessage());
             }
         });
+
     }
 
     public abstract String getActionBarTitle();
 
-    public abstract void startNextAasan();
+    public abstract void startNextAasan(CurrentAasan currentAasan);
 
     public abstract String getAasanName();
 
@@ -335,9 +355,7 @@ public abstract class BaseAasanActivity extends BaseBoundActivity {
     {
         playBellMusic();
 
-        Intent intent = new Intent(this, BreakActivity.class);
-        startActivity(intent);
-        finish();
+        BreakActivity.startActivity(this, mCurrentAasan);
     }
 
     /**
@@ -349,8 +367,9 @@ public abstract class BaseAasanActivity extends BaseBoundActivity {
         FirebaseHistory history = new FirebaseHistory(
                 getAasanName(),
                 getActionBarTitle(),
-                true,
-                mSchedule.duration
+                mSchedule.duration,
+                mCurrentAasan.getCurrentSet(),
+                true
         );
 
         history.save(getUid(), Utils.getCurrentDate());
@@ -412,7 +431,7 @@ public abstract class BaseAasanActivity extends BaseBoundActivity {
             mCountDownTimer.cancel();
         }
 
-        startNextAasan();
+        startNextAasan(mCurrentAasan);
     }
 
     protected void playBellMusic()

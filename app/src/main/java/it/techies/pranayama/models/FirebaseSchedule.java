@@ -3,13 +3,14 @@ package it.techies.pranayama.models;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.gson.annotations.Expose;
 
 import java.util.Locale;
 
 import it.techies.pranayama.utils.FireRef;
 
 /**
+ * Schedule model of aasans and break for firebase database.
+ * <p/>
  * Created by jagdeep on 29/07/16.
  */
 public class FirebaseSchedule {
@@ -17,7 +18,7 @@ public class FirebaseSchedule {
     @Exclude
     public static final String TYPE_AASAN = "aasan";
 
-    @Expose
+    @Exclude
     public static final String TYPE_BREAK = "break";
 
     public String key;
@@ -28,6 +29,16 @@ public class FirebaseSchedule {
     public Integer duration;
     public Integer numberOfSets;
 
+    /**
+     * Constructor for aasan schedule.
+     *
+     * @param key          Aasan key
+     * @param uid          User id
+     * @param name         Aasan name
+     * @param order        Aasan order
+     * @param duration     Duration of aasan in seconds
+     * @param numberOfSets Number of sets in aasan
+     */
     public FirebaseSchedule(String key, String uid, String name, Integer order, Integer duration, Integer numberOfSets)
     {
         this.key = key;
@@ -39,9 +50,15 @@ public class FirebaseSchedule {
         this.numberOfSets = numberOfSets;
     }
 
+    /**
+     * Constructor for break schedule.
+     *
+     * @param uid      User id
+     * @param duration Duration of break in seconds
+     */
     public FirebaseSchedule(String uid, Integer duration)
     {
-        this.key = "break";
+        this.key = FireRef.REF_AASAN_BREAK;
         this.uid = uid;
         this.type = TYPE_BREAK;
         this.name = "Break";
@@ -49,10 +66,16 @@ public class FirebaseSchedule {
         this.order = 99;
     }
 
+    /**
+     * Constructor for firebase.
+     */
     public FirebaseSchedule()
     {
     }
 
+    /**
+     * Save current instance of schedule to firebase.
+     */
     @Exclude
     public void save()
     {

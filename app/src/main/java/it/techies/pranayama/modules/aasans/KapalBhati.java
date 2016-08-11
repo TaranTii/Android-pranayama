@@ -1,6 +1,5 @@
 package it.techies.pranayama.modules.aasans;
 
-import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
@@ -8,15 +7,14 @@ import it.techies.pranayama.R;
 import it.techies.pranayama.utils.FireRef;
 
 /**
- * Created by jagdeep on 10/08/16.
+ * Created by jagdeep on 11/08/16.
  */
-public class Bhastrika extends BaseAasanActivity {
+public class KapalBhati extends BaseAasanActivity {
 
-    public static void startActivity(Context context, @NonNull CurrentAasan currentAasan)
+    @Override
+    public String getActionBarTitle()
     {
-        Intent intent = new Intent(context, Bhastrika.class);
-        intent.putExtra(BaseAasanActivity.KEY_CURRENT_AASAN, currentAasan);
-        context.startActivity(intent);
+        return "KapalBhati";
     }
 
     @Override
@@ -31,18 +29,12 @@ public class Bhastrika extends BaseAasanActivity {
     @Override
     public String getAasanName()
     {
-        return FireRef.REF_AASAN_BHASTRIKA;
-    }
-
-    @Override
-    public String getActionBarTitle()
-    {
-        return "Bhastrike";
+        return FireRef.REF_AASAN_KAPALBHATI;
     }
 
     @Override
     public String getAasanBenefits()
     {
-        return getString(R.string.benefit_bhastrika);
+        return getString(R.string.benefit_kapalbhati);
     }
 }

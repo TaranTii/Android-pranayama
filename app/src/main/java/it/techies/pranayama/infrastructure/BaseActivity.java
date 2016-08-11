@@ -94,7 +94,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     /**
-     * Logout the user and starts the Launcher activity.
+     * Logout the user and starts the Splash activity.
      */
     protected void logoutUser()
     {

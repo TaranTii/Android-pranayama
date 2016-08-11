@@ -29,13 +29,19 @@
             tools:replace="theme"/>
 
         <activity
-            android:name=".activities.BreakActivity"
+            android:name=".modules.aasanBreak.BreakActivity"
             android:label="@string/title_activity_break"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
         <activity
             android:name=".modules.aasans.Bhastrika"
+            android:label="@string/title_activity_aasan"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+        <activity
+            android:name=".modules.aasans.KapalBhati"
             android:label="@string/title_activity_aasan"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>

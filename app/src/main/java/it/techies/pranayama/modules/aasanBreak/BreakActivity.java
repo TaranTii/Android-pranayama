@@ -1,6 +1,7 @@
-package it.techies.pranayama.activities;
+package it.techies.pranayama.modules.aasanBreak;
 
 import android.animation.ObjectAnimator;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,10 +20,9 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import it.techies.pranayama.R;
-import it.techies.pranayama.api.timing.AasanInformation;
-import it.techies.pranayama.api.timing.AasanTime;
 import it.techies.pranayama.infrastructure.BaseBoundActivity;
-import it.techies.pranayama.modules.aasans.AasanActivity;
+import it.techies.pranayama.modules.aasans.BaseAasanActivity;
+import it.techies.pranayama.modules.aasans.CurrentAasan;
 import it.techies.pranayama.modules.launcher.LauncherActivity;
 
 public class BreakActivity extends BaseBoundActivity {
@@ -32,27 +32,12 @@ public class BreakActivity extends BaseBoundActivity {
     @Bind(R.id.timer_tv)
     TextView mTimerTextView;
 
-    // current aasan index
-    private Integer mCurrentAasanIndex;
-
-    // aasan information
-    private AasanInformation mAasanInformation;
-
     private CountDownTimer mCountDownTimer;
 
     @Bind(R.id.active_pin_iv)
     ImageView mActivePinImageView;
 
-    @OnClick(R.id.skip_btn)
-    public void skipButtonClick(View v)
-    {
-        if (mCountDownTimer != null)
-        {
-            mCountDownTimer.cancel();
-        }
-
-        startNextAasan();
-    }
+    private CurrentAasan mCurrentAasan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -64,15 +49,16 @@ public class BreakActivity extends BaseBoundActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // get current aasan index
-        mCurrentAasanIndex = mAasanInformation.getCurrentAasanIndex();
+        if (getIntent().hasExtra(BaseAasanActivity.KEY_CURRENT_AASAN))
+        {
+            mCurrentAasan = getIntent().getParcelableExtra(BaseAasanActivity.KEY_CURRENT_AASAN);
+        }
+        else
+        {
+            throw new IllegalArgumentException("Needs current aasan object");
+        }
 
-        // get current aasan information from aasan list
-        AasanTime aasanTime = mAasanInformation.getAasanTimes().get(mCurrentAasanIndex);
-
-        mTimerTextView.setText(aasanTime.getTimings().getBreakTimeString());
-
-        long timer = aasanTime.getBreakTime() * 1000;
+        long timer = 10 * 1000;
 
         startAnimation(timer);
 
@@ -98,6 +84,24 @@ public class BreakActivity extends BaseBoundActivity {
         };
 
         mCountDownTimer.start();
+    }
+
+    public static void startActivity(Context context, CurrentAasan currentAasan)
+    {
+        Intent intent = new Intent(context, BreakActivity.class);
+        intent.putExtra(BaseAasanActivity.KEY_CURRENT_AASAN, currentAasan);
+        context.startActivity(intent);
+    }
+
+    @OnClick(R.id.skip_btn)
+    public void skipButtonClick(View v)
+    {
+        if (mCountDownTimer != null)
+        {
+            mCountDownTimer.cancel();
+        }
+
+        startNextAasan();
     }
 
     @Override
@@ -132,8 +136,8 @@ public class BreakActivity extends BaseBoundActivity {
     private void showStopAasanDialog()
     {
         new AlertDialog.Builder(this)
-                .setTitle("Stop the Prayanama?")
-                .setPositiveButton("Stop", new DialogInterface.OnClickListener() {
+                .setTitle(R.string.dialog_title_stop_pranayama)
+                .setPositiveButton(R.string.dialog_action_stop, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which)
                     {
@@ -170,31 +174,8 @@ public class BreakActivity extends BaseBoundActivity {
             Log.d(TAG, "startNextAasan: service not bound yet");
         }
 
-        // get current aasan index
-        mCurrentAasanIndex = mAasanInformation.getCurrentAasanIndex();
-
-        final AasanTime currentAasan = mAasanInformation.getAasanTimes().get(mCurrentAasanIndex);
-        final int totalSets = currentAasan.getSet();
-        final boolean isLastSet = (mAasanInformation.getCurrentSetIndex() == totalSets);
-
-        if (isLastSet)
-        {
-            // start the next aasan
-            mAasanInformation.setCurrentAasanIndex(mCurrentAasanIndex + 1);
-            // start the first set of next aasan
-            mAasanInformation.setCurrentSetIndex(1);
-        }
-        else
-        {
-            // start the next aasan
-            int nextSet = mAasanInformation.getCurrentSetIndex() + 1;
-            if (nextSet <= totalSets)
-            {
-                mAasanInformation.setCurrentSetIndex(nextSet);
-            }
-        }
-
-        Intent intent = new Intent(this, AasanActivity.class);
+        Intent intent = new Intent(this, mCurrentAasan.getNextAasanClass());
+        intent.putExtra(BaseAasanActivity.KEY_CURRENT_AASAN, mCurrentAasan);
         startActivity(intent);
         finish();
     }

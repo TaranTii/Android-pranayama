@@ -17,6 +17,7 @@ import it.techies.pranayama.R;
 import it.techies.pranayama.infrastructure.BaseDrawerActivity;
 import it.techies.pranayama.modules.aasans.BaseAasanActivity;
 import it.techies.pranayama.modules.aasans.Bhastrika;
+import it.techies.pranayama.modules.aasans.CurrentAasan;
 import it.techies.pranayama.modules.setup.SetupActivity;
 
 public class LauncherActivity extends BaseDrawerActivity implements LauncherView {
@@ -113,9 +114,7 @@ public class LauncherActivity extends BaseDrawerActivity implements LauncherView
     @OnClick(R.id.start_button)
     public void start(View v)
     {
-        Intent intent = new Intent(this, Bhastrika.class);
-        startActivity(intent);
-        finish();
+        Bhastrika.startActivity(this, new CurrentAasan());
     }
 
     @OnClick(R.id.setup_schedule_ll)
