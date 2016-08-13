@@ -14,6 +14,12 @@ import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.Locale;
 
 import butterknife.Bind;
@@ -21,9 +27,11 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import it.techies.pranayama.R;
 import it.techies.pranayama.infrastructure.BaseBoundActivity;
-import it.techies.pranayama.modules.aasans.BaseAasanActivity;
-import it.techies.pranayama.modules.aasans.CurrentAasan;
+import it.techies.pranayama.models.FirebaseSchedule;
+import it.techies.pranayama.modules.aasans.base.BaseAasanActivity;
+import it.techies.pranayama.modules.aasans.model.CurrentAasan;
 import it.techies.pranayama.modules.launcher.LauncherActivity;
+import it.techies.pranayama.utils.FireRef;
 
 public class BreakActivity extends BaseBoundActivity {
 
@@ -32,11 +40,17 @@ public class BreakActivity extends BaseBoundActivity {
     @Bind(R.id.timer_tv)
     TextView mTimerTextView;
 
-    private CountDownTimer mCountDownTimer;
-
     @Bind(R.id.active_pin_iv)
     ImageView mActivePinImageView;
 
+    /**
+     * CountDown timer.
+     */
+    private CountDownTimer mCountDownTimer;
+
+    /**
+     * Information about current and next aasans.
+     */
     private CurrentAasan mCurrentAasan;
 
     @Override
@@ -52,14 +66,48 @@ public class BreakActivity extends BaseBoundActivity {
         if (getIntent().hasExtra(BaseAasanActivity.KEY_CURRENT_AASAN))
         {
             mCurrentAasan = getIntent().getParcelableExtra(BaseAasanActivity.KEY_CURRENT_AASAN);
+            setupBreakTimeText();
         }
         else
         {
             throw new IllegalArgumentException("Needs current aasan object");
         }
+    }
 
-        long timer = 10 * 1000;
+    /**
+     * Reads the break time from firebase and set text in BreakTime textView.
+     */
+    private void setupBreakTimeText()
+    {
+        DatabaseReference mRef = FirebaseDatabase.getInstance()
+                .getReference(FireRef.REF_USER_PREFS)
+                .child(getUid())
+                .child(FireRef.REF_AASAN_BREAK);
 
+        mRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot)
+            {
+                FirebaseSchedule schedule = dataSnapshot.getValue(FirebaseSchedule.class);
+                mTimerTextView.setText(schedule.getTimeString());
+                initTimer(schedule.duration * 1000L);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError)
+            {
+                showToast(databaseError.getMessage());
+            }
+        });
+    }
+
+    /**
+     * Creates a CountDown timer for given duration.
+     *
+     * @param timer Timer duration in milliseconds
+     */
+    private void initTimer(final long timer)
+    {
         startAnimation(timer);
 
         mCountDownTimer = new CountDownTimer(timer, 1000) {
@@ -174,10 +222,29 @@ public class BreakActivity extends BaseBoundActivity {
             Log.d(TAG, "startNextAasan: service not bound yet");
         }
 
-        Intent intent = new Intent(this, mCurrentAasan.getNextAasanClass());
-        intent.putExtra(BaseAasanActivity.KEY_CURRENT_AASAN, mCurrentAasan);
-        startActivity(intent);
-        finish();
+        // if last set of current aasan is done, start next aasan
+        // else start next set of current aasan
+        if (mCurrentAasan.isLastSet())
+        {
+            // to start first set of next aasan
+            mCurrentAasan.setCurrentSet(1);
+
+            Intent intent = new Intent(this, mCurrentAasan.getNextAasanClass());
+            intent.putExtra(BaseAasanActivity.KEY_CURRENT_AASAN, mCurrentAasan);
+            startActivity(intent);
+            finish();
+        }
+        else
+        {
+            // move the current set pointer to next one
+            mCurrentAasan.incrementCurrentSet();
+
+            Intent intent = new Intent(this, mCurrentAasan.getCurrentAasanClass());
+            intent.putExtra(BaseAasanActivity.KEY_CURRENT_AASAN, mCurrentAasan);
+            startActivity(intent);
+            finish();
+        }
+
     }
 
 }

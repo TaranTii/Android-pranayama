@@ -1,9 +1,12 @@
 package it.techies.pranayama.modules.aasans;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
 import it.techies.pranayama.R;
+import it.techies.pranayama.modules.aasans.base.BaseAasanActivity;
+import it.techies.pranayama.modules.aasans.model.CurrentAasan;
 import it.techies.pranayama.utils.FireRef;
 
 /**
@@ -11,19 +14,11 @@ import it.techies.pranayama.utils.FireRef;
  */
 public class KapalBhati extends BaseAasanActivity {
 
-    @Override
-    public String getActionBarTitle()
+    public static void startActivity(Context context, @NonNull CurrentAasan currentAasan)
     {
-        return "KapalBhati";
-    }
-
-    @Override
-    public void startNextAasan(@NonNull CurrentAasan currentAasan)
-    {
-        Intent intent = new Intent(this, KapalBhati.class);
+        Intent intent = new Intent(context, KapalBhati.class);
         intent.putExtra(BaseAasanActivity.KEY_CURRENT_AASAN, currentAasan);
-        startActivity(intent);
-        finish();
+        context.startActivity(intent);
     }
 
     @Override
@@ -33,8 +28,21 @@ public class KapalBhati extends BaseAasanActivity {
     }
 
     @Override
+    public String getActionBarTitle()
+    {
+        return "Kapalbhati";
+    }
+
+    @Override
     public String getAasanBenefits()
     {
         return getString(R.string.benefit_kapalbhati);
     }
+
+    @Override
+    public Class<?> getNextAasanClass()
+    {
+        return Bahaya.class;
+    }
+
 }

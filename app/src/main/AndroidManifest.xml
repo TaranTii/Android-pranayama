@@ -47,6 +47,36 @@
         </activity>
 
         <activity
+            android:name=".modules.aasans.Bahaya"
+            android:label="@string/title_activity_aasan"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+        <activity
+            android:name=".modules.aasans.AgnisarKriya"
+            android:label="@string/title_activity_aasan"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+        <activity
+            android:name=".modules.aasans.AnulomVilom"
+            android:label="@string/title_activity_aasan"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+        <activity
+            android:name=".modules.aasans.Bharmari"
+            android:label="@string/title_activity_aasan"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+        <activity
+            android:name=".modules.aasans.Udgeeth"
+            android:label="@string/title_activity_aasan"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+        <activity
             android:name=".activities.EndActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
@@ -64,7 +94,7 @@
         </activity>
 
         <activity
-            android:name=".activities.ChangePasswordActivity"
+            android:name=".modules.password.ChangePasswordActivity"
             android:label="@string/title_activity_change_password">
         </activity>
 

@@ -10,13 +10,13 @@ import it.techies.pranayama.modules.aasans.model.CurrentAasan;
 import it.techies.pranayama.utils.FireRef;
 
 /**
- * Created by jagdeep on 10/08/16.
+ * Created by jagdeep on 13/08/16.
  */
-public class Bhastrika extends BaseAasanActivity {
+public class Bharmari extends BaseAasanActivity {
 
     public static void startActivity(Context context, @NonNull CurrentAasan currentAasan)
     {
-        Intent intent = new Intent(context, Bhastrika.class);
+        Intent intent = new Intent(context, Bharmari.class);
         intent.putExtra(BaseAasanActivity.KEY_CURRENT_AASAN, currentAasan);
         context.startActivity(intent);
     }
@@ -24,25 +24,24 @@ public class Bhastrika extends BaseAasanActivity {
     @Override
     public String getAasanName()
     {
-        return FireRef.REF_AASAN_BHASTRIKA;
+        return FireRef.REF_AASAN_BHARMARI;
     }
 
     @Override
     public String getActionBarTitle()
     {
-        return "Bhastrika";
+        return "Bharmari";
     }
 
     @Override
     public String getAasanBenefits()
     {
-        return getString(R.string.benefit_bhastrika);
+        return getString(R.string.benefit_bharamri);
     }
 
     @Override
     public Class<?> getNextAasanClass()
     {
-        return KapalBhati.class;
+        return Udgeeth.class;
     }
-
 }

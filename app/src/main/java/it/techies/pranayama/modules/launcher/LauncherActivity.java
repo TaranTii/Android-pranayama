@@ -9,16 +9,19 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import butterknife.Bind;
 import butterknife.BindDrawable;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import it.techies.pranayama.R;
 import it.techies.pranayama.infrastructure.BaseDrawerActivity;
-import it.techies.pranayama.modules.aasans.BaseAasanActivity;
 import it.techies.pranayama.modules.aasans.Bhastrika;
-import it.techies.pranayama.modules.aasans.CurrentAasan;
+import it.techies.pranayama.modules.aasans.model.CurrentAasan;
 import it.techies.pranayama.modules.setup.SetupActivity;
+import it.techies.pranayama.utils.FireRef;
 
 public class LauncherActivity extends BaseDrawerActivity implements LauncherView {
 
@@ -79,7 +82,24 @@ public class LauncherActivity extends BaseDrawerActivity implements LauncherView
         else
         {
             mPresenter = new LauncherPresenterImpl(this, getUser());
+            enableFirebaseCache();
         }
+    }
+
+    private void enableFirebaseCache()
+    {
+        // cache user prefs
+        DatabaseReference prefs = FirebaseDatabase.getInstance()
+                .getReference(FireRef.REF_USER_PREFS)
+                .child(getUid());
+
+        // cache user history
+        DatabaseReference history = FirebaseDatabase.getInstance()
+                .getReference(FireRef.REF_HISTORY)
+                .child(getUid());
+
+        prefs.keepSynced(true);
+        history.keepSynced(true);
     }
 
     @Override

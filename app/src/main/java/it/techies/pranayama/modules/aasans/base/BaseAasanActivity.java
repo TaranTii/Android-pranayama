@@ -1,4 +1,4 @@
-package it.techies.pranayama.modules.aasans;
+package it.techies.pranayama.modules.aasans.base;
 
 import android.animation.ObjectAnimator;
 import android.content.DialogInterface;
@@ -21,6 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.Locale;
+import java.util.Objects;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -31,6 +32,8 @@ import it.techies.pranayama.activities.EndActivity;
 import it.techies.pranayama.infrastructure.BaseBoundActivity;
 import it.techies.pranayama.models.FirebaseHistory;
 import it.techies.pranayama.models.FirebaseSchedule;
+import it.techies.pranayama.modules.aasans.Udgeeth;
+import it.techies.pranayama.modules.aasans.model.CurrentAasan;
 import it.techies.pranayama.modules.launcher.LauncherActivity;
 import it.techies.pranayama.utils.FireRef;
 import it.techies.pranayama.utils.Utils;
@@ -114,6 +117,12 @@ public abstract class BaseAasanActivity extends BaseBoundActivity {
         if (getIntent().hasExtra(KEY_CURRENT_AASAN))
         {
             mCurrentAasan = getIntent().getParcelableExtra(KEY_CURRENT_AASAN);
+
+            // set appropriate next aasan and current aasan class
+            if (mCurrentAasan.getCurrentSet() == 1)
+            {
+                mCurrentAasan = getUpdatedCurrentAasan();
+            }
         }
         else
         {
@@ -160,13 +169,36 @@ public abstract class BaseAasanActivity extends BaseBoundActivity {
 
     }
 
-    public abstract String getActionBarTitle();
+    public CurrentAasan getUpdatedCurrentAasan()
+    {
+        return new CurrentAasan(
+                getAasanName(),
+                getClass(),
+                getNextAasanClass()
+        );
+    }
 
-    public abstract void startNextAasan(CurrentAasan currentAasan);
+    public void startNextAasan()
+    {
+        Intent intent = new Intent(this, getNextAasanClass());
+        CurrentAasan currentAasan = getUpdatedCurrentAasan();
+        intent.putExtra(BaseAasanActivity.KEY_CURRENT_AASAN, currentAasan);
+        startActivity(intent);
+        finish();
+    }
+
+    public abstract String getActionBarTitle();
 
     public abstract String getAasanName();
 
     public abstract String getAasanBenefits();
+
+    public abstract Class<?> getNextAasanClass();
+
+    protected boolean isLastAasan()
+    {
+        return false;
+    }
 
     /**
      * Reads the break time from firebase and set text in BreakTime textView.
@@ -353,9 +385,15 @@ public abstract class BaseAasanActivity extends BaseBoundActivity {
      */
     private void startBreak()
     {
-        playBellMusic();
-
-        BreakActivity.startActivity(this, mCurrentAasan);
+        if (isLastAasan() && mCurrentAasan.isLastSet())
+        {
+            showFinalScreen();
+        }
+        else
+        {
+            playBellMusic();
+            BreakActivity.startActivity(this, mCurrentAasan);
+        }
     }
 
     /**
@@ -363,15 +401,8 @@ public abstract class BaseAasanActivity extends BaseBoundActivity {
      */
     private void setIsCompleted()
     {
-        // mark completed in user history
-        FirebaseHistory history = new FirebaseHistory(
-                getAasanName(),
-                getActionBarTitle(),
-                mSchedule.duration,
-                mCurrentAasan.getCurrentSet(),
-                true
-        );
-
+        // add completed set in user history
+        FirebaseHistory history = new FirebaseHistory(getAasanName(), mSchedule.duration);
         history.save(getUid(), Utils.getCurrentDate());
     }
 
@@ -431,7 +462,7 @@ public abstract class BaseAasanActivity extends BaseBoundActivity {
             mCountDownTimer.cancel();
         }
 
-        startNextAasan(mCurrentAasan);
+        startNextAasan();
     }
 
     protected void playBellMusic()

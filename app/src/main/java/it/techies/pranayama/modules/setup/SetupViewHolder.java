@@ -38,7 +38,7 @@ public class SetupViewHolder extends RecyclerView.ViewHolder {
         String time = String.format(Locale.getDefault(), "Time: %02d:%02d", model.getMinutes(), model.getSeconds());
         mAasanTime.setText(time);
 
-        if (model.key.equals(FirebaseSchedule.TYPE_BREAK))
+        if (model.type.equals(FirebaseSchedule.TYPE_BREAK))
         {
             mAasanName.setVisibility(View.GONE);
             mSets.setText(model.name);
@@ -54,8 +54,18 @@ public class SetupViewHolder extends RecyclerView.ViewHolder {
         }
         else
         {
+            mAasanName.setVisibility(View.VISIBLE);
             mAasanName.setText(model.name);
             mSets.setText(String.format(Locale.getDefault(), "Number of sets: %d", model.numberOfSets));
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            {
+                mSets.setTextAppearance(R.style.AppTheme_TextAppearance_Body1);
+            }
+            else
+            {
+                mSets.setTextAppearance(mSets.getContext(), R.style.AppTheme_TextAppearance_Body1);
+            }
         }
 
         mItemView.setOnClickListener(itemClickListener);

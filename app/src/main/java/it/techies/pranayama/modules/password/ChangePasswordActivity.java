@@ -1,10 +1,7 @@
-package it.techies.pranayama.activities;
+package it.techies.pranayama.modules.password;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
-import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -13,6 +10,10 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseUser;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import butterknife.Bind;
@@ -25,18 +26,11 @@ import it.techies.pranayama.infrastructure.BaseActivity;
  */
 public class ChangePasswordActivity extends BaseActivity {
 
-    @Bind(R.id.current_password)
-    MaterialEditText mCurrentPasswordView;
-
     @Bind(R.id.new_password)
     MaterialEditText mNewPasswordView;
 
     @Bind(R.id.confirm_new_password)
     MaterialEditText mConfirmNewPasswordView;
-
-    private View mProgressView;
-
-    private View mLoginFormView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -69,9 +63,6 @@ public class ChangePasswordActivity extends BaseActivity {
                 attemptChangePassword();
             }
         });
-
-        mLoginFormView = findViewById(R.id.change_password_form);
-        mProgressView = findViewById(R.id.change_password_progress);
     }
 
     /**
@@ -82,12 +73,10 @@ public class ChangePasswordActivity extends BaseActivity {
     private void attemptChangePassword()
     {
         // Reset errors.
-        mCurrentPasswordView.setError(null);
         mNewPasswordView.setError(null);
         mConfirmNewPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        String currentPassword = mCurrentPasswordView.getText().toString().trim();
         String newPassword = mNewPasswordView.getText().toString().trim();
         String confirmNewPassword = mConfirmNewPasswordView.getText().toString().trim();
 
@@ -118,14 +107,6 @@ public class ChangePasswordActivity extends BaseActivity {
             cancel = true;
         }
 
-        // current password should not be empty
-        if (TextUtils.isEmpty(currentPassword))
-        {
-            mCurrentPasswordView.setError(getString(R.string.error_field_required));
-            focusView = mCurrentPasswordView;
-            cancel = true;
-        }
-
         if (cancel)
         {
             // There was an error; don't attempt login and focus the first
@@ -134,58 +115,33 @@ public class ChangePasswordActivity extends BaseActivity {
         }
         else
         {
-            sendChangePasswordRequest(currentPassword, newPassword);
+            sendChangePasswordRequest(newPassword);
         }
     }
 
-    private void sendChangePasswordRequest(String currentPassword, String newPassword)
+    private void sendChangePasswordRequest(String newPassword)
     {
-        // Show a progress spinner, and kick off a background task to
-        // perform the user login attempt.
+        showLoadingDialog("Please wait...");
 
-        // showProgress(true);
-    }
+        FirebaseUser user = getUser();
+        Task<Void> task = user.updatePassword(newPassword);
+        task.addOnSuccessListener(this, new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid)
+            {
+                hideLoadingDialog();
+                showToast("Password updated");
+            }
+        });
 
-    /**
-     * Shows the progress UI and hides the login form.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    private void showProgress(final boolean show)
-    {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2)
-        {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(show ? 0 : 1)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation)
-                        {
-                            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-                        }
-                    });
-
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(show ? 1 : 0)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation)
-                        {
-                            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                        }
-                    });
-        }
-        else
-        {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-        }
+        task.addOnFailureListener(this, new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e)
+            {
+                hideLoadingDialog();
+                showToast(e.getMessage());
+            }
+        });
     }
 
 }

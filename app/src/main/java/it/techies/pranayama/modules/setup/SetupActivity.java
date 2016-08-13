@@ -125,8 +125,6 @@ public class SetupActivity extends BaseActivity implements SetupView {
                     final int position
             )
             {
-                // showLoading(false);
-
                 final DatabaseReference postRef = getRef(position);
 
                 // Set click listener for the whole post view
