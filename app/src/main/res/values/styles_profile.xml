@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AppTheme.Profile" parent="AppTheme"/>
+
+    <style name="AppTheme.Profile.Heading" parent="Base.TextAppearance.AppCompat.Body2">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="AppTheme.Profile.Body" parent="Base.TextAppearance.AppCompat.Caption">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="AppTheme.Profile.List" parent="AppTheme.Profile"/>
+
+    <style name="AppTheme.Profile.List.SelectableItem" parent="AppTheme.Profile.List">
+        <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <style name="AppTheme.Profile.List.HR" parent="AppTheme.Profile.List">
+        <item name="android:background">#ececec</item>
+        <item name="android:height">1dp</item>
+    </style>
+
+</resources>

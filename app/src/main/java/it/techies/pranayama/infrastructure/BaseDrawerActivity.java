@@ -15,9 +15,9 @@ import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 
 import it.techies.pranayama.R;
 import it.techies.pranayama.modules.password.ChangePasswordActivity;
-import it.techies.pranayama.activities.HistoryActivity;
-import it.techies.pranayama.activities.ProfileActivity;
-import it.techies.pranayama.activities.SettingsActivity;
+import it.techies.pranayama.modules.history.HistoryActivity;
+import it.techies.pranayama.modules.profile.ProfileActivity;
+import it.techies.pranayama.modules.settings.SettingsActivity;
 import it.techies.pranayama.modules.setup.SetupActivity;
 
 /**

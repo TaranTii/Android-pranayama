@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 
 import it.techies.pranayama.R;
-import it.techies.pranayama.activities.EndActivity;
 import it.techies.pranayama.modules.aasans.base.BaseAasanActivity;
 import it.techies.pranayama.modules.aasans.model.CurrentAasan;
 import it.techies.pranayama.utils.FireRef;

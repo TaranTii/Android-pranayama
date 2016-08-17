@@ -4,7 +4,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                tools:context=".modules.aasans.AasanActivity"
+                tools:context=".modules.aasans.Bhastrika"
                 tools:showIn="@layout/activity_aasan">
 
     <ImageView
@@ -153,6 +153,7 @@
             </LinearLayout>
 
             <RelativeLayout
+                android:layout_marginTop="40dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 

@@ -60,8 +60,8 @@
 
     <string name="pick_image">Select photo</string>
 
-    <string name="hint_full_name">Full name</string>
-    <string name="hint_dob">Date of birth (YYYY-MM-DD)</string>
+    <string name="hint_full_name">Full Name</string>
+    <string name="hint_dob">Date of birth</string>
     <string name="hint_address">Address</string>
     <string name="hint_city">City</string>
     <string name="hint_state">State</string>
@@ -113,5 +113,9 @@
     <string name="dialog_action_save">Save</string>
     <string name="dialog_title_stop_pranayama">Stop the Prayanama?</string>
     <string name="dialog_action_stop">Stop</string>
+    <string name="hint_location">Location</string>
+    <string name="n_a">N/A</string>
+
+    <string name="firebase_storage_ref">gs://pranayama-59f5c.appspot.com</string>
 
 </resources>

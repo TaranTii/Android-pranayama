@@ -1,4 +1,4 @@
-package it.techies.pranayama.activities;
+package it.techies.pranayama.modules.aasans;
 
 import android.Manifest;
 import android.content.Context;

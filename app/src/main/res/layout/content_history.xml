@@ -6,7 +6,7 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	app:layout_behavior="@string/appbar_scrolling_view_behavior"
-	tools:context=".activities.HistoryActivity"
+	tools:context=".modules.history.HistoryActivity"
 	tools:showIn="@layout/activity_history">
 
 	<ScrollView
@@ -30,39 +30,6 @@
 				app:mcv_selectionColor="@color/colorAccent"
 				app:mcv_showOtherDates="all"
 				tools:visibility="gone"/>
-
-			<RelativeLayout
-				android:id="@+id/progress_rl"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="24dp"
-				android:orientation="horizontal"
-				android:visibility="visible">
-
-				<LinearLayout
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_centerInParent="true"
-					android:gravity="center_vertical"
-					android:orientation="horizontal">
-
-					<ProgressBar
-						style="?android:attr/progressBarStyleSmall"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"/>
-
-					<TextView
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:layout_marginLeft="8dp"
-						android:layout_marginStart="8dp"
-						android:text="Loading..."
-						android:textAppearance="?android:attr/textAppearanceSmall"/>
-
-				</LinearLayout>
-
-
-			</RelativeLayout>
 
 			<LinearLayout
 				android:id="@+id/meta_ll"

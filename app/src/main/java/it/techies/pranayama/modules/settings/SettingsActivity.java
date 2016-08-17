@@ -1,4 +1,4 @@
-package it.techies.pranayama.activities;
+package it.techies.pranayama.modules.settings;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;

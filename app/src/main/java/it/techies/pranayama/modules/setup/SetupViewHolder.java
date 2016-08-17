@@ -1,10 +1,7 @@
 package it.techies.pranayama.modules.setup;
 
-import android.content.Context;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 

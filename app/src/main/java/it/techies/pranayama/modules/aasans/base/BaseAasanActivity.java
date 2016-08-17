@@ -21,18 +21,16 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.Locale;
-import java.util.Objects;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import it.techies.pranayama.R;
 import it.techies.pranayama.modules.aasanBreak.BreakActivity;
-import it.techies.pranayama.activities.EndActivity;
+import it.techies.pranayama.modules.aasans.EndActivity;
 import it.techies.pranayama.infrastructure.BaseBoundActivity;
 import it.techies.pranayama.models.FirebaseHistory;
 import it.techies.pranayama.models.FirebaseSchedule;
-import it.techies.pranayama.modules.aasans.Udgeeth;
 import it.techies.pranayama.modules.aasans.model.CurrentAasan;
 import it.techies.pranayama.modules.launcher.LauncherActivity;
 import it.techies.pranayama.utils.FireRef;

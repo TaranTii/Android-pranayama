@@ -98,8 +98,13 @@ public class LauncherActivity extends BaseDrawerActivity implements LauncherView
                 .getReference(FireRef.REF_HISTORY)
                 .child(getUid());
 
+        DatabaseReference user = FirebaseDatabase.getInstance()
+                .getReference(FireRef.REF_USERS)
+                .child(getUid());
+
         prefs.keepSynced(true);
         history.keepSynced(true);
+        user.keepSynced(true);
     }
 
     @Override

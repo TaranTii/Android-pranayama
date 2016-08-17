@@ -24,11 +24,9 @@
     </style>
 
     <style name="AppTheme.TextAppearance.Title" parent="TextAppearance.AppCompat.Title">
-
     </style>
 
     <style name="AppTheme.TextAppearance.Body1" parent="TextAppearance.AppCompat.Body1">
-
     </style>
 
 </resources>

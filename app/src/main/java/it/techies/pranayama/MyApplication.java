@@ -2,6 +2,7 @@ package it.techies.pranayama;
 
 import android.app.Application;
 
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.FirebaseDatabase;
 
 /**
@@ -13,9 +14,10 @@ public class MyApplication extends Application {
     public void onCreate()
     {
         super.onCreate();
-
         // enable Disk Persistence
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        if (!FirebaseApp.getApps(this).isEmpty()) {
+            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        }
     }
 
 }

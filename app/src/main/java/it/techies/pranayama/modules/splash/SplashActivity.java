@@ -16,6 +16,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import it.techies.pranayama.R;
@@ -47,6 +50,7 @@ public class SplashActivity extends BaseActivity {
         if (currentUser != null)
         {
             navigateToLauncherActivity();
+            return;
         }
 
         mDialog = new ProgressDialog(this);
@@ -105,19 +109,19 @@ public class SplashActivity extends BaseActivity {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot)
                 {
-                    if (!dataSnapshot.exists())
+                    if (dataSnapshot.hasChildren())
                     {
-                        Log.d(TAG, "updateUserData: onDataChange: new_user");
-
-                        writeUserToDatabase(user);
-                        writeUserPrefs(user);
+                        Log.d(TAG, "updateUserData: onDataChange: existing_user: " + dataSnapshot.toString());
 
                         mDialog.dismiss();
                         navigateToLauncherActivity();
                     }
                     else
                     {
-                        Log.d(TAG, "updateUserData: onDataChange: existing_user");
+                        Log.d(TAG, "updateUserData: onDataChange: new_user");
+
+                        writeUserToDatabase(user);
+                        writeUserPrefs(user);
 
                         mDialog.dismiss();
                         navigateToLauncherActivity();
@@ -138,7 +142,29 @@ public class SplashActivity extends BaseActivity {
     {
         if (user != null)
         {
-            mUsersRef.child(user.getUid()).setValue(user);
+            Map<String, Object> update = new HashMap<>();
+
+            if (user.getDisplayName() != null)
+            {
+                update.put("displayName", user.getDisplayName());
+            }
+
+            update.put("isFirstSetupCompleted", false);
+
+            if (user.getEmail() != null)
+            {
+                update.put("email", user.getEmail());
+            }
+
+            if (user.getPhotoUrl() != null)
+            {
+                update.put("photoUrl", user.getPhotoUrl().toString());
+            }
+
+            update.put("providerId", user.getProviderId());
+            update.put("uid", user.getUid());
+
+            mUsersRef.child(user.getUid()).updateChildren(update);
         }
     }
 
