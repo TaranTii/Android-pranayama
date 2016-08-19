@@ -161,7 +161,6 @@ public class SplashActivity extends BaseActivity {
                 update.put("photoUrl", user.getPhotoUrl().toString());
             }
 
-            update.put("providerId", user.getProviderId());
             update.put("uid", user.getUid());
 
             mUsersRef.child(user.getUid()).updateChildren(update);

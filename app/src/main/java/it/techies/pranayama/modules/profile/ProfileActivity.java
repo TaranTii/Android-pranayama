@@ -533,20 +533,6 @@ public class ProfileActivity extends BaseActivity implements DatePickerDialog.On
     /**
      * Sets the image on user profile image view.
      *
-     * @param uri Image Uri
-     */
-    private void setUserProfilePhoto(Uri uri)
-    {
-        Picasso.with(mUserProfileImageView.getContext())
-                .load(uri).resizeDimen(R.dimen.profile_photo_width, R.dimen.profile_photo_height)
-                .centerCrop()
-                .placeholder(R.drawable.ic_aasan)
-                .into(mUserProfileImageView);
-    }
-
-    /**
-     * Sets the image on user profile image view.
-     *
      * @param url Image url
      */
     private void setUserProfilePhoto(String url)

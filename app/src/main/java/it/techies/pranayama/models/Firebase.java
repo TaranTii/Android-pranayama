@@ -27,9 +27,6 @@ public class Firebase {
         public String photoUrl;
 
         @NonNull
-        public String providerId;
-
-        @NonNull
         public String uid;
 
         @Nullable
