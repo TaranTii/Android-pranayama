@@ -117,5 +117,7 @@
     <string name="n_a">N/A</string>
 
     <string name="firebase_storage_ref">gs://pranayama-59f5c.appspot.com</string>
+    <string name="total_time">Total time</string>
+    <string name="date">Date</string>
 
 </resources>

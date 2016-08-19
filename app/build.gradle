@@ -5,6 +5,8 @@ repositories {
 }
 
 android {
+//    vectorDrawables.useSupportLibrary true
+
     signingConfigs {
         release {
             keyAlias 'release'
@@ -32,57 +34,59 @@ android {
     }
 }
 
+ext.supportLibraryVersion = "24.2.0"
+ext.firebaseVersion = "9.4.0"
+
 dependencies {
+    // Testing-only dependencies
+    // Force usage of support annotations in the test app, since it is internally used by the runner module.
+    androidTestCompile "com.android.support:support-annotations:$supportLibraryVersion"
+    androidTestCompile "com.android.support.test:runner:0.4.1"
+    androidTestCompile "com.android.support.test:rules:0.4.1"
+    androidTestCompile "com.android.support.test.espresso:espresso-core:2.2.1"
+    testCompile "junit:junit:4.10"
 
     // App dependencies
-    compile 'com.android.support:support-annotations:24.1.1'
-    compile 'com.google.guava:guava:19.0'
-    // Testing-only dependencies
-
-    // Force usage of support annotations in the test app, since it is internally used by the runner module.
-    androidTestCompile 'com.android.support:support-annotations:24.1.1'
-    androidTestCompile 'com.android.support.test:runner:0.4.1'
-    androidTestCompile 'com.android.support.test:rules:0.4.1'
-    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.1'
-    testCompile 'junit:junit:4.10'
+    compile "com.google.guava:guava:19.0"
 
     // google
-    compile 'com.android.support:appcompat-v7:24.1.1'
-    compile 'com.android.support:design:24.1.1'
-    compile 'com.android.support:recyclerview-v7:24.1.1'
-    compile 'com.android.support:gridlayout-v7:24.1.1'
-    compile 'com.android.support:support-v4:24.1.1'
+    compile "com.android.support:support-annotations:$supportLibraryVersion"
+    compile "com.android.support:appcompat-v7:$supportLibraryVersion"
+    compile "com.android.support:design:$supportLibraryVersion"
+    compile "com.android.support:recyclerview-v7:$supportLibraryVersion"
+    compile "com.android.support:gridlayout-v7:$supportLibraryVersion"
+    compile "com.android.support:support-v4:$supportLibraryVersion"
 
-    compile 'com.jakewharton:butterknife:7.0.1'
-    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile "com.jakewharton:butterknife:7.0.1"
+    compile "com.squareup.picasso:picasso:2.5.2"
 
     // icons
     compile "com.mikepenz:iconics-core:2.6.7@aar"
-    compile 'com.mikepenz:google-material-typeface:2.2.0.2.original@aar'
+    compile "com.mikepenz:google-material-typeface:2.2.0.2.original@aar"
 
-    compile('com.mikepenz:materialdrawer:5.0.3@aar') {
+    compile("com.mikepenz:materialdrawer:5.0.3@aar") {
         transitive = true
     }
 
-    compile 'com.prolificinteractive:material-calendarview:1.1.0'
-    compile 'me.alexrs:prefs:1.1.0'
+    compile "com.prolificinteractive:material-calendarview:1.1.0"
+    compile "me.alexrs:prefs:1.1.0"
 
-    compile 'de.hdodenhof:circleimageview:2.0.0'
-    compile 'com.soundcloud.android:android-crop:1.0.1@aar'
+    compile "de.hdodenhof:circleimageview:2.0.0"
+    compile "com.soundcloud.android:android-crop:1.0.1@aar"
 
-    compile 'com.rengwuxian.materialedittext:library:2.1.4'
-    compile('com.github.ganfra:material-spinner:1.1.1') {
-        exclude group: 'com.nineoldandroids', module: 'library'
-        exclude group: 'com.android.support', module: 'appcompat-v7'
+    compile "com.rengwuxian.materialedittext:library:2.1.4"
+    compile("com.github.ganfra:material-spinner:1.1.1") {
+        exclude group: "com.nineoldandroids", module: "library"
+        exclude group: "com.android.support", module: "appcompat-v7"
     }
 
-    compile 'com.facebook.android:facebook-android-sdk:4.6.0'
+    compile "com.facebook.android:facebook-android-sdk:4.6.0"
 
-    compile 'com.google.firebase:firebase-core:9.4.0'
-    compile 'com.google.firebase:firebase-database:9.4.0'
-    compile 'com.google.firebase:firebase-crash:9.4.0'
-    compile 'com.google.firebase:firebase-auth:9.4.0'
-    compile 'com.google.firebase:firebase-storage:9.4.0'
+    compile "com.google.firebase:firebase-core:$firebaseVersion"
+    compile "com.google.firebase:firebase-database:$firebaseVersion"
+    compile "com.google.firebase:firebase-crash:$firebaseVersion"
+    compile "com.google.firebase:firebase-auth:$firebaseVersion"
+    compile "com.google.firebase:firebase-storage:$firebaseVersion"
 
     // Single target that includes all FirebaseUI libraries
     compile 'com.firebaseui:firebase-ui:0.4.4'

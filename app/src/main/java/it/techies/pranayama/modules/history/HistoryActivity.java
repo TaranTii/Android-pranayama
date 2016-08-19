@@ -71,7 +71,7 @@ public class HistoryActivity extends BaseActivity {
     @Bind(R.id.meta_ll)
     View mMetaView;
 
-    @BindDrawable(R.drawable.ic_aasan_active_24dp)
+    @BindDrawable(R.drawable.ic_aasan_vector)
     Drawable mIcAasanActive;
 
     @BindDrawable(R.drawable.ic_aasan_deactive_24dp)
