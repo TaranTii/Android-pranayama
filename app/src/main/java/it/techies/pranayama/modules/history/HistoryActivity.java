@@ -4,7 +4,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 import android.widget.TextView;
 
 import com.google.firebase.database.ChildEventListener;
@@ -68,13 +67,10 @@ public class HistoryActivity extends BaseActivity {
     @Bind(R.id.textView7)
     TextView mUdgeeth;
 
-    @Bind(R.id.meta_ll)
-    View mMetaView;
-
-    @BindDrawable(R.drawable.ic_aasan_vector)
+    @BindDrawable(R.drawable.ic_v_aasan_active_24dp)
     Drawable mIcAasanActive;
 
-    @BindDrawable(R.drawable.ic_aasan_deactive_24dp)
+    @BindDrawable(R.drawable.ic_v_aasan_deactive_24dp)
     Drawable mIcAasanDeActive;
 
     ChildEventListener mChildEventListener;

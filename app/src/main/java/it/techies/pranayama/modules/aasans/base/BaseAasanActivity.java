@@ -106,24 +106,19 @@ public abstract class BaseAasanActivity extends BaseBoundActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         final ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null)
-        {
+        if (actionBar != null) {
             actionBar.setTitle(getActionBarTitle());
         }
 
         // read current aasan set number
-        if (getIntent().hasExtra(KEY_CURRENT_AASAN))
-        {
+        if (getIntent().hasExtra(KEY_CURRENT_AASAN)) {
             mCurrentAasan = getIntent().getParcelableExtra(KEY_CURRENT_AASAN);
 
             // set appropriate next aasan and current aasan class
-            if (mCurrentAasan.getCurrentSet() == 1)
-            {
+            if (mCurrentAasan.getCurrentSet() == 1) {
                 mCurrentAasan = getUpdatedCurrentAasan();
             }
-        }
-        else
-        {
+        } else {
             throw new IllegalArgumentException("Needs CurrentAasan object");
         }
 
@@ -144,18 +139,22 @@ public abstract class BaseAasanActivity extends BaseBoundActivity {
             {
                 mSchedule = dataSnapshot.getValue(FirebaseSchedule.class);
 
-                mCurrentAasan.setNumberOfSets(mSchedule.numberOfSets);
+                if (mSchedule != null) {
+                    mCurrentAasan.setNumberOfSets(mSchedule.numberOfSets);
 
-                String setsText = String.format(
-                        Locale.getDefault(),
-                        "%d of %d",
-                        mCurrentAasan.getCurrentSet(),
-                        mSchedule.numberOfSets);
+                    String setsText = String.format(
+                            Locale.getDefault(),
+                            "%d of %d",
+                            mCurrentAasan.getCurrentSet(),
+                            mSchedule.numberOfSets);
 
-                // update the current aasan and total aasan on screen
-                mSetTextView.setText(setsText);
+                    // update the current aasan and total aasan on screen
+                    mSetTextView.setText(setsText);
 
-                createTimer(mSchedule.duration);
+                    createTimer(mSchedule.duration);
+                } else {
+                    showAlert("Unable to load aasan information.");
+                }
             }
 
             @Override
@@ -248,10 +247,8 @@ public abstract class BaseAasanActivity extends BaseBoundActivity {
      */
     private void pauseAnimation()
     {
-        if (mObjectAnimator != null)
-        {
-            if (mObjectAnimator.isRunning())
-            {
+        if (mObjectAnimator != null) {
+            if (mObjectAnimator.isRunning()) {
                 mObjectAnimator.end();
             }
         }
@@ -262,10 +259,8 @@ public abstract class BaseAasanActivity extends BaseBoundActivity {
      */
     private void resumeAnimation()
     {
-        if (mObjectAnimator != null)
-        {
-            if (mObjectAnimator.isPaused())
-            {
+        if (mObjectAnimator != null) {
+            if (mObjectAnimator.isPaused()) {
                 mObjectAnimator.start();
             }
         }
@@ -286,8 +281,7 @@ public abstract class BaseAasanActivity extends BaseBoundActivity {
     {
         final long timer;
 
-        if (addOne)
-        {
+        if (addOne) {
             timer = mTimerSeconds + 1000;
 
             mTimerTextView.setText(String.format(
@@ -295,9 +289,7 @@ public abstract class BaseAasanActivity extends BaseBoundActivity {
                     "%02d:%02d",
                     (mTimerSeconds / 60 * 1000) % 60,
                     (mTimerSeconds / (60 * 1000) % 60)));
-        }
-        else
-        {
+        } else {
             timer = mTimerSeconds;
         }
 
@@ -383,12 +375,9 @@ public abstract class BaseAasanActivity extends BaseBoundActivity {
      */
     private void startBreak()
     {
-        if (isLastAasan() && mCurrentAasan.isLastSet())
-        {
+        if (isLastAasan() && mCurrentAasan.isLastSet()) {
             showFinalScreen();
-        }
-        else
-        {
+        } else {
             playBellMusic();
             BreakActivity.startActivity(this, mCurrentAasan);
         }
@@ -431,8 +420,7 @@ public abstract class BaseAasanActivity extends BaseBoundActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which)
                     {
-                        if (mCountDownTimer != null)
-                        {
+                        if (mCountDownTimer != null) {
                             mCountDownTimer.cancel();
                         }
 
@@ -455,8 +443,7 @@ public abstract class BaseAasanActivity extends BaseBoundActivity {
     @OnClick(R.id.skip_btn)
     public void skipButtonClick(FloatingActionButton button)
     {
-        if (mCountDownTimer != null)
-        {
+        if (mCountDownTimer != null) {
             mCountDownTimer.cancel();
         }
 
@@ -465,13 +452,10 @@ public abstract class BaseAasanActivity extends BaseBoundActivity {
 
     protected void playBellMusic()
     {
-        if (mBound)
-        {
+        if (mBound) {
             mService.playMeditationBellMusic();
             Log.d(TAG, "playBellMusic: play bell music...");
-        }
-        else
-        {
+        } else {
             Log.d(TAG, "playBellMusic: service not bound yet");
         }
     }
@@ -481,8 +465,7 @@ public abstract class BaseAasanActivity extends BaseBoundActivity {
     {
         Log.d(TAG, "toggleButtonClick: Toggle button is checked :" + button.getTag());
 
-        if (button.getTag() == null)
-        {
+        if (button.getTag() == null) {
             // pause the timer
             pauseAnimation();
             pauseTimer();
@@ -492,11 +475,8 @@ public abstract class BaseAasanActivity extends BaseBoundActivity {
 
             mSkipButton.show();
             mStopButton.show();
-        }
-        else
-        {
-            if (String.valueOf(button.getTag()).equals("resume"))
-            {
+        } else {
+            if (String.valueOf(button.getTag()).equals("resume")) {
                 // resume the timer
                 resumeAnimation();
                 resumeTimer();
@@ -506,9 +486,7 @@ public abstract class BaseAasanActivity extends BaseBoundActivity {
 
                 mSkipButton.hide();
                 mStopButton.hide();
-            }
-            else
-            {
+            } else {
                 // pause the timer
                 pauseAnimation();
                 pauseTimer();

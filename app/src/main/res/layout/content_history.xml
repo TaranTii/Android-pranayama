@@ -122,7 +122,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="8dp"
                         android:drawablePadding="8dp"
-                        android:drawableStart="@drawable/ic_aasan_deactive_24dp"
+                        android:drawableStart="@drawable/ic_v_aasan_active_24dp"
                         android:gravity="center_vertical"
                         android:text="@string/aasan_bhastrika"/>
 

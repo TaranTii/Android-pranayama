@@ -46,9 +46,8 @@ public class SplashActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         // checks if user is already logged in
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (currentUser != null)
-        {
+        FirebaseUser currentUser = getUser();
+        if (currentUser != null) {
             navigateToLauncherActivity();
             return;
         }
@@ -81,15 +80,11 @@ public class SplashActivity extends BaseActivity {
     {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == RC_SIGN_IN)
-        {
-            if (resultCode == RESULT_OK)
-            {
+        if (requestCode == RC_SIGN_IN) {
+            if (resultCode == RESULT_OK) {
                 mDialog.show();
                 updateUserData();
-            }
-            else
-            {
+            } else {
                 // user is not signed in. Maybe just wait for the user to press
                 // "sign in" again, or show a message
                 Toast.makeText(SplashActivity.this, "Unable to sign in, please try again...", Toast.LENGTH_SHORT).show();
@@ -101,23 +96,19 @@ public class SplashActivity extends BaseActivity {
     {
         final FirebaseUser user = getUser();
 
-        if (user != null)
-        {
+        if (user != null) {
             DatabaseReference userRef = mUsersRef.child(user.getUid());
 
             userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot)
                 {
-                    if (dataSnapshot.hasChildren())
-                    {
+                    if (dataSnapshot.hasChildren()) {
                         Log.d(TAG, "updateUserData: onDataChange: existing_user: " + dataSnapshot.toString());
 
                         mDialog.dismiss();
                         navigateToLauncherActivity();
-                    }
-                    else
-                    {
+                    } else {
                         Log.d(TAG, "updateUserData: onDataChange: new_user");
 
                         writeUserToDatabase(user);
@@ -140,24 +131,20 @@ public class SplashActivity extends BaseActivity {
 
     private void writeUserToDatabase(FirebaseUser user)
     {
-        if (user != null)
-        {
+        if (user != null) {
             Map<String, Object> update = new HashMap<>();
 
-            if (user.getDisplayName() != null)
-            {
+            if (user.getDisplayName() != null) {
                 update.put("displayName", user.getDisplayName());
             }
 
             update.put("isFirstSetupCompleted", false);
 
-            if (user.getEmail() != null)
-            {
+            if (user.getEmail() != null) {
                 update.put("email", user.getEmail());
             }
 
-            if (user.getPhotoUrl() != null)
-            {
+            if (user.getPhotoUrl() != null) {
                 update.put("photoUrl", user.getPhotoUrl().toString());
             }
 
@@ -176,8 +163,7 @@ public class SplashActivity extends BaseActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot)
                     {
-                        for (DataSnapshot data : dataSnapshot.getChildren())
-                        {
+                        for (DataSnapshot data : dataSnapshot.getChildren()) {
                             FirebaseAasan aasan = data.getValue(FirebaseAasan.class);
 
                             String aasanKey = data.getKey();
