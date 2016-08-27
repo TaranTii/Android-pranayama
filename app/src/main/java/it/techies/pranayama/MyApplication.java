@@ -14,9 +14,10 @@ public class MyApplication extends Application {
     public void onCreate()
     {
         super.onCreate();
+
         // enable Disk Persistence
         if (!FirebaseApp.getApps(this).isEmpty()) {
-            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+            FirebaseDatabase.getInstance().setPersistenceEnabled(false);
         }
     }
 

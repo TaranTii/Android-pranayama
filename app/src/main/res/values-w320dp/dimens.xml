@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="top_row_i_w">54dp</dimen>
+    <dimen name="bottom_row_i_w">80dp</dimen>
+
+</resources>

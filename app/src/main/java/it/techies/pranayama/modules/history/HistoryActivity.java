@@ -67,10 +67,10 @@ public class HistoryActivity extends BaseActivity {
     @Bind(R.id.textView7)
     TextView mUdgeeth;
 
-    @BindDrawable(R.drawable.ic_v_aasan_active_24dp)
+    @BindDrawable(R.drawable.ic_aasan_active_24dp)
     Drawable mIcAasanActive;
 
-    @BindDrawable(R.drawable.ic_v_aasan_deactive_24dp)
+    @BindDrawable(R.drawable.ic_aasan_de_active_24dp)
     Drawable mIcAasanDeActive;
 
     ChildEventListener mChildEventListener;

@@ -388,9 +388,18 @@ public abstract class BaseAasanActivity extends BaseBoundActivity {
      */
     private void setIsCompleted()
     {
+        String currentDate = Utils.getCurrentDate();
         // add completed set in user history
         FirebaseHistory history = new FirebaseHistory(getAasanName(), mSchedule.duration);
-        history.save(getUid(), Utils.getCurrentDate());
+        history.save(getUid(), currentDate);
+
+        // update last activity date
+        DatabaseReference ref = FirebaseDatabase.getInstance()
+                .getReference(FireRef.REF_USERS)
+                .child(getUid())
+                .child(FireRef.REF_USER_LAST_ACTIVITY_DATE);
+
+        ref.setValue(currentDate);
     }
 
     /**

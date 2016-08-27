@@ -122,7 +122,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="8dp"
                         android:drawablePadding="8dp"
-                        android:drawableStart="@drawable/ic_v_aasan_active_24dp"
+                        android:drawableStart="@drawable/ic_aasan_v2_active_24dp"
                         android:gravity="center_vertical"
                         android:text="@string/aasan_bhastrika"/>
 
@@ -132,7 +132,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="8dp"
                         android:drawablePadding="8dp"
-                        android:drawableStart="@drawable/ic_aasan_deactive_24dp"
+                        android:drawableStart="@drawable/ic_aasan_de_active_24dp"
                         android:gravity="center_vertical"
                         android:text="@string/aasan_kapal_bhati"/>
 
@@ -142,7 +142,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="8dp"
                         android:drawablePadding="8dp"
-                        android:drawableStart="@drawable/ic_aasan_deactive_24dp"
+                        android:drawableStart="@drawable/ic_aasan_de_active_24dp"
                         android:gravity="center_vertical"
                         android:text="@string/aasan_bahaya"/>
 
@@ -152,7 +152,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="8dp"
                         android:drawablePadding="8dp"
-                        android:drawableStart="@drawable/ic_aasan_deactive_24dp"
+                        android:drawableStart="@drawable/ic_aasan_de_active_24dp"
                         android:gravity="center_vertical"
                         android:text="@string/aasan_agnisar_kriya"/>
 
@@ -163,7 +163,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="8dp"
                         android:drawablePadding="8dp"
-                        android:drawableStart="@drawable/ic_aasan_deactive_24dp"
+                        android:drawableStart="@drawable/ic_aasan_v2_de_active_24dp"
                         android:gravity="center_vertical"
                         android:text="@string/aasan_anulom_vilom"/>
 
@@ -173,7 +173,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="8dp"
                         android:drawablePadding="8dp"
-                        android:drawableStart="@drawable/ic_aasan_deactive_24dp"
+                        android:drawableStart="@drawable/ic_aasan_de_active_24dp"
                         android:gravity="center_vertical"
                         android:text="@string/aasan_bharamri"/>
 
@@ -183,7 +183,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="8dp"
                         android:drawablePadding="8dp"
-                        android:drawableStart="@drawable/ic_aasan_deactive_24dp"
+                        android:drawableStart="@drawable/ic_aasan_de_active_24dp"
                         android:gravity="center_vertical"
                         android:text="@string/aasan_udgeeth"/>
 

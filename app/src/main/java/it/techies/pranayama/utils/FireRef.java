@@ -14,7 +14,9 @@ public abstract class FireRef {
     public static final String REF_USERS = "users";
 
     public static final String REF_USER_PREFS = "prefs";
+
     public static final String REF_USER_SETUP = "isFirstSetupCompleted";
+    public static final String REF_USER_LAST_ACTIVITY_DATE = "lastActivityDate";
     public static final String REF_AASANS = "aasans";
 
     public static final String REF_AASAN_BHASTRIKA = "bhastrika";
