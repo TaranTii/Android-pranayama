@@ -59,7 +59,7 @@ public class LauncherActivity extends BaseDrawerActivity implements LauncherView
     @Bind(R.id.textView7)
     TextView mUdgeeth;
 
-    @Bind(R.id.setup_schedule_ll)
+    @Bind(R.id.setup_schedule_tv)
     View mSetupScheduleView;
 
     @Bind(R.id.aasans_ll)
@@ -252,8 +252,8 @@ public class LauncherActivity extends BaseDrawerActivity implements LauncherView
         finish();
     }
 
-    @OnClick(R.id.setup_schedule_ll)
-    public void setupScheduleClick()
+    @OnClick(R.id.setup_schedule_tv)
+    public void setupScheduleClick(View v)
     {
         startActivity(new Intent(this, SetupActivity.class));
     }

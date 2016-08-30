@@ -67,14 +67,22 @@ public class HistoryActivity extends BaseActivity {
     @Bind(R.id.textView7)
     TextView mUdgeeth;
 
-    @BindDrawable(R.drawable.ic_aasan_active_24dp)
+    @BindDrawable(R.drawable.ic_history_aasan_active_24dp)
     Drawable mIcAasanActive;
 
-    @BindDrawable(R.drawable.ic_aasan_de_active_24dp)
+    @BindDrawable(R.drawable.ic_history_aasan_de_active_24dp)
     Drawable mIcAasanDeActive;
 
-    ChildEventListener mChildEventListener;
-    DatabaseReference mDatabaseReference;
+    @BindDrawable(R.drawable.ic_history_anulom_active_24dp)
+    Drawable mIcAnulomActive;
+
+    @BindDrawable(R.drawable.ic_history_anulom_de_active_24dp)
+    Drawable mIcAnulomDeActive;
+
+    private ChildEventListener mChildEventListener;
+    private DatabaseReference mDatabaseReference;
+
+    private int mTotalDuration = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -183,7 +191,7 @@ public class HistoryActivity extends BaseActivity {
     private void markAllUnComplete()
     {
         mAgnisarKriya.setCompoundDrawablesWithIntrinsicBounds(mIcAasanDeActive, null, null, null);
-        mAnulomVilom.setCompoundDrawablesWithIntrinsicBounds(mIcAasanDeActive, null, null, null);
+        mAnulomVilom.setCompoundDrawablesWithIntrinsicBounds(mIcAnulomDeActive, null, null, null);
         mKapalBhati.setCompoundDrawablesWithIntrinsicBounds(mIcAasanDeActive, null, null, null);
         mBharamri.setCompoundDrawablesWithIntrinsicBounds(mIcAasanDeActive, null, null, null);
         mBhastrika.setCompoundDrawablesWithIntrinsicBounds(mIcAasanDeActive, null, null, null);
@@ -203,7 +211,7 @@ public class HistoryActivity extends BaseActivity {
                 mAgnisarKriya.setCompoundDrawablesWithIntrinsicBounds(mIcAasanActive, null, null, null);
                 break;
             case FireRef.REF_AASAN_ANULOMVILOM:
-                mAnulomVilom.setCompoundDrawablesWithIntrinsicBounds(mIcAasanActive, null, null, null);
+                mAnulomVilom.setCompoundDrawablesWithIntrinsicBounds(mIcAnulomActive, null, null, null);
                 break;
             case FireRef.REF_AASAN_KAPALBHATI:
                 mKapalBhati.setCompoundDrawablesWithIntrinsicBounds(mIcAasanActive, null, null, null);
@@ -235,7 +243,7 @@ public class HistoryActivity extends BaseActivity {
                 mAgnisarKriya.setCompoundDrawablesWithIntrinsicBounds(mIcAasanDeActive, null, null, null);
                 break;
             case FireRef.REF_AASAN_ANULOMVILOM:
-                mAnulomVilom.setCompoundDrawablesWithIntrinsicBounds(mIcAasanDeActive, null, null, null);
+                mAnulomVilom.setCompoundDrawablesWithIntrinsicBounds(mIcAnulomDeActive, null, null, null);
                 break;
             case FireRef.REF_AASAN_KAPALBHATI:
                 mKapalBhati.setCompoundDrawablesWithIntrinsicBounds(mIcAasanDeActive, null, null, null);
@@ -254,8 +262,6 @@ public class HistoryActivity extends BaseActivity {
                 break;
         }
     }
-
-    private int mTotalDuration = 0;
 
     /**
      * Calculated the total aasan duration and updates the TimeView.

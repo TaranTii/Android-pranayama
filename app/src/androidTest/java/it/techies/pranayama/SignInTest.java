@@ -12,7 +12,6 @@ import org.junit.runner.RunWith;
  * Created by jagdeep on 18/02/16.
  */
 @RunWith(AndroidJUnit4.class)
-@SmallTest
 public class SignInTest {
 
     @Test
@@ -23,7 +22,6 @@ public class SignInTest {
         //
         //        onView(withId(R.id.password))
         //                .check(matches(withText("Singh@1")));
-
     }
 
 }
